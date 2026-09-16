@@ -1,0 +1,136 @@
+/* ==========================================================================
+   ARTHA - INDIAN PERSONAL FINANCE COPILOT
+   Responsive Breakpoints & Print Stylesheet
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .tool-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .vitals-hud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .vitals-hud {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .floating-fact-card {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: none;
+  }
+
+  .tax-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .impact-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .opp-projections-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .radio-segmented {
+    grid-template-columns: 1fr;
+  }
+
+  .preset-bar {
+    gap: 0.4rem;
+  }
+
+  .preset-chip {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.74rem;
+  }
+}
+
+/* ==========================================================================
+   PRINT / PDF EXPORT STYLESHEET
+   Produces a clean, professional financial audit sheet
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  .site-header,
+  .ticker-container,
+  .floating-fact-card,
+  .tools-navigation,
+  .preset-bar,
+  .header-actions,
+  .site-footer,
+  .modal-overlay,
+  .preset-purchases-bar {
+    display: none !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .profile-card,
+  .tool-card,
+  .hud-card {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .tool-pane {
+    display: block !important;
+    page-break-after: always;
+  }
+
+  h1, h2, h3, .hud-value, .brand-name {
+    color: #000000 !important;
+    -webkit-text-fill-color: initial !important;
+  }
+
+  .verdict-banner {
+    border: 2px solid #000000 !important;
+    background: #f4f4f4 !important;
+    color: #000000 !important;
+  }
+}

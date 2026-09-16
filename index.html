@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artha (अर्थ) | Indian Personal Finance & Purchase Decision Copilot</title>
+  <meta name="description" content="One-stop zero-login financial copilot for Indians. Evaluate purchase decisions, optimize taxes under FY 24-25/25-26 slabs, simulate inflation, and get verified RBI/SEBI advisories.">
+  <meta name="theme-color" content="#07090e">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- 1. Verified Financial Ticker Marquee -->
+  <aside class="ticker-container" aria-label="Verified Financial Advisory Ticker">
+    <div class="ticker-label">
+      <span class="pulse-dot"></span>
+      <span>RBI & SEBI Verified Alerts</span>
+    </div>
+    <div class="ticker-viewport">
+      <div class="ticker-track" id="tickerTrack">
+        <!-- Injected via JavaScript from facts.js -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="brand-wrapper">
+        <div class="brand-logo">अ</div>
+        <div class="brand-info">
+          <div class="brand-name">
+            Artha <span class="text-subtle">| अर्थ</span>
+            <span class="brand-badge">Zero-Login</span>
+          </div>
+          <span class="brand-tagline">Personal Finance & Purchase Decision Copilot for Bharat</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button id="btnBrowseFacts" class="btn-secondary" title="View all verified RBI and SEBI financial facts">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Verified Facts
+        </button>
+        <button id="btnExportReport" class="btn-primary" title="Print or save your financial health audit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9V2h12v7"></path>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Export Report
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 3. Profile Setup & Financial Vitals Section -->
+    <section class="profile-hero-section">
+      <div class="container">
+        <div class="hero-header">
+          <h1>Make Confident Financial Decisions</h1>
+          <p class="hero-subtitle">
+            Zero sign-up required. Your numbers remain private on your device. Calibrated for Indian inflation and current Union Budget tax laws.
+          </p>
+        </div>
+
+        <div class="profile-card">
+          <!-- Persona Presets Bar -->
+          <div class="preset-bar">
+            <span class="preset-label">Quick Presets:</span>
+            <button class="preset-chip" data-preset="fresher">🎓 Fresher (₹35k/mo)</button>
+            <button class="preset-chip active" data-preset="techMid">💼 Mid-Level (₹1.2L/mo)</button>
+            <button class="preset-chip" data-preset="family">🏡 Family (₹2.5L/mo)</button>
+            <button class="preset-chip" data-preset="freelancer">⚡ Freelancer (₹85k/mo)</button>
+          </div>
+
+          <!-- Inputs Grid -->
+          <div class="inputs-grid">
+            <div class="input-field">
+              <label for="inputSalary">
+                Monthly In-Hand Salary
+                <span class="badge-required">Required</span>
+              </label>
+              <div class="input-box">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="inputSalary" value="120000" min="0" step="1000" placeholder="1,20,000">
+              </div>
+              <span class="input-hint">Net take-home credited to bank</span>
+            </div>
+
+            <div class="input-field">
+              <label for="inputAge">
+                Your Current Age
+                <span class="badge-required">Required</span>
+              </label>
+              <div class="input-box no-prefix">
+                <input type="number" id="inputAge" value="30" min="18" max="75" step="1">
+              </div>
+              <span class="input-hint">Used for risk horizon & retirement</span>
+            </div>
+
+            <div class="input-field">
+              <label for="inputEMI">
+                Current Monthly EMIs
+                <span class="badge-required">Required</span>
+              </label>
+              <div class="input-box">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="inputEMI" value="22000" min="0" step="500" placeholder="22,000">
+              </div>
+              <span class="input-hint">Home, Car, Personal, Gadget EMIs</span>
+            </div>
+
+            <div class="input-field">
+              <label for="inputExpenses">
+                Fixed Monthly Expenses
+                <span class="badge-required">Required</span>
+              </label>
+              <div class="input-box">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="inputExpenses" value="42000" min="0" step="1000" placeholder="42,000">
+              </div>
+              <span class="input-hint">Rent, groceries, utilities, school fees</span>
+            </div>
+
+            <div class="input-field">
+              <label for="inputEmergency">
+                Emergency Savings (Liquid)
+              </label>
+              <div class="input-box">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="inputEmergency" value="180000" min="0" step="5000" placeholder="1,80,000">
+              </div>
+              <span class="input-hint">Bank balance + Liquid FDs</span>
+            </div>
+          </div>
+
+          <!-- Live Financial Vitals HUD -->
+          <div class="vitals-hud">
+            <div class="hud-card surplus">
+              <div class="hud-label">
+                <span>Monthly Surplus</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <div class="hud-value" id="hudSurplus">₹56,000</div>
+              <div class="hud-subtext text-emerald">Available for investments & lifestyle</div>
+            </div>
+
+            <div class="hud-card dti">
+              <div class="hud-label">
+                <span>Debt-To-Income (DTI)</span>
+                <span class="status-pill safe" id="hudDTIBadge">Safe (<35%)</span>
+              </div>
+              <div class="hud-value" id="hudDTI">18%</div>
+              <div class="hud-subtext">RBI Benchmark: Below 40%</div>
+            </div>
+
+            <div class="hud-card score">
+              <div class="hud-label">
+                <span>Health Score</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              </div>
+              <div class="hud-value" id="hudHealthScore">85</div>
+              <div class="hud-subtext" id="hudHealthLabel">Financially Robust</div>
+            </div>
+
+            <div class="hud-card runway">
+              <div class="hud-label">
+                <span>Emergency Runway</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+              </div>
+              <div class="hud-value" id="hudEmergencyRunway">2.8 Months</div>
+              <div class="hud-subtext">Target: 6 Months (₹3.84 L)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Tools Navigation Bar -->
+    <section class="tools-navigation">
+      <div class="container">
+        <nav class="tabs-track" aria-label="Financial Tools">
+          <button class="tab-btn active" data-tab-target="purchase">
+            🛒 "Can I Afford This?"
+          </button>
+          <button class="tab-btn" data-tab-target="budget">
+            📊 50-30-20 & Bharat Budget
+          </button>
+          <button class="tab-btn" data-tab-target="tax">
+            📜 Tax Regime Optimizer (FY 24-26)
+          </button>
+          <button class="tab-btn" data-tab-target="inflation">
+            ⏳ Inflation Time Machine
+          </button>
+          <button class="tab-btn" data-tab-target="loan-vs-sip">
+            ⚖️ Loan Prepayment vs. SIP
+          </button>
+          <button class="tab-btn" data-tab-target="retirement">
+            🎯 Age Goals & Retirement
+          </button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 5. Tool Panes Container -->
+    <div class="container">
+      
+      <!-- TOOL 1: "CAN I AFFORD THIS?" -->
+      <section class="tool-pane active" id="pane-purchase">
+        <div class="tool-grid">
+          <!-- Input Configuration -->
+          <div class="tool-card">
+            <h2 class="tool-card-title">Purchase Decision Engine</h2>
+            <p class="tool-card-desc">
+              Test any big expense before swiping your card or locking into EMI.
+            </p>
+
+            <div class="form-stack">
+              <div class="input-field">
+                <label for="purchaseItemName">Item / Expense Name</label>
+                <div class="input-box no-prefix">
+                  <input type="text" id="purchaseItemName" value="Apple iPhone 16 Pro" placeholder="e.g. Royal Enfield Hunter, Bali Trip">
+                </div>
+                <div class="preset-purchases-bar">
+                  <button class="preset-purchase-btn" data-name="Apple iPhone 16 Pro" data-cost="134900">📱 iPhone 16 Pro (₹1.35L)</button>
+                  <button class="preset-purchase-btn" data-name="Royal Enfield Hunter" data-cost="195000">🏍️ Hunter 350 (₹1.95L)</button>
+                  <button class="preset-purchase-btn" data-name="Sony 65 inch OLED 4K" data-cost="110000">📺 OLED TV (₹1.10L)</button>
+                  <button class="preset-purchase-btn" data-name="Europe Vacation" data-cost="280000">✈️ Europe Trip (₹2.8L)</button>
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label for="purchaseCost">Item Cost (MRP)</label>
+                <div class="input-box">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="purchaseCost" value="134900" min="0" step="1000">
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label>Payment Method</label>
+                <div class="radio-segmented">
+                  <label>
+                    <input type="radio" name="paymentMode" value="lump" checked>
+                    One-time Cash
+                  </label>
+                  <label>
+                    <input type="radio" name="paymentMode" value="no-cost-emi">
+                    No-Cost EMI
+                  </label>
+                  <label>
+                    <input type="radio" name="paymentMode" value="emi">
+                    Standard Loan
+                  </label>
+                </div>
+              </div>
+
+              <div id="emiDetailsConfig" style="display: none; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="purchaseEmiMonths">Tenure (Months)</label>
+                  <div class="input-box no-prefix">
+                    <select id="purchaseEmiMonths" style="width: 100%; background: var(--bg-input); border: 1px solid var(--border-medium); border-radius: var(--radius-md); color: var(--text-primary); padding: 0.65rem; font-family: var(--font-heading); font-weight: 600;">
+                      <option value="3">3 Months</option>
+                      <option value="6" selected>6 Months</option>
+                      <option value="9">9 Months</option>
+                      <option value="12">12 Months</option>
+                      <option value="24">24 Months</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="purchaseEmiRate">Interest (% p.a.)</label>
+                  <div class="input-box no-prefix">
+                    <input type="number" id="purchaseEmiRate" value="14" min="0" max="36" step="0.5">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evaluation Results -->
+          <div class="tool-card">
+            <!-- Dynamic Verdict Banner -->
+            <div class="verdict-banner green" id="verdictBanner">
+              <div class="verdict-title" id="verdictTitle">Evaluating...</div>
+              <div class="verdict-subtitle" id="verdictSubtitle">Checking against your cashflow & DTI...</div>
+              <ul class="verdict-reasons" id="verdictReasons"></ul>
+              <div class="verdict-tip" id="verdictTip" style="display: none;"></div>
+            </div>
+
+            <!-- Impact Metrics -->
+            <div class="impact-metrics-grid">
+              <div class="metric-box">
+                <div class="metric-box-label">Life-Energy Cost</div>
+                <div class="metric-box-val text-amber" id="metricLifeDays">-- Days</div>
+                <div class="metric-box-sub" id="metricLifeHours">(-- working hours of your life)</div>
+              </div>
+
+              <div class="metric-box">
+                <div class="metric-box-label">New DTI & Surplus</div>
+                <div class="metric-box-val" id="metricPostDti">--%</div>
+                <div class="metric-box-sub">Remaining surplus: <span id="metricPostSurplus" class="text-emerald">--</span></div>
+              </div>
+            </div>
+
+            <!-- Nifty 50 Opportunity Cost Box -->
+            <div class="opp-cost-card">
+              <div class="opp-cost-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"></path><path d="M17 6h6v6"></path></svg>
+                Nifty 50 Index Opportunity Cost
+              </div>
+              <div class="opp-cost-desc">
+                If this purchase amount was invested in an Indian Index Fund at 12% CAGR:
+              </div>
+              <div class="opp-projections-row">
+                <div class="opp-proj-box">
+                  <div class="opp-year">In 5 Years</div>
+                  <div class="opp-val" id="oppCost5yr">--</div>
+                </div>
+                <div class="opp-proj-box">
+                  <div class="opp-year">In 10 Years</div>
+                  <div class="opp-val" id="oppCost10yr">--</div>
+                </div>
+                <div class="opp-proj-box">
+                  <div class="opp-year">In 20 Years</div>
+                  <div class="opp-val" id="oppCost20yr">--</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOL 2: 50-30-20 & BHARAT BUDGET -->
+      <section class="tool-pane" id="pane-budget">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <h2 class="tool-card-title">Bharat 50-30-20 Cashflow Split</h2>
+            <p class="tool-card-desc">
+              Tailored for Indian realities where debt servicing and family support frequently exceed western 50-30-20 models.
+            </p>
+
+            <div class="form-stack">
+              <div class="tax-stat-row">
+                <span>Essential Needs (Rent, Utilities, Groceries)</span>
+                <strong id="budgetNeedsVal" class="text-cyan">₹0</strong>
+              </div>
+              <div class="tax-stat-row">
+                <span>Debt Servicing (EMIs & Loans)</span>
+                <strong id="budgetDebtVal" class="text-rose">₹0</strong>
+              </div>
+              <div class="tax-stat-row">
+                <span>Discretionary Wants (Dining, Outings, Subscriptions)</span>
+                <strong id="budgetWantsVal" class="text-amber">₹0</strong>
+              </div>
+              <div class="tax-stat-row">
+                <span>Future Wealth (Investments & Savings)</span>
+                <strong id="budgetInvestVal" class="text-emerald">₹0</strong>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-md);" id="budgetDiagnosisText">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <h3 style="margin-bottom: 0.5rem; text-align: center;">Monthly Cashflow Breakdown</h3>
+            <div class="chart-container">
+              <canvas id="budgetDonutCanvas" class="chart-canvas"></canvas>
+            </div>
+            <p class="text-subtle" style="text-align: center;">
+              *Calculated reactively from your top profile numbers.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOL 3: TAX REGIME OPTIMIZER -->
+      <section class="tool-pane" id="pane-tax">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <h2 class="tool-card-title">Tax Regime Optimizer</h2>
+              <button id="btnSyncTaxSalary" class="preset-chip" style="font-size: 0.72rem;">🔄 Sync from Profile</button>
+            </div>
+            <p class="tool-card-desc">
+              Accurate FY 2024-25 / 2025-26 Budget Slabs: ₹75,000 standard deduction & Section 87A rebate comparison.
+            </p>
+
+            <div class="form-stack">
+              <div class="input-field">
+                <label for="taxGrossSalary">Annual Gross CTC / Salary</label>
+                <div class="input-box">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="taxGrossSalary" value="1650000" min="0" step="50000">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="tax80C">Section 80C (Max ₹1.5L)</label>
+                  <div class="input-box">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="tax80C" value="150000" max="150000" step="10000">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="tax80D">Section 80D (Health)</label>
+                  <div class="input-box">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="tax80D" value="25000" max="75000" step="5000">
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="taxHRA">Annual HRA Exemption</label>
+                  <div class="input-box">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="taxHRA" value="120000" step="10000">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="taxHomeLoan">Home Loan Interest (24b)</label>
+                  <div class="input-box">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="taxHomeLoan" value="0" max="200000" step="10000">
+                  </div>
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label for="taxNPS">NPS Tier-1 (80CCD 1B max 50k)</label>
+                <div class="input-box">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="taxNPS" value="50000" max="50000" step="5000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <!-- Recommendation Banner -->
+            <div id="taxRecommendationBanner" class="tax-rec-banner new-wins">
+              Evaluating best regime...
+            </div>
+
+            <!-- Side by Side Slabs -->
+            <div class="tax-comparison-grid">
+              <div class="tax-regime-card featured">
+                <span class="regime-badge new">New Tax Regime</span>
+                <div class="tax-amount-large text-emerald" id="newRegimeTax">₹0</div>
+                <div class="tax-stat-row">
+                  <span>Monthly TDS</span>
+                  <strong id="newRegimeMonthly">₹0/mo</strong>
+                </div>
+                <div class="tax-stat-row">
+                  <span>Standard Deduction</span>
+                  <strong>₹75,000</strong>
+                </div>
+                <div class="tax-stat-row">
+                  <span>Effective Tax Rate</span>
+                  <strong id="newRegimeRate">0%</strong>
+                </div>
+              </div>
+
+              <div class="tax-regime-card">
+                <span class="regime-badge old">Old Tax Regime</span>
+                <div class="tax-amount-large text-cyan" id="oldRegimeTax">₹0</div>
+                <div class="tax-stat-row">
+                  <span>Monthly TDS</span>
+                  <strong id="oldRegimeMonthly">₹0/mo</strong>
+                </div>
+                <div class="tax-stat-row">
+                  <span>Standard Deduction</span>
+                  <strong>₹50,000</strong>
+                </div>
+                <div class="tax-stat-row">
+                  <span>Effective Tax Rate</span>
+                  <strong id="oldRegimeRate">0%</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comparison Bar Chart -->
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="taxChartCanvas" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOL 4: INFLATION TIME MACHINE -->
+      <section class="tool-pane" id="pane-inflation">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <h2 class="tool-card-title">Indian Inflation Time Machine</h2>
+            <p class="tool-card-desc">
+              Understand why money kept in bank savings accounts (3%) guaranteed loses purchasing power.
+            </p>
+
+            <div class="form-stack">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Current Monthly Expense</span>
+                  <span class="slider-val" id="lblInflationExpense">₹40,000</span>
+                </div>
+                <input type="range" id="inflationExpense" class="custom-slider" min="15000" max="300000" step="5000" value="40000">
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Annual Inflation Rate</span>
+                  <span class="slider-val" id="lblInflationRate">5.5%</span>
+                </div>
+                <input type="range" id="inflationRate" class="custom-slider" min="3.0" max="15.0" step="0.5" value="5.5">
+                <div class="preset-purchases-bar" style="margin-top: 0.3rem;">
+                  <button class="preset-purchase-btn" data-inf-preset="5.5">General CPI (5.5%)</button>
+                  <button class="preset-purchase-btn" data-inf-preset="10.0">Higher Education (10.0%)</button>
+                  <button class="preset-purchase-btn" data-inf-preset="12.0">Medical Inflation (12.0%)</button>
+                </div>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Time Horizon</span>
+                  <span class="slider-val" id="lblInflationYears">15 Years</span>
+                </div>
+                <input type="range" id="inflationYears" class="custom-slider" min="5" max="35" step="1" value="15">
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <div class="impact-metrics-grid">
+              <div class="metric-box">
+                <div class="metric-box-label">Future Monthly Cost</div>
+                <div class="metric-box-val text-rose" id="infFutureExpense">₹0</div>
+                <div class="metric-box-sub">Multiplier: <strong id="infMultiplier">1.0x</strong></div>
+              </div>
+
+              <div class="metric-box">
+                <div class="metric-box-label">₹1 Lakh Purchasing Power</div>
+                <div class="metric-box-val text-amber" id="infPurchasingPower">₹0</div>
+                <div class="metric-box-sub">Value of ₹1 Lakh in future money</div>
+              </div>
+            </div>
+
+            <!-- Inflation Curve Chart -->
+            <div class="chart-container" style="height: 190px;">
+              <canvas id="inflationCanvas" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOL 5: LOAN PREPAYMENT VS EQUITY SIP -->
+      <section class="tool-pane" id="pane-loan-vs-sip">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <h2 class="tool-card-title">Loan Prepayment vs. Equity SIP</h2>
+            <p class="tool-card-desc">
+              The classic Indian dilemma: Prepay an 8.5%–9.5% Home Loan or invest surplus cash into a 12% Nifty 50 SIP?
+            </p>
+
+            <div class="form-stack">
+              <div class="input-field">
+                <label for="loanBalance">Outstanding Loan Balance</label>
+                <div class="input-box">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="loanBalance" value="2500000" step="50000">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="loanRate">Interest Rate (% p.a.)</label>
+                  <div class="input-box no-prefix">
+                    <input type="number" id="loanRate" value="8.75" step="0.25">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="loanTenure">Remaining Tenure (Years)</label>
+                  <div class="input-box no-prefix">
+                    <input type="number" id="loanTenure" value="15" step="1">
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="loanExtraCash">Extra Surplus / Month</label>
+                  <div class="input-box">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="loanExtraCash" value="10000" step="1000">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="loanSipRate">Expected SIP Return (%)</label>
+                  <div class="input-box no-prefix">
+                    <input type="number" id="loanSipRate" value="12.0" step="0.5">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <div id="loanVsSipVerdict" class="modal-snippet-box" style="margin-bottom: 1rem; border-left-color: var(--emerald-500);">
+              Calculating advantage...
+            </div>
+
+            <div class="impact-metrics-grid">
+              <div class="metric-box">
+                <div class="metric-box-label">Interest Saved (Prepayment)</div>
+                <div class="metric-box-val text-cyan" id="loanSavedInterest">₹0</div>
+                <div class="metric-box-sub" id="loanYearsSaved">-- Years sooner</div>
+              </div>
+
+              <div class="metric-box">
+                <div class="metric-box-label">Corpus Created (SIP)</div>
+                <div class="metric-box-val text-emerald" id="sipWealthAccumulated">₹0</div>
+                <div class="metric-box-sub" id="sipNetProfit">-- in pure wealth</div>
+              </div>
+            </div>
+
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="loanVsSipCanvas" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOL 6: AGE-BASED GOALS & RETIREMENT -->
+      <section class="tool-pane" id="pane-retirement">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <h2 class="tool-card-title">Age-Based Financial Planning</h2>
+            <p class="tool-card-desc">
+              Asset allocation, critical protection covers, and retirement corpus tailored for your age.
+            </p>
+
+            <div class="form-stack">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-field">
+                  <label for="retTargetAge">Target Retirement Age</label>
+                  <div class="input-box no-prefix">
+                    <input type="number" id="retTargetAge" value="58" min="40" max="70" step="1">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label>Years Left</label>
+                  <div class="metric-box-val" id="retYearsLeft" style="font-size: 1.2rem; padding: 0.5rem 0;">28 Years</div>
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label for="retDesiredMonthly">Desired Monthly Expense in Retirement (Today's Value)</label>
+                <div class="input-box">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="retDesiredMonthly" value="50000" step="5000">
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <h4 style="font-size: 0.88rem; margin-bottom: 0.6rem; color: var(--text-secondary);">Age-Appropriate Asset Allocation (Rule of 100 - Age)</h4>
+              <div style="display: flex; height: 16px; border-radius: 8px; overflow: hidden; background: var(--bg-input);">
+                <div id="retEquityBar" style="background: var(--emerald-500); width: 70%;" title="Equity"></div>
+                <div id="retDebtBar" style="background: var(--cyan-500); width: 30%;" title="Debt / Fixed Income"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.4rem; color: var(--text-muted);">
+                <span>Equity (Index/Mutual Funds): <strong id="retEquityPct" class="text-emerald">70%</strong></span>
+                <span>Debt (PPF/EPF/FDs): <strong id="retDebtPct" class="text-cyan">30%</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <h3 style="margin-bottom: 1rem;">Recommended Safety Shield & Target</h3>
+
+            <div class="tax-stat-row">
+              <span>Pure Term Life Cover (20x Annual Net)</span>
+              <strong id="recTermCover" class="text-emerald">₹2.4 Cr</strong>
+            </div>
+            <div class="tax-stat-row">
+              <span>Recommended Health Insurance</span>
+              <strong id="recHealthCover" class="text-cyan">₹10 Lakhs + Super Top-up</strong>
+            </div>
+            <div class="tax-stat-row">
+              <span>Inflation-Adjusted Target Corpus (25x Rule)</span>
+              <strong id="retTargetCorpus" class="text-amber">₹5.6 Cr</strong>
+            </div>
+            <div class="tax-stat-row">
+              <span>Required Monthly Equity SIP (at 12% CAGR)</span>
+              <strong id="retMonthlySipNeeded" class="text-emerald">₹18,500/mo</strong>
+            </div>
+
+            <div class="modal-tip-box" style="margin-top: 1.25rem; font-size: 0.78rem;">
+              🛡️ <strong>Rule of Thumb:</strong> Buy pure Term Insurance early. Premiums stay locked at your entry age for the entire 30-40 year tenure!
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- 6. Floating Awareness Hover Card (Cycles automatically, clickable) -->
+  <div class="floating-fact-card" id="floatingHoverCard" role="region" aria-label="Financial Advisory Card">
+    <div class="floating-header">
+      <span class="floating-tag warning">RBI Alert</span>
+      <span class="floating-click-hint">Click to read fact →</span>
+    </div>
+    <div class="floating-title">50% EMI Threshold is a Debt Trap</div>
+    <div class="floating-desc">Keeping total EMIs above 40-50% triggers acute financial vulnerability according to RBI reports.</div>
+  </div>
+
+  <!-- 7. Verified Fact & Advisory Explorer Modal -->
+  <div class="modal-overlay" id="factModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modalClose" aria-label="Close dialog">&times;</button>
+      <div class="modal-source-badge" id="modalSource">Reserve Bank of India</div>
+      <h2 class="modal-title" id="modalTitle">Advisory Title</h2>
+      <div class="modal-snippet-box" id="modalSnippet">Snippet text</div>
+      
+      <div class="modal-section-title">Official Context & Research</div>
+      <p class="modal-body-text" id="modalDetails">Detailed breakdown.</p>
+
+      <div class="modal-section-title">Actionable Recommendation</div>
+      <div class="modal-tip-box" id="modalActionTip">Action tip.</div>
+
+      <div class="modal-section-title">Explore Other Verified Advisories</div>
+      <div class="modal-chip-grid" id="modalFactsGrid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-citations">
+        <span>Verified Sources:</span>
+        <span>• RBI Financial Stability Reports</span>
+        <span>• SEBI Retail F&O Study</span>
+        <span>• Ministry of Finance (CBDT Union Budget)</span>
+        <span>• AMFI Investor Guidelines</span>
+        <span>• MoSPI CPI & CRISIL Healthcare Index</span>
+      </div>
+      <div class="footer-disclaimer">
+        <strong>Disclaimer:</strong> Artha is an educational decision-support tool. It does not provide registered SEBI investment advice or tax consultancy. Past performance of indices does not guarantee future market returns. Tax laws reflect the Income Tax Act provisions for FY 2024-25 and FY 2025-26.
+      </div>
+      <div class="text-subtle">
+        Crafted with precision for Indian wealth creators • 100% Private Client-Side Calculation • No Cookies • No Login
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Entrypoint -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
