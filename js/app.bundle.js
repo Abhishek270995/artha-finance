@@ -901,6 +901,382 @@
     });
   }
 
+  // js/dictionary.js
+  var DICTIONARY_CATEGORIES = [
+    { id: "all", label: "All Terms", emoji: "\u{1F4DA}" },
+    { id: "tax", label: "Taxes & Govt", emoji: "\u{1F3DB}\uFE0F" },
+    { id: "debt", label: "Loans & EMIs", emoji: "\u{1F4B3}" },
+    { id: "investing", label: "Investing & Wealth", emoji: "\u{1F4C8}" },
+    { id: "inflation", label: "Inflation & Economy", emoji: "\u23F3" },
+    { id: "banking", label: "Banking & Safety", emoji: "\u{1F6E1}\uFE0F" }
+  ];
+  var FINANCE_DICTIONARY = [
+    {
+      id: "tds",
+      term: "TDS",
+      expansion: "Tax Deducted at Source",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Beginner",
+      eli5: "The government collects income tax directly from your employer before your salary ever hits your bank account.",
+      analogy: "Ordering a pizza, but your elder brother eats one slice right in the kitchen before delivering the box to your room.",
+      example: "If your monthly salary is \u20B91,00,000 and your company cuts \u20B910,000 TDS, you receive \u20B990,000 in hand.",
+      trapWarning: "TDS is NOT your final tax settlement! You still must file your ITR to claim refunds or pay remaining dues.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "section_87a",
+      term: "Section 87A Rebate",
+      expansion: "Tax Rebate under Section 87A",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Beginner",
+      eli5: "A special government discount rule that makes your total income tax exactly \u20B90 if your taxable salary stays under the statutory limit.",
+      analogy: "A 100% discount coupon applied at checkout: the bill is calculated, but the coupon wipes the total down to zero.",
+      example: "In the New Tax Regime, total tax on \u20B97.75 Lakhs (with \u20B975,000 standard deduction) is \u20B925,000, but 87A gives a \u20B925,000 rebate = \u20B90 tax!",
+      trapWarning: "If your net taxable income exceeds \u20B97 Lakhs by even \u20B9100, the rebate drops away and you pay full slab tax.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "standard_deduction",
+      term: "Standard Deduction",
+      expansion: "Flat Salary Deduction (\u20B975,000 / \u20B950,000)",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Beginner",
+      eli5: "A flat discount the government gives to all salaried employees before computing income tax, requiring zero bills or receipts.",
+      analogy: "Free checked baggage allowance at the airport that every passenger receives automatically without showing receipts.",
+      example: "If your annual gross salary is \u20B910 Lakhs, tax is only computed on \u20B99.25 Lakhs (\u20B910L - \u20B975k bonus deduction).",
+      trapWarning: "New Regime offers \u20B975,000 deduction for FY 24-26, while the Old Regime gives \u20B950,000.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "old_vs_new_regime",
+      term: "Old vs. New Tax Regime",
+      expansion: "Income Tax Slabs & Deductions System",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Beginner",
+      eli5: "Old Regime has high tax rates, but lets you lower tax by hunting for rent, insurance, and loan receipts. New Regime has lower tax slabs with zero paperwork.",
+      analogy: "Old Regime is a buffet where you get discounts if you bring coupons. New Regime is an upfront discounted set thali with zero coupons needed.",
+      example: "Salaried Indians earning under \u20B912.75 Lakhs without heavy home loans or high rent almost always save more in the New Regime.",
+      trapWarning: "Once you choose New Regime without business income, you can switch back annually, but business owners can only switch once.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "section_80c_80d",
+      term: "Section 80C & 80D",
+      expansion: "Tax Deductions for Savings & Medical Insurance",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Intermediate",
+      eli5: "Old Regime savings buckets. 80C lets you deduct up to \u20B91.5 Lakhs (EPF, PPF, ELSS). 80D lets you deduct \u20B925,000\u2013\u20B950,000 for health insurance.",
+      analogy: "Special tax-free lockers where every rupee placed inside reduces your taxable income in the Old Regime.",
+      example: "Investing \u20B91.5L in ELSS/PPF saves up to \u20B946,800 in tax if you are in the 30% tax bracket under the Old Regime.",
+      trapWarning: "Never buy toxic endowment life insurance policies just to save 80C tax! Pure Term Insurance + PPF/Mutual Funds is far better.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "hra",
+      term: "HRA",
+      expansion: "House Rent Allowance Exemption",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Intermediate",
+      eli5: "A salary tax break that gives you a discount for the house rent you pay to your landlord (Old Regime only).",
+      analogy: "A government cashback coupon on your monthly house rent receipts.",
+      example: "Paying \u20B925,000/mo rent in a metro city can exempt up to \u20B91.5\u2013\u20B92 Lakhs of your annual salary from tax in Old Regime.",
+      trapWarning: "If annual rent exceeds \u20B91 Lakh, landlord's PAN is mandatory. Not applicable in the New Tax Regime!",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "nps",
+      term: "NPS",
+      expansion: "National Pension System (Tier 1)",
+      category: "tax",
+      categoryLabel: "\u{1F3DB}\uFE0F Taxes & Govt",
+      level: "Intermediate",
+      eli5: "A government-backed retirement fund that invests in Indian stocks and bonds, offering an exclusive extra \u20B950,000 tax deduction under 80CCD(1B).",
+      analogy: "A digital steel locker that stays tightly sealed until your 60th birthday, growing compound returns.",
+      example: "Depositing \u20B950,000 in NPS Tier 1 gives an extra tax saving of up to \u20B915,600 in the 30% bracket.",
+      trapWarning: "Money is locked until age 60, and at retirement, at least 40% must be used to purchase a monthly annuity pension.",
+      usedInTool: "tax",
+      usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
+    },
+    {
+      id: "emi",
+      term: "EMI",
+      expansion: "Equated Monthly Installment",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Beginner",
+      eli5: "Breaking a giant price into smaller fixed monthly installments paid over 1 to 20 years, but loaded with heavy compound interest.",
+      analogy: "Instead of lifting a 100 kg boulder once, carrying a 15 kg iron pack on your back every single day for years.",
+      example: "On a \u20B950 Lakh home loan at 8.75% for 20 years, EMI is \u20B944,186/mo. You pay back \u20B91.06 Crore \u2014 more than DOUBLE the loan!",
+      trapWarning: "In the initial years of a home loan, almost 80% of your monthly EMI is pure interest for the bank; principal barely shrinks.",
+      usedInTool: "purchase",
+      usedInToolLabel: '\u{1F6D2} "Can I Afford This?"'
+    },
+    {
+      id: "dti",
+      term: "DTI",
+      expansion: "Debt-to-Income Ratio",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Beginner",
+      eli5: "The percentage of your monthly in-hand salary that is already swallowed by loan and EMI payments before you can buy food or save.",
+      analogy: "How much of your monthly oxygen tank is pre-emptively sucked away by creditors.",
+      example: "If your in-hand salary is \u20B91,00,000 and total EMIs are \u20B935,000, your DTI is 35%. <35% is safe; >50% is a debt emergency.",
+      trapWarning: "Banks will happily approve loans up to 55% DTI, but it leaves you vulnerable to sudden job loss or medical crises.",
+      usedInTool: "purchase",
+      usedInToolLabel: '\u{1F6D2} "Can I Afford This?"'
+    },
+    {
+      id: "no_cost_emi",
+      term: "No-Cost EMI",
+      expansion: "Merchant-Subsidized Installment Loan",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Beginner",
+      eli5: "A clever marketing trick where interest is NOT zero. The bank still charges 14%\u201316% interest, but the merchant gives an upfront discount equal to the interest.",
+      analogy: 'A restaurant offering "free cold drinks", but adding a secret packaging fee of the exact same amount to your bill.',
+      example: "Buying a \u20B960,000 smartphone on 6-month No-Cost EMI: Phone is discounted to \u20B957,500, bank charges \u20B92,500 interest, but you pay \u20B9450 GST on that interest!",
+      trapWarning: "Banks charge non-refundable processing fees (\u20B9199+GST) and 18% GST on the interest component. Missing one payment triggers 42% credit card APR!",
+      usedInTool: "purchase",
+      usedInToolLabel: '\u{1F6D2} "Can I Afford This?"'
+    },
+    {
+      id: "apr",
+      term: "APR",
+      expansion: "Annual Percentage Rate",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Intermediate",
+      eli5: "The true total yearly interest rate you pay on debt, including all hidden processing fees, GST, and compounding frequency.",
+      analogy: "The true on-road price of a car after road tax and insurance, rather than the deceptive ex-showroom sticker price.",
+      example: 'Credit card revolving balances look like "just 3.5% per month", but their true APR is 42% to 48% per year!',
+      trapWarning: 'Paying only the "Minimum Amount Due" on credit cards keeps you trapped in 48% APR debt for up to 15 years.',
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "prepayment",
+      term: "Loan Prepayment",
+      expansion: "Accelerated Principal Repayment",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Intermediate",
+      eli5: "Paying extra money directly toward your loan balance ahead of schedule, permanently eliminating years of future compound interest.",
+      analogy: "Poisoning the roots of a weed so it stops producing compound thorns every single month.",
+      example: "Paying just 1 extra EMI every year on a 20-year home loan can reduce your tenure by 4.5 years and save \u20B98+ Lakhs in interest!",
+      trapWarning: "Always ensure your prepayment is credited toward the principal amount, not pre-paid interest or future EMIs.",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "emergency_fund",
+      term: "Emergency Runway",
+      expansion: "Liquid Emergency Reserve (6 Months)",
+      category: "banking",
+      categoryLabel: "\u{1F6E1}\uFE0F Banking & Safety",
+      level: "Beginner",
+      eli5: "A cash buffer equal to 6 months of mandatory living expenses kept in instant-access savings or fixed deposits to protect against layoffs or emergencies.",
+      analogy: "The spare tire and airbag in your car: you hope you never use it, but you never drive on the highway without it.",
+      example: "If your rent, food, and EMIs total \u20B945,000/month, your emergency runway must be at least \u20B92,70,000 in liquid bank accounts.",
+      trapWarning: "Never invest your emergency fund in stocks, crypto, or real estate. Capital safety and instant withdrawal trump returns.",
+      usedInTool: "budget",
+      usedInToolLabel: "\u{1F4CA} 50-30-20 Cashflow"
+    },
+    {
+      id: "sip",
+      term: "SIP",
+      expansion: "Systematic Investment Plan",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Beginner",
+      eli5: "An automated instruction that invests a fixed amount into mutual funds on salary day every month, whether markets are up or down.",
+      analogy: "Watering a money tree with one small mug of water every single day, instead of dumping a water tanker once every 3 years.",
+      example: "A \u20B910,000/month SIP in Nifty 50 at 12% CAGR grows to ~\u20B923.2 Lakhs in 10 years (invested: \u20B912 Lakhs; wealth created: \u20B911.2 Lakhs).",
+      trapWarning: "Pausing your SIP during market crashes destroys wealth. Crashes are when your SIP buys the maximum number of cheap units!",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "cagr",
+      term: "CAGR",
+      expansion: "Compound Annual Growth Rate",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Intermediate",
+      eli5: "The true annualized speed of wealth compounding, smoothing out volatile market rollercoasters into a single steady yearly rate.",
+      analogy: "Your car's average speed on a long highway trip, smoothing out city traffic jams and expressway sprints.",
+      example: "If \u20B91,00,000 grows to \u20B92,00,000 over 6 years, your CAGR is ~12.2% per year.",
+      trapWarning: "Simple average return is deceptive: a 50% gain followed by a 50% loss leaves you with -25% cash, but an average return of 0%!",
+      usedInTool: "purchase",
+      usedInToolLabel: '\u{1F6D2} "Can I Afford This?"'
+    },
+    {
+      id: "nifty50",
+      term: "Nifty 50",
+      expansion: "National Stock Exchange Top 50 Index",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Beginner",
+      eli5: "A basket of India's 50 largest, most profitable publicly traded companies (Reliance, TCS, HDFC Bank, Infosys, Tata Motors, etc.).",
+      analogy: "The Indian cricket squad: only the top 50 star performers play; non-performers are dropped and replaced automatically.",
+      example: "Over rolling 10-to-15 year horizons, the Nifty 50 has historically delivered 12% to 13% annualized returns for Indian investors.",
+      trapWarning: "Equities fluctuate in the short term. Only invest money in Nifty 50 that you don't need for at least 5 to 7 years.",
+      usedInTool: "purchase",
+      usedInToolLabel: "\u{1F6D2} Opportunity Cost"
+    },
+    {
+      id: "index_fund",
+      term: "Index Fund vs. Active Fund",
+      expansion: "Passive Low-Cost Market Replication",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Intermediate",
+      eli5: "Index Fund: mirrors the Nifty 50 at near-zero fees (0.05%\u20130.1%). Active Fund: charges a manager 1%\u20132% to beat the market, which 80%+ fail to do.",
+      analogy: "Riding the bullet train for \u20B910 vs hiring an expensive private chauffeur who gets stuck in the exact same traffic.",
+      example: "Saving 1.5% in expense ratio by choosing an Index Fund can add \u20B925 Lakhs+ to your retirement corpus over 25 years.",
+      trapWarning: "Active fund managers rarely beat the benchmark index consistently after deducting their 2% management fees.",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "expense_ratio",
+      term: "Expense Ratio",
+      expansion: "Annual Fund Management Fee (%)",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Intermediate",
+      eli5: "The annual percentage fee that mutual fund companies silently deduct from your total investment corpus every day to pay for operations and distributor commissions.",
+      analogy: "A silent termite eating 1% to 2% of the wooden furniture every year without you noticing until decades later.",
+      example: 'Always choose "Direct Plans" over "Regular Plans" of mutual funds. Regular plans pay hidden lifetime commissions to bank agents!',
+      trapWarning: "A 1.5% regular plan fee sounds tiny, but over a 25-year compounding period it can eat up to 30% to 40% of your total wealth.",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "xirr",
+      term: "XIRR",
+      expansion: "Extended Internal Rate of Return",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Intermediate",
+      eli5: "The exact annual return on investments where cash moves in or out at irregular dates (like salary SIPs, bonuses, and occasional withdrawals).",
+      analogy: "Calculating your true average running pace when you jog different distances on different days of the month.",
+      example: "If you invest \u20B95,000 every month via SIP, normal return formulas fail; XIRR calculates your exact annualized return across all installments.",
+      trapWarning: "Looking only at absolute return (e.g. +30%) is misleading if that gain took 5 years; XIRR reveals your true annual pace (only ~5.4%).",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "fire",
+      term: "FIRE",
+      expansion: "Financial Independence, Retire Early",
+      category: "investing",
+      categoryLabel: "\u{1F4C8} Investing & Wealth",
+      level: "Intermediate",
+      eli5: "The stage of life where your invested portfolio generates enough passive cash flow that working for a paycheck becomes completely optional.",
+      analogy: "Installing enough solar panels on your roof that you can disconnect from the power grid forever.",
+      example: 'The "Rule of 25": If your annual living expenses are \u20B96 Lakhs, accumulating a \u20B91.5 Crore portfolio (25x) provides lifelong financial freedom.',
+      trapWarning: "Forgetting healthcare and lifestyle inflation will derail early retirement; in India, medical inflation runs at 10%\u201314% annually.",
+      usedInTool: "retirement",
+      usedInToolLabel: "\u{1F3AF} Life Chronology & FIRE"
+    },
+    {
+      id: "inflation_cpi",
+      term: "Inflation (CPI)",
+      expansion: "Consumer Price Index / Silent Rupee Decay",
+      category: "inflation",
+      categoryLabel: "\u23F3 Inflation & Economy",
+      level: "Beginner",
+      eli5: "The silent erosion of what money can buy. A \u20B9100 note doesn't vanish, but the amount of milk, petrol, and groceries it buys shrinks every year.",
+      analogy: "An ice cream cone left in the sun: \u20B91 Lakh cash melts by ~\u20B96,000 of buying power every single year.",
+      example: "At 6% inflation, \u20B950,000 today will cost \u20B989,542 in 2036 for the exact same lifestyle basket.",
+      trapWarning: "Leaving excess cash in a 3% savings bank account guarantees you become poorer in real terms every day.",
+      usedInTool: "inflation",
+      usedInToolLabel: "\u{1F525} Inflation Simulator"
+    },
+    {
+      id: "lifestyle_inflation",
+      term: "Lifestyle Inflation (Creep)",
+      expansion: "Escalation of Discretionary Spends",
+      category: "inflation",
+      categoryLabel: "\u23F3 Inflation & Economy",
+      level: "Beginner",
+      eli5: "The trap where your expenses increase automatically every time your salary increases (dining at pricier cafes, buying costlier gadgets, upgrading cars), leaving your savings rate flat.",
+      analogy: "Buying a larger suitcase every time you travel, and packing it with unnecessary clutter just because the space is there.",
+      example: "Earning \u20B950k and saving \u20B910k, then getting promoted to \u20B91.2L and still saving only \u20B910k because of fancy car EMIs.",
+      trapWarning: "Whenever you get an annual salary hike, immediately increase your SIP by 50% of the raise before your lifestyle upgrades!",
+      usedInTool: "inflation",
+      usedInToolLabel: "\u2694\uFE0F India vs. Me"
+    },
+    {
+      id: "purchasing_power",
+      term: "Purchasing Power",
+      expansion: "Real Value of Money in Goods & Services",
+      category: "inflation",
+      categoryLabel: "\u23F3 Inflation & Economy",
+      level: "Beginner",
+      eli5: "The real value of your money measured by what goods and services you can take home from the market, rather than the nominal number printed on the currency.",
+      analogy: "Your physical strength: holding a 10 kg bag feels twice as heavy as you get exhausted over time.",
+      example: "\u20B91,00,000 kept idle in cash for 15 years will only buy what \u20B945,000 buys today.",
+      trapWarning: "Fixed Deposits (FDs) after paying 30% tax often deliver negative real returns against real inflation.",
+      usedInTool: "inflation",
+      usedInToolLabel: "The Almirah Test"
+    },
+    {
+      id: "repo_rate",
+      term: "Repo Rate",
+      expansion: "RBI Benchmark Lending Rate",
+      category: "banking",
+      categoryLabel: "\u{1F6E1}\uFE0F Banking & Safety",
+      level: "Intermediate",
+      eli5: "The base interest rate at which the Reserve Bank of India (RBI) lends money to commercial banks. When RBI hikes this rate, your home loan EMI automatically shoots up.",
+      analogy: "The wholesale price of milk: when the dairy farmer raises rates, every local tea stall and sweet shop charges more.",
+      example: "If RBI raises Repo Rate by 0.5%, your floating home loan rate jumps from 8.5% to 9.0%, adding ~\u20B93,500/month to your EMI.",
+      trapWarning: "Floating rate home loans transmit RBI rate hikes almost immediately to borrowers, while rate cuts are passed on much more slowly.",
+      usedInTool: "loan-vs-sip",
+      usedInToolLabel: "\u2696\uFE0F Loan Prepay vs. SIP"
+    },
+    {
+      id: "budget_50_30_20",
+      term: "50-30-20 Rule",
+      expansion: "Visual Cashflow Budgeting Standard",
+      category: "banking",
+      categoryLabel: "\u{1F6E1}\uFE0F Banking & Safety",
+      level: "Beginner",
+      eli5: "A clean guideline for your monthly salary: 50% for Needs (rent, groceries, bills), 30% for Wants (dining, trips, gadgets), and 20% for Future Wealth (SIPs & savings).",
+      analogy: "Dividing your daily plate into proteins, carbohydrates, and vitamins to keep your financial body energized.",
+      example: "On a \u20B91,00,000 salary: \u20B950,000 for survival, \u20B930,000 for joy, \u20B920,000 for freedom wealth.",
+      trapWarning: 'Calling dining out, Netflix, and weekend trips "needs" instead of "wants" breaks your budget integrity.',
+      usedInTool: "budget",
+      usedInToolLabel: "\u{1F4CA} 50-30-20 Cashflow"
+    },
+    {
+      id: "life_energy_days",
+      term: "Life-Energy Workdays",
+      expansion: "Time-Cost of Lifestyle Purchases",
+      category: "debt",
+      categoryLabel: "\u{1F4B3} Loans & EMIs",
+      level: "Beginner",
+      eli5: "Measuring a purchase cost not in abstract rupees, but in the exact number of 8-hour working days you must sacrifice at your job to pay for it.",
+      analogy: "Swapping days of your limited mortal life on Earth for a gadget or vacation.",
+      example: "If your daily net earnings are \u20B94,00, an iPhone 16 Pro (\u20B91,34,900) costs 33.7 full working days of your life!",
+      trapWarning: "Marketers want you to think in small monthly EMIs so you forget the weeks of your life surrendered to pay for them.",
+      usedInTool: "purchase",
+      usedInToolLabel: "\u{1F6D2} Life-Energy Calendar"
+    }
+  ];
+
   // js/app.js
   function setRingProgress(elemId, percentage, color) {
     const ring = document.getElementById(elemId);
@@ -978,6 +1354,11 @@
         this.bindRetirementTool();
       } catch (e) {
         console.error("Retirement tool error:", e);
+      }
+      try {
+        this.bindDictionaryTool();
+      } catch (e) {
+        console.error("Dictionary tool error:", e);
       }
       try {
         this.bindExportReport();
@@ -1170,20 +1551,21 @@
     /* -------------------------------------------------------------
        2. NAVIGATION & TABS
        ------------------------------------------------------------- */
+    switchTab(target) {
+      this.currentTab = target;
+      const tabButtons = document.querySelectorAll("[data-tab-target]");
+      tabButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-tab-target") === target));
+      document.querySelectorAll(".tool-pane").forEach((pane) => {
+        pane.classList.toggle("active", pane.id === `pane-${target}`);
+      });
+      this.refreshCurrentTool(profileManager.getVitals());
+    }
     bindTabs() {
       const tabButtons = document.querySelectorAll("[data-tab-target]");
       tabButtons.forEach((btn) => {
         btn.addEventListener("click", (e) => {
           const target = e.currentTarget.getAttribute("data-tab-target");
-          this.currentTab = target;
-          tabButtons.forEach((b) => b.classList.remove("active"));
-          e.currentTarget.classList.add("active");
-          document.querySelectorAll(".tool-pane").forEach((pane) => {
-            pane.classList.remove("active");
-          });
-          const activePane = document.getElementById(`pane-${target}`);
-          if (activePane) activePane.classList.add("active");
-          this.refreshCurrentTool(profileManager.getVitals());
+          this.switchTab(target);
         });
       });
     }
@@ -1206,6 +1588,9 @@
           break;
         case "retirement":
           this.renderRetirementTool(vitals);
+          break;
+        case "dictionary":
+          this.renderDictionaryTool();
           break;
       }
     }
@@ -1841,7 +2226,145 @@
       document.getElementById("retMonthlySipNeeded").textContent = `${formatINR(monthlySIPNeeded)}/month`;
     }
     /* -------------------------------------------------------------
-       10. EXPORT / PRINT REPORT
+       10. TOOL 7: FINANCE ENCYCLOPEDIA & ZERO-KNOWLEDGE DICTIONARY
+       ------------------------------------------------------------- */
+    bindDictionaryTool() {
+      this.dictFilter = "all";
+      this.dictSearchQuery = "";
+      const searchInput = document.getElementById("dictSearchInput");
+      const searchClear = document.getElementById("dictSearchClear");
+      const categoryTrack = document.getElementById("dictCategoryTrack");
+      const resetBtn = document.getElementById("btnResetDictSearch");
+      if (categoryTrack && !categoryTrack.dataset.initialized) {
+        categoryTrack.dataset.initialized = "true";
+        categoryTrack.innerHTML = DICTIONARY_CATEGORIES.map((cat) => `
+        <button type="button" class="dict-cat-btn ${cat.id === "all" ? "active" : ""}" data-dict-cat="${cat.id}">
+          <span>${cat.emoji}</span>
+          <span>${cat.label}</span>
+        </button>
+      `).join("");
+        categoryTrack.querySelectorAll("[data-dict-cat]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const catId = e.currentTarget.getAttribute("data-dict-cat");
+            this.dictFilter = catId;
+            categoryTrack.querySelectorAll("[data-dict-cat]").forEach((b) => b.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            this.renderDictionaryTool();
+          });
+        });
+      }
+      if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+          this.dictSearchQuery = e.target.value.trim().toLowerCase();
+          if (searchClear) {
+            searchClear.style.display = this.dictSearchQuery.length > 0 ? "block" : "none";
+          }
+          this.renderDictionaryTool();
+        });
+      }
+      if (searchClear) {
+        searchClear.addEventListener("click", () => {
+          if (searchInput) searchInput.value = "";
+          this.dictSearchQuery = "";
+          searchClear.style.display = "none";
+          this.renderDictionaryTool();
+        });
+      }
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (searchInput) searchInput.value = "";
+          this.dictSearchQuery = "";
+          if (searchClear) searchClear.style.display = "none";
+          this.dictFilter = "all";
+          if (categoryTrack) {
+            categoryTrack.querySelectorAll("[data-dict-cat]").forEach((b) => {
+              b.classList.toggle("active", b.getAttribute("data-dict-cat") === "all");
+            });
+          }
+          this.renderDictionaryTool();
+        });
+      }
+      this.renderDictionaryTool();
+    }
+    renderDictionaryTool() {
+      const gridEl = document.getElementById("dictCardsGrid");
+      const emptyEl = document.getElementById("dictEmptyState");
+      const countEl = document.getElementById("dictCountLabel");
+      if (!gridEl) return;
+      const filtered = FINANCE_DICTIONARY.filter((item) => {
+        const matchesCat = this.dictFilter === "all" || item.category === this.dictFilter;
+        if (!matchesCat) return false;
+        if (!this.dictSearchQuery) return true;
+        const q = this.dictSearchQuery;
+        return item.term.toLowerCase().includes(q) || item.expansion.toLowerCase().includes(q) || item.eli5.toLowerCase().includes(q) || item.analogy.toLowerCase().includes(q) || item.example && item.example.toLowerCase().includes(q);
+      });
+      if (countEl) {
+        countEl.textContent = `Showing ${filtered.length} of ${FINANCE_DICTIONARY.length} terms`;
+      }
+      if (filtered.length === 0) {
+        gridEl.innerHTML = "";
+        if (emptyEl) emptyEl.style.display = "block";
+        return;
+      }
+      if (emptyEl) emptyEl.style.display = "none";
+      gridEl.innerHTML = filtered.map((item) => `
+      <article class="dict-card" data-dict-id="${item.id}">
+        <div>
+          <div class="dict-card-top">
+            <div class="dict-card-title-group">
+              <h3 class="dict-card-term">${item.term}</h3>
+              <div class="dict-card-expansion">${item.expansion}</div>
+            </div>
+            <div class="dict-card-badges">
+              <span class="dict-badge-cat">${item.categoryLabel}</span>
+              <span class="dict-badge-level">\u{1F7E2} ${item.level}</span>
+            </div>
+          </div>
+
+          <div class="dict-card-eli5" style="margin-top: 0.85rem;">
+            ${item.eli5}
+          </div>
+
+          <div class="dict-box-analogy" style="margin-top: 0.75rem;">
+            <strong>\u{1F355} In Simple Words (Analogy)</strong>
+            ${item.analogy}
+          </div>
+
+          ${item.example ? `
+            <div class="dict-box-example" style="margin-top: 0.5rem;">
+              <strong>\u20B9 Real Indian Example</strong>
+              ${item.example}
+            </div>
+          ` : ""}
+
+          ${item.trapWarning ? `
+            <div class="dict-box-trap" style="margin-top: 0.5rem;">
+              <strong>\u26A0\uFE0F Watch Out (Trap / Catch)</strong>
+              ${item.trapWarning}
+            </div>
+          ` : ""}
+        </div>
+
+        <div class="dict-card-footer">
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Used in Artha:</span>
+          <button type="button" class="dict-tool-link-btn" data-jump-tool="${item.usedInTool}">
+            <span>${item.usedInToolLabel}</span>
+            <span>\u2192</span>
+          </button>
+        </div>
+      </article>
+    `).join("");
+      gridEl.querySelectorAll("[data-jump-tool]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const targetTool = e.currentTarget.getAttribute("data-jump-tool");
+          if (targetTool) {
+            this.switchTab(targetTool);
+          }
+        });
+      });
+    }
+    /* -------------------------------------------------------------
+       11. EXPORT / PRINT REPORT
        ------------------------------------------------------------- */
     bindExportReport() {
       const exportBtn = document.getElementById("btnExportReport");

@@ -22,6 +22,7 @@ import {
 } from './calculations.js';
 import { evaluatePurchase } from './purchase.js';
 import { drawDonutChart, drawComparisonBarChart, drawInflationCurve } from './charts.js';
+import { FINANCE_DICTIONARY, DICTIONARY_CATEGORIES } from './dictionary.js';
 
 function setRingProgress(elemId, percentage, color) {
   const ring = document.getElementById(elemId);
@@ -54,6 +55,7 @@ class ArthaApp {
     try { this.bindTaxTool(); } catch (e) { console.error("Tax tool error:", e); }
     try { this.bindLoanVsSipTool(); } catch (e) { console.error("Loan tool error:", e); }
     try { this.bindRetirementTool(); } catch (e) { console.error("Retirement tool error:", e); }
+    try { this.bindDictionaryTool(); } catch (e) { console.error("Dictionary tool error:", e); }
     try { this.bindExportReport(); } catch (e) { console.error("Export report error:", e); }
 
     // Subscribe to profile updates
@@ -281,23 +283,25 @@ class ArthaApp {
   /* -------------------------------------------------------------
      2. NAVIGATION & TABS
      ------------------------------------------------------------- */
+  switchTab(target) {
+    this.currentTab = target;
+
+    const tabButtons = document.querySelectorAll('[data-tab-target]');
+    tabButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab-target') === target));
+
+    document.querySelectorAll('.tool-pane').forEach(pane => {
+      pane.classList.toggle('active', pane.id === `pane-${target}`);
+    });
+
+    this.refreshCurrentTool(profileManager.getVitals());
+  }
+
   bindTabs() {
     const tabButtons = document.querySelectorAll('[data-tab-target]');
     tabButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget.getAttribute('data-tab-target');
-        this.currentTab = target;
-
-        tabButtons.forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-
-        document.querySelectorAll('.tool-pane').forEach(pane => {
-          pane.classList.remove('active');
-        });
-        const activePane = document.getElementById(`pane-${target}`);
-        if (activePane) activePane.classList.add('active');
-
-        this.refreshCurrentTool(profileManager.getVitals());
+        this.switchTab(target);
       });
     });
   }
@@ -321,6 +325,9 @@ class ArthaApp {
         break;
       case 'retirement':
         this.renderRetirementTool(vitals);
+        break;
+      case 'dictionary':
+        this.renderDictionaryTool();
         break;
     }
   }
@@ -1121,7 +1128,172 @@ class ArthaApp {
   }
 
   /* -------------------------------------------------------------
-     10. EXPORT / PRINT REPORT
+     10. TOOL 7: FINANCE ENCYCLOPEDIA & ZERO-KNOWLEDGE DICTIONARY
+     ------------------------------------------------------------- */
+  bindDictionaryTool() {
+    this.dictFilter = 'all';
+    this.dictSearchQuery = '';
+
+    const searchInput = document.getElementById('dictSearchInput');
+    const searchClear = document.getElementById('dictSearchClear');
+    const categoryTrack = document.getElementById('dictCategoryTrack');
+    const resetBtn = document.getElementById('btnResetDictSearch');
+
+    // Render category buttons
+    if (categoryTrack && !categoryTrack.dataset.initialized) {
+      categoryTrack.dataset.initialized = 'true';
+      categoryTrack.innerHTML = DICTIONARY_CATEGORIES.map(cat => `
+        <button type="button" class="dict-cat-btn ${cat.id === 'all' ? 'active' : ''}" data-dict-cat="${cat.id}">
+          <span>${cat.emoji}</span>
+          <span>${cat.label}</span>
+        </button>
+      `).join('');
+
+      categoryTrack.querySelectorAll('[data-dict-cat]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const catId = e.currentTarget.getAttribute('data-dict-cat');
+          this.dictFilter = catId;
+          categoryTrack.querySelectorAll('[data-dict-cat]').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          this.renderDictionaryTool();
+        });
+      });
+    }
+
+    // Search input
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.dictSearchQuery = e.target.value.trim().toLowerCase();
+        if (searchClear) {
+          searchClear.style.display = this.dictSearchQuery.length > 0 ? 'block' : 'none';
+        }
+        this.renderDictionaryTool();
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        this.dictSearchQuery = '';
+        searchClear.style.display = 'none';
+        this.renderDictionaryTool();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        this.dictSearchQuery = '';
+        if (searchClear) searchClear.style.display = 'none';
+        this.dictFilter = 'all';
+        if (categoryTrack) {
+          categoryTrack.querySelectorAll('[data-dict-cat]').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-dict-cat') === 'all');
+          });
+        }
+        this.renderDictionaryTool();
+      });
+    }
+
+    this.renderDictionaryTool();
+  }
+
+  renderDictionaryTool() {
+    const gridEl = document.getElementById('dictCardsGrid');
+    const emptyEl = document.getElementById('dictEmptyState');
+    const countEl = document.getElementById('dictCountLabel');
+    if (!gridEl) return;
+
+    const filtered = FINANCE_DICTIONARY.filter(item => {
+      // Category check
+      const matchesCat = this.dictFilter === 'all' || item.category === this.dictFilter;
+      if (!matchesCat) return false;
+
+      // Search query check
+      if (!this.dictSearchQuery) return true;
+      const q = this.dictSearchQuery;
+      return (
+        item.term.toLowerCase().includes(q) ||
+        item.expansion.toLowerCase().includes(q) ||
+        item.eli5.toLowerCase().includes(q) ||
+        item.analogy.toLowerCase().includes(q) ||
+        (item.example && item.example.toLowerCase().includes(q))
+      );
+    });
+
+    if (countEl) {
+      countEl.textContent = `Showing ${filtered.length} of ${FINANCE_DICTIONARY.length} terms`;
+    }
+
+    if (filtered.length === 0) {
+      gridEl.innerHTML = '';
+      if (emptyEl) emptyEl.style.display = 'block';
+      return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    gridEl.innerHTML = filtered.map(item => `
+      <article class="dict-card" data-dict-id="${item.id}">
+        <div>
+          <div class="dict-card-top">
+            <div class="dict-card-title-group">
+              <h3 class="dict-card-term">${item.term}</h3>
+              <div class="dict-card-expansion">${item.expansion}</div>
+            </div>
+            <div class="dict-card-badges">
+              <span class="dict-badge-cat">${item.categoryLabel}</span>
+              <span class="dict-badge-level">🟢 ${item.level}</span>
+            </div>
+          </div>
+
+          <div class="dict-card-eli5" style="margin-top: 0.85rem;">
+            ${item.eli5}
+          </div>
+
+          <div class="dict-box-analogy" style="margin-top: 0.75rem;">
+            <strong>🍕 In Simple Words (Analogy)</strong>
+            ${item.analogy}
+          </div>
+
+          ${item.example ? `
+            <div class="dict-box-example" style="margin-top: 0.5rem;">
+              <strong>₹ Real Indian Example</strong>
+              ${item.example}
+            </div>
+          ` : ''}
+
+          ${item.trapWarning ? `
+            <div class="dict-box-trap" style="margin-top: 0.5rem;">
+              <strong>⚠️ Watch Out (Trap / Catch)</strong>
+              ${item.trapWarning}
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="dict-card-footer">
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Used in Artha:</span>
+          <button type="button" class="dict-tool-link-btn" data-jump-tool="${item.usedInTool}">
+            <span>${item.usedInToolLabel}</span>
+            <span>→</span>
+          </button>
+        </div>
+      </article>
+    `).join('');
+
+    // Attach jump-tool click handlers
+    gridEl.querySelectorAll('[data-jump-tool]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetTool = e.currentTarget.getAttribute('data-jump-tool');
+        if (targetTool) {
+          this.switchTab(targetTool);
+        }
+      });
+    });
+  }
+
+  /* -------------------------------------------------------------
+     11. EXPORT / PRINT REPORT
      ------------------------------------------------------------- */
   bindExportReport() {
     const exportBtn = document.getElementById('btnExportReport');

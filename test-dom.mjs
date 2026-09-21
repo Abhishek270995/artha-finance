@@ -32,6 +32,8 @@ window.HTMLCanvasElement.prototype.getContext = function () {
     fillText: () => {},
     strokeText: () => {},
     scale: () => {},
+    arcTo: () => {},
+    roundRect: () => {},
     createLinearGradient: () => ({ addColorStop: () => {} }),
     measureText: () => ({ width: 50 })
   };
@@ -132,6 +134,59 @@ console.log(`✓ Switched to Family Preset: User Rate is now ${document.getEleme
 // Switch back to Urban Pro
 document.querySelector('[data-duel-preset="urban_pro"]').click();
 console.assert(document.getElementById('duelUserRate').textContent === '7.4%', "Should return to 7.4% for Urban Pro");
+
+// 7. Test Finance Dictionary & Encyclopedia Tab
+const dictTab = document.querySelector('[data-tab-target="dictionary"]');
+console.assert(dictTab, "Dictionary tab button must exist");
+dictTab.click();
+
+const dictPane = document.getElementById('pane-dictionary');
+console.assert(dictPane && dictPane.classList.contains('active'), "Dictionary pane should become active on tab click");
+
+const dictGrid = document.getElementById('dictCardsGrid');
+console.assert(dictGrid, "dictCardsGrid container must exist in DOM");
+const initialCards = dictGrid.querySelectorAll('.dict-card');
+console.assert(initialCards.length >= 25, `Expected at least 25 dictionary cards initially, found ${initialCards.length}`);
+console.log(`✓ Dictionary Pane Activated: ${initialCards.length} cards rendered in DOM`);
+
+// Test Category Filtering (Taxes)
+const taxFilterBtn = document.querySelector('.dict-cat-btn[data-dict-cat="tax"]');
+console.assert(taxFilterBtn, "Tax category button must exist");
+taxFilterBtn.click();
+
+const taxCards = dictGrid.querySelectorAll('.dict-card');
+console.assert(taxCards.length >= 6 && taxCards.length < initialCards.length, `Expected 6-8 tax cards, got ${taxCards.length}`);
+console.log(`✓ Category Filter 'Taxes' active: ${taxCards.length} cards displayed`);
+
+// Test Search Bar
+const searchInput = document.getElementById('dictSearchInput');
+console.assert(searchInput, "Dictionary search input must exist");
+searchInput.value = "TDS";
+searchInput.dispatchEvent(new window.Event('input', { bubbles: true }));
+
+const filteredCards = dictGrid.querySelectorAll('.dict-card');
+console.assert(filteredCards.length === 1, `Expected 1 card for 'TDS' search, found ${filteredCards.length}`);
+const cardTitle = filteredCards[0].querySelector('.dict-card-term')?.textContent;
+console.assert(cardTitle && cardTitle.includes("TDS"), `Expected title to contain TDS, got "${cardTitle}"`);
+console.log(`✓ Search Input working: Found "${cardTitle?.trim()}"`);
+
+// Test Reset / Clear Filter
+const allFilterBtn = document.querySelector('.dict-cat-btn[data-dict-cat="all"]');
+allFilterBtn.click();
+searchInput.value = "";
+searchInput.dispatchEvent(new window.Event('input', { bubbles: true }));
+const restoredCards = dictGrid.querySelectorAll('.dict-card');
+console.assert(restoredCards.length === initialCards.length, "Clearing filters should restore all cards");
+console.log(`✓ Filters cleared: ${restoredCards.length} cards restored`);
+
+// Test Deep-Link Tool Navigation Button ("Explore in Artha →")
+const deepLinkBtn = dictGrid.querySelector('.dict-tool-link-btn[data-jump-tool="tax"]');
+console.assert(deepLinkBtn, "Should find at least one card deep-linking to 'tax'");
+deepLinkBtn.click();
+
+const taxPane = document.getElementById('pane-tax');
+console.assert(taxPane && taxPane.classList.contains('active'), "Clicking deep link should switch active pane to Tax Regime Optimizer");
+console.log("✓ Deep-Link Jump working: Navigated from Dictionary card directly into Tax tool!");
 
 console.log("=== DOM INTEGRATION TEST PASSED PERFECTLY ===");
 process.exit(0);

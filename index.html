@@ -282,6 +282,9 @@
           <button class="tab-btn" data-tab-target="retirement">
             🎯 Life Chronology & FIRE
           </button>
+          <button class="tab-btn" data-tab-target="dictionary">
+            📚 Finance Dictionary (ELI5)
+          </button>
         </nav>
       </div>
     </section>
@@ -1150,6 +1153,54 @@
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- TOOL 7: FINANCE ENCYCLOPEDIA & ZERO-KNOWLEDGE DICTIONARY (ELI5) -->
+      <section class="tool-pane" id="pane-dictionary">
+        <div class="tool-card" style="margin-bottom: 1.25rem;">
+          <div class="dict-header-row">
+            <div>
+              <div class="badge-dict-pill">📖 Artha Zero-Knowledge Encyclopedia</div>
+              <h2 class="tool-card-title" style="font-size: 1.5rem; margin-top: 0.25rem;">
+                📚 Finance & Economics Dictionary for Beginners
+              </h2>
+              <p class="tool-card-desc" style="margin-bottom: 0.75rem;">
+                No Wall Street jargon. Every financial term, abbreviation, and tax concept explained so simply that even someone with 0 finance knowledge can understand and connect the dots.
+              </p>
+            </div>
+          </div>
+
+          <!-- Live Search Bar & Category Filter Track -->
+          <div class="dict-controls-row">
+            <div class="dict-search-box">
+              <span class="dict-search-icon">🔍</span>
+              <input type="text" id="dictSearchInput" placeholder="Search 25+ terms (e.g. TDS, SIP, DTI, No-Cost EMI, CAGR, 87A, Repo Rate...)" autocomplete="off">
+              <button type="button" class="dict-search-clear" id="dictSearchClear" style="display: none;" aria-label="Clear search">✕</button>
+            </div>
+            <div class="dict-category-track" id="dictCategoryTrack">
+              <!-- Rendered dynamically from DICTIONARY_CATEGORIES -->
+            </div>
+          </div>
+
+          <!-- Status Bar -->
+          <div class="dict-status-bar">
+            <span id="dictCountLabel">Showing all terms</span>
+            <span class="dict-status-hint">💡 Tap any term's "Explore in Artha" button to jump directly to its live calculation tool</span>
+          </div>
+        </div>
+
+        <!-- Dictionary Cards Grid -->
+        <div class="dict-grid" id="dictCardsGrid">
+          <!-- Cards rendered dynamically -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div class="dict-empty-state" id="dictEmptyState" style="display: none;">
+          <div class="dict-empty-emoji">🤔</div>
+          <div class="dict-empty-title">No matching financial terms found</div>
+          <div class="dict-empty-sub">Try searching for terms like "EMI", "TDS", "SIP", "Tax", or clear your search filter.</div>
+          <button type="button" class="preset-purchase-btn" id="btnResetDictSearch" style="margin-top: 0.75rem;">Reset Search</button>
         </div>
       </section>
 

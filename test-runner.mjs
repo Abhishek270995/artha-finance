@@ -11,6 +11,7 @@ import {
 } from './js/calculations.js';
 import { evaluatePurchase } from './js/purchase.js';
 import { VERIFIED_FACTS } from './js/facts.js';
+import { FINANCE_DICTIONARY, DICTIONARY_CATEGORIES } from './js/dictionary.js';
 
 console.log("=== RUNNING ARTHA TEST SUITE ===");
 
@@ -82,5 +83,24 @@ console.assert(duelTest.userRate === 7.4, `Expected 7.4% for user lifestyle infl
 console.assert(duelTest.diff === 1.3, `Expected +1.3 percentage points difference, got ${duelTest.diff}`);
 console.assert(duelTest.explanation.includes("Your spending pattern is experiencing higher inflation than the headline rate"), "Explanation mismatch");
 console.log(`✓ India vs Me Duel: 🇮🇳 India's Inflation: ${duelTest.nationalCPI}% vs 👤 Your Lifestyle: ${duelTest.userRate}% (Difference: ${duelTest.diffFormatted} percentage points)`);
+
+// Test 9: Zero-Knowledge Finance Dictionary & Encyclopedia
+console.assert(DICTIONARY_CATEGORIES.length >= 6, `Expected at least 6 categories, got ${DICTIONARY_CATEGORIES.length}`);
+console.assert(FINANCE_DICTIONARY.length >= 25, `Expected at least 25 dictionary terms, got ${FINANCE_DICTIONARY.length}`);
+
+const requiredFields = ['id', 'term', 'category', 'eli5', 'analogy', 'example', 'usedInTool', 'trapWarning'];
+FINANCE_DICTIONARY.forEach(item => {
+  requiredFields.forEach(field => {
+    console.assert(item[field] && String(item[field]).trim().length > 0, `Missing or empty field '${field}' in dictionary term '${item.term}'`);
+  });
+});
+
+const tdsEntry = FINANCE_DICTIONARY.find(i => i.term.startsWith('TDS'));
+console.assert(tdsEntry && tdsEntry.usedInTool === 'tax', "TDS entry must link to 'tax' tool");
+
+const noCostEmi = FINANCE_DICTIONARY.find(i => i.term.startsWith('No-Cost EMI'));
+console.assert(noCostEmi && noCostEmi.usedInTool === 'purchase', "No-Cost EMI entry must link to 'purchase' tool");
+
+console.log(`✓ Finance Dictionary: ${FINANCE_DICTIONARY.length} terms across ${DICTIONARY_CATEGORIES.length} categories validated with ELI5, real Indian analogies, and cross-tool deep linking.`);
 
 console.log("=== ALL MATHEMATICAL MODELS & DECISION LOGIC VERIFIED SUCCESSFULLY ===");
