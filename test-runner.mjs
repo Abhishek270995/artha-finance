@@ -6,7 +6,8 @@ import {
   calculateInflationImpact, 
   compareLoanPrepaymentVsSIP, 
   calculateSIP,
-  simulateInflation
+  simulateInflation,
+  calculateIndiaVsMeInflation
 } from './js/calculations.js';
 import { evaluatePurchase } from './js/purchase.js';
 import { VERIFIED_FACTS } from './js/facts.js';
@@ -73,5 +74,13 @@ console.assert(sim50k.milestones.find(m => m.year === 2031)?.price === 66911, `E
 console.assert(sim50k.milestones.find(m => m.year === 2036)?.price === 89542, `Expected ₹89,542 in 2036, got ${sim50k.milestones.find(m => m.year === 2036)?.price}`);
 console.assert(Math.abs((sim50k.milestones.find(m => m.year === 2041)?.price || 0) - 119828) <= 200, `Expected ~₹1,19,828 (or user's ₹119,714) in 2041, got ${sim50k.milestones.find(m => m.year === 2041)?.price}`);
 console.log(`✓ Signature Inflation Simulator: ₹50,000 today -> ${formatINR(sim50k.futureCost)} in 2036 (Today: ₹50,000, 2031: ${formatINR(sim50k.milestones[1].price)}, 2036: ${formatINR(sim50k.milestones[2].price)}, 2041: ${formatINR(sim50k.milestones[3].price)})`);
+
+// Test 8: India vs Me Inflation Duel
+const duelTest = calculateIndiaVsMeInflation();
+console.assert(duelTest.nationalCPI === 6.1, `Expected 6.1% for India CPI, got ${duelTest.nationalCPI}`);
+console.assert(duelTest.userRate === 7.4, `Expected 7.4% for user lifestyle inflation, got ${duelTest.userRate}`);
+console.assert(duelTest.diff === 1.3, `Expected +1.3 percentage points difference, got ${duelTest.diff}`);
+console.assert(duelTest.explanation.includes("Your spending pattern is experiencing higher inflation than the headline rate"), "Explanation mismatch");
+console.log(`✓ India vs Me Duel: 🇮🇳 India's Inflation: ${duelTest.nationalCPI}% vs 👤 Your Lifestyle: ${duelTest.userRate}% (Difference: ${duelTest.diffFormatted} percentage points)`);
 
 console.log("=== ALL MATHEMATICAL MODELS & DECISION LOGIC VERIFIED SUCCESSFULLY ===");

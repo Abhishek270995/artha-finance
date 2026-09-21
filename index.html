@@ -859,6 +859,100 @@
             </div>
           </div>
         </div>
+
+        <!-- SECTION: INDIA VS ME PERSONAL INFLATION DUEL -->
+        <div class="india-vs-me-card" id="indiaVsMeSection">
+          <div class="duel-header-row">
+            <div>
+              <div class="badge-duel-pill">⚔️ Gamified Inflation Duel</div>
+              <h3 class="tool-card-title" style="font-size: 1.35rem; margin-top: 0.25rem;">
+                🇮🇳 India vs. 👤 Me: What is Your Real Inflation?
+              </h3>
+              <p class="tool-card-desc" style="margin-bottom: 0.4rem;">
+                RBI reports headline CPI for the whole nation, but your personal lifestyle inflation depends entirely on what you actually spend on.
+              </p>
+            </div>
+
+            <!-- Quick Lifestyle Presets -->
+            <div class="duel-presets-bar">
+              <span class="duel-presets-label">Persona:</span>
+              <button type="button" class="preset-purchase-btn active" data-duel-preset="urban_pro">💼 Urban Pro</button>
+              <button type="button" class="preset-purchase-btn" data-duel-preset="family_kids">👨‍👩‍👧 Family with Kids</button>
+              <button type="button" class="preset-purchase-btn" data-duel-preset="frugal_minimalist">🧘 Frugal Minimalist</button>
+              <button type="button" class="preset-purchase-btn" data-duel-preset="senior_health">🧓 Senior / Medical</button>
+            </div>
+          </div>
+
+          <!-- Head-to-Head Comparison Scorecard -->
+          <div class="duel-arena-grid">
+            <!-- India's Headline CPI Card -->
+            <div class="duel-card india-card">
+              <div class="duel-card-header">
+                <span class="duel-flag">🇮🇳</span>
+                <div>
+                  <div class="duel-country-title">India's Inflation</div>
+                  <div class="duel-country-sub">Official RBI Headline CPI</div>
+                </div>
+              </div>
+              <div class="duel-hero-rate" id="duelIndiaRate">6.1%</div>
+              <div class="duel-card-footer">
+                <span>Weighted heavily to rural food staples (46%)</span>
+              </div>
+            </div>
+
+            <!-- Center Difference VS Badge -->
+            <div class="duel-diff-card">
+              <div class="duel-vs-circle">VS</div>
+              <div class="duel-diff-badge" id="duelDiffBadge">
+                <span class="diff-label">Difference</span>
+                <span class="diff-val" id="duelDiffVal">+1.3 percentage points</span>
+              </div>
+              <div class="duel-diff-sub" id="duelDiffSub">
+                You pay <strong id="duelDiffRupees">+₹7,800/yr</strong> in stealth inflation
+              </div>
+            </div>
+
+            <!-- Your Lifestyle Inflation Card -->
+            <div class="duel-card me-card">
+              <div class="duel-card-header">
+                <span class="duel-flag">👤</span>
+                <div>
+                  <div class="duel-country-title">Your Lifestyle Inflation</div>
+                  <div class="duel-country-sub">Your Weighted Personal Basket</div>
+                </div>
+              </div>
+              <div class="duel-hero-rate text-rose" id="duelUserRate">7.4%</div>
+              <div class="duel-card-footer">
+                <span>Urban healthcare, metro rent, & school fees</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- The Emotional Explanation Callout -->
+          <div class="notion-callout duel-explanation-box">
+            <div class="notion-callout-icon">💡</div>
+            <div class="notion-callout-content">
+              <div class="notion-callout-title" id="duelExplanationTitle">
+                Your spending pattern is experiencing higher inflation than the headline rate because of the categories you spend more heavily on.
+              </div>
+              <div class="notion-callout-body" id="duelExplanationBody">
+                While India's official CPI basket (6.1%) is heavily weighted toward rural cereals and basic food staples (46% weight), your urban lifestyle spends more heavily on private healthcare (11.0%), education (10.0%), and metro housing (7.5%).
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Category Weight Sliders -->
+          <div class="duel-breakdown-section">
+            <div class="duel-breakdown-header">
+              <span class="shelf-label">Customize Your Monthly Spending Split:</span>
+              <span class="shelf-sub">Adjust the sliders to reflect where your money actually goes</span>
+            </div>
+
+            <div class="duel-weights-grid" id="duelWeightsGrid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 5: LOAN PREPAYMENT VS EQUITY SIP -->

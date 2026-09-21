@@ -15,7 +15,10 @@ import {
   getHealthBadge,
   getInflationHumanMessage,
   simulateInflation,
-  INFLATION_ITEMS
+  INFLATION_ITEMS,
+  calculateIndiaVsMeInflation,
+  INDIA_VS_ME_CATEGORIES,
+  INDIA_VS_ME_PRESETS
 } from './calculations.js';
 import { evaluatePurchase } from './purchase.js';
 import { drawDonutChart, drawComparisonBarChart, drawInflationCurve } from './charts.js';
@@ -47,6 +50,7 @@ class ArthaApp {
     try { this.bindPurchaseTool(); } catch (e) { console.error("Purchase tool error:", e); }
     try { this.bindBudgetTool(); } catch (e) { console.error("Budget tool error:", e); }
     try { this.bindInflationTool(); } catch (e) { console.error("Inflation tool error:", e); }
+    try { this.bindIndiaVsMeTool(); } catch (e) { console.error("India vs Me tool error:", e); }
     try { this.bindTaxTool(); } catch (e) { console.error("Tax tool error:", e); }
     try { this.bindLoanVsSipTool(); } catch (e) { console.error("Loan tool error:", e); }
     try { this.bindRetirementTool(); } catch (e) { console.error("Retirement tool error:", e); }
@@ -788,6 +792,127 @@ class ArthaApp {
     const canvas = document.getElementById('inflationCanvas');
     if (canvas) {
       drawInflationCurve(canvas, sim.milestones, targetYear);
+    }
+
+    // Also update India vs Me Personal Duel
+    this.renderIndiaVsMeTool();
+  }
+
+  /* -------------------------------------------------------------
+     6B. INDIA VS ME: PERSONAL LIFESTYLE INFLATION DUEL
+     ------------------------------------------------------------- */
+  bindIndiaVsMeTool() {
+    this.duelWeights = { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 };
+    this.duelActivePreset = 'urban_pro';
+
+    // Persona preset buttons
+    document.querySelectorAll('[data-duel-preset]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const presetId = e.currentTarget.getAttribute('data-duel-preset');
+        const preset = INDIA_VS_ME_PRESETS.find(p => p.id === presetId);
+        if (!preset) return;
+
+        this.duelActivePreset = presetId;
+        this.duelWeights = { ...preset.weights };
+
+        document.querySelectorAll('[data-duel-preset]').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        this.renderIndiaVsMeTool();
+      });
+    });
+
+    this.renderIndiaVsMeTool();
+  }
+
+  renderIndiaVsMeTool() {
+    const vitals = profileManager.getVitals();
+    const monthlySpend = vitals.expenses || 50000;
+
+    const result = calculateIndiaVsMeInflation({
+      weights: this.duelWeights || { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 },
+      nationalCPI: 6.1,
+      monthlySpend
+    });
+
+    // Update rates
+    const indiaRateEl = document.getElementById('duelIndiaRate');
+    const userRateEl = document.getElementById('duelUserRate');
+    const diffBadgeEl = document.getElementById('duelDiffBadge');
+    const diffValEl = document.getElementById('duelDiffVal');
+    const diffSubEl = document.getElementById('duelDiffSub');
+    const explTitleEl = document.getElementById('duelExplanationTitle');
+    const explBodyEl = document.getElementById('duelExplanationBody');
+
+    if (indiaRateEl) indiaRateEl.textContent = `${result.nationalCPI.toFixed(1)}%`;
+    if (userRateEl) userRateEl.textContent = `${result.userRate.toFixed(1)}%`;
+
+    if (diffValEl) {
+      diffValEl.textContent = `${result.diffFormatted} percentage points`;
+    }
+
+    if (diffBadgeEl) {
+      diffBadgeEl.classList.toggle('frugal', result.isLower);
+    }
+
+    if (diffSubEl) {
+      if (result.annualGapRupees > 0) {
+        diffSubEl.innerHTML = `You pay <strong id="duelDiffRupees">+${formatINR(result.annualGapRupees)}/yr</strong> in stealth inflation`;
+      } else if (result.annualGapRupees < 0) {
+        diffSubEl.innerHTML = `You save <strong id="duelDiffRupees" style="color: var(--emerald-400);">${formatINR(Math.abs(result.annualGapRupees))}/yr</strong> vs national CPI`;
+      } else {
+        diffSubEl.innerHTML = `Your expenses match national headline inflation exactly`;
+      }
+    }
+
+    if (explTitleEl) explTitleEl.textContent = result.explanation;
+    if (explBodyEl) explBodyEl.textContent = result.deepDiveNote;
+
+    // Render category sliders
+    const gridEl = document.getElementById('duelWeightsGrid');
+    if (gridEl && !gridEl.dataset.initialized) {
+      gridEl.dataset.initialized = 'true';
+      gridEl.innerHTML = INDIA_VS_ME_CATEGORIES.map(cat => {
+        const currentWeight = (this.duelWeights && this.duelWeights[cat.id] !== undefined) ? this.duelWeights[cat.id] : cat.defaultWeight;
+        return `
+          <div class="duel-weight-card" data-cat-id="${cat.id}">
+            <div class="duel-weight-meta">
+              <span class="duel-weight-title">${cat.emoji} ${cat.name}</span>
+              <span class="duel-weight-rate-tag">${cat.rate}% p.a.</span>
+            </div>
+            <div class="duel-weight-slider-row">
+              <input type="range" class="custom-slider duel-slider" min="0" max="60" step="5" value="${currentWeight}" data-cat-slider="${cat.id}">
+              <span class="duel-weight-pct" id="duelPct_${cat.id}">${currentWeight}%</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add slider input listeners
+      gridEl.querySelectorAll('[data-cat-slider]').forEach(slider => {
+        slider.addEventListener('input', (e) => {
+          const catId = e.currentTarget.getAttribute('data-cat-slider');
+          const val = parseInt(e.currentTarget.value, 10) || 0;
+          if (!this.duelWeights) this.duelWeights = {};
+          this.duelWeights[catId] = val;
+          const pctLabel = document.getElementById(`duelPct_${catId}`);
+          if (pctLabel) pctLabel.textContent = `${val}%`;
+
+          // Clear active persona preset if manually adjusted
+          document.querySelectorAll('[data-duel-preset]').forEach(b => b.classList.remove('active'));
+
+          this.renderIndiaVsMeTool();
+        });
+      });
+    } else if (gridEl) {
+      // Sync slider positions if preset changed
+      INDIA_VS_ME_CATEGORIES.forEach(cat => {
+        const slider = gridEl.querySelector(`[data-cat-slider="${cat.id}"]`);
+        const pctLabel = document.getElementById(`duelPct_${cat.id}`);
+        const currentWeight = (this.duelWeights && this.duelWeights[cat.id] !== undefined) ? this.duelWeights[cat.id] : cat.defaultWeight;
+        if (slider) slider.value = currentWeight;
+        if (pctLabel) pctLabel.textContent = `${currentWeight}%`;
+      });
     }
   }
 

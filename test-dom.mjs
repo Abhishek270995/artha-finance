@@ -109,9 +109,30 @@ const phoneChip = document.querySelector('[data-item-id="smartphone"]');
 phoneChip.click();
 console.log(`✓ After clicking Smartphone Chip: "${document.getElementById('simHeroResult').textContent.trim()}"`);
 
-// Return to Benchmark
-document.querySelector('[data-item-id="custom50k"]').click();
-console.log(`✓ Returned to ₹50k Benchmark: "${document.getElementById('simHeroResult').textContent.trim()}"`);
+// 6. Test India vs Me Section
+const indiaRateEl = document.getElementById('duelIndiaRate');
+const userRateEl = document.getElementById('duelUserRate');
+const diffValEl = document.getElementById('duelDiffVal');
+const explTitleEl = document.getElementById('duelExplanationTitle');
+
+console.assert(indiaRateEl && indiaRateEl.textContent.trim() === '6.1%', `Expected 6.1% India rate, got ${indiaRateEl?.textContent}`);
+console.assert(userRateEl && userRateEl.textContent.trim() === '7.4%', `Expected 7.4% User rate, got ${userRateEl?.textContent}`);
+console.assert(diffValEl && diffValEl.textContent.trim() === '+1.3 percentage points', `Expected +1.3 pp, got ${diffValEl?.textContent}`);
+console.assert(explTitleEl && explTitleEl.textContent.includes("Your spending pattern is experiencing higher inflation than the headline rate"), "Explanation mismatch in DOM");
+
+console.log(`✓ India vs Me DOM Section Verified: 🇮🇳 ${indiaRateEl.textContent} vs 👤 ${userRateEl.textContent} (Diff: ${diffValEl.textContent})`);
+console.log(`✓ Explanation: "${explTitleEl.textContent.trim()}"`);
+
+// Test Preset Switching to Family with Kids
+const familyPresetBtn = document.querySelector('[data-duel-preset="family_kids"]');
+console.assert(familyPresetBtn, "Family with Kids preset button must exist");
+familyPresetBtn.click();
+console.log(`✓ Switched to Family Preset: User Rate is now ${document.getElementById('duelUserRate').textContent} (Diff: ${document.getElementById('duelDiffVal').textContent})`);
+
+// Switch back to Urban Pro
+document.querySelector('[data-duel-preset="urban_pro"]').click();
+console.assert(document.getElementById('duelUserRate').textContent === '7.4%', "Should return to 7.4% for Urban Pro");
 
 console.log("=== DOM INTEGRATION TEST PASSED PERFECTLY ===");
 process.exit(0);
+

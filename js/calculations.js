@@ -453,4 +453,99 @@ export function simulateInflation({
   };
 }
 
+/**
+ * Categories for "India vs Me" Personal Inflation Duel
+ */
+export const INDIA_VS_ME_CATEGORIES = [
+  { id: 'housing', name: 'Rent & Housing', emoji: '🏠', rate: 7.5, defaultWeight: 30, color: '#38bdf8' },
+  { id: 'food', name: 'Groceries & Dining', emoji: '🍚', rate: 6.0, defaultWeight: 30, color: '#10b981' },
+  { id: 'healthcare', name: 'Healthcare & Insurance', emoji: '🏥', rate: 11.0, defaultWeight: 10, color: '#f43f5e' },
+  { id: 'education', name: 'Education & Fees', emoji: '🎓', rate: 10.0, defaultWeight: 10, color: '#f59e0b' },
+  { id: 'lifestyle', name: 'Travel & Lifestyle', emoji: '✈️', rate: 6.25, defaultWeight: 20, color: '#a855f7' }
+];
+
+export const INDIA_VS_ME_PRESETS = [
+  {
+    id: 'urban_pro',
+    name: 'Urban Professional',
+    emoji: '💼',
+    description: 'Rents metro 1/2 BHK, orders food online, active lifestyle & insurance',
+    weights: { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 }
+  },
+  {
+    id: 'family_kids',
+    name: 'Family with School Kids',
+    emoji: '👨‍👩‍👧',
+    description: 'School fees, coaching, tuition, balanced healthcare & groceries',
+    weights: { housing: 25, food: 25, healthcare: 15, education: 25, lifestyle: 10 }
+  },
+  {
+    id: 'frugal_minimalist',
+    name: 'Frugal Minimalist',
+    emoji: '🧘',
+    description: 'Cooks at home, low rent, minimal discretionary expenses',
+    weights: { housing: 25, food: 45, healthcare: 10, education: 5, lifestyle: 15 }
+  },
+  {
+    id: 'senior_health',
+    name: 'Senior / Medical Focus',
+    emoji: '🧓',
+    description: 'High medical, diagnostic & prescription bills, owned house',
+    weights: { housing: 20, food: 30, healthcare: 35, education: 0, lifestyle: 15 }
+  }
+];
+
+/**
+ * Calculates personal lifestyle inflation vs national headline CPI
+ */
+export function calculateIndiaVsMeInflation({
+  weights = { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 },
+  nationalCPI = 6.1,
+  monthlySpend = 50000
+} = {}) {
+  let totalWeight = 0;
+  let weightedRateSum = 0;
+
+  const categoryBreakdown = INDIA_VS_ME_CATEGORIES.map(cat => {
+    const rawWeight = Math.max(0, Number(weights[cat.id] ?? cat.defaultWeight) || 0);
+    totalWeight += rawWeight;
+    weightedRateSum += rawWeight * cat.rate;
+    return {
+      ...cat,
+      weight: rawWeight,
+      rateContribution: (rawWeight * cat.rate)
+    };
+  });
+
+  const safeTotalWeight = totalWeight > 0 ? totalWeight : 100;
+  const userRate = +(weightedRateSum / safeTotalWeight).toFixed(1);
+  const diff = +(userRate - nationalCPI).toFixed(1);
+  const isHigher = diff > 0;
+  const isLower = diff < 0;
+
+  // Rupee impact comparison
+  const annualSpend = monthlySpend * 12;
+  const nationalAnnualErosion = Math.round(annualSpend * (nationalCPI / 100));
+  const personalAnnualErosion = Math.round(annualSpend * (userRate / 100));
+  const annualGapRupees = personalAnnualErosion - nationalAnnualErosion;
+
+  return {
+    nationalCPI,
+    userRate,
+    diff,
+    diffFormatted: diff >= 0 ? `+${diff}` : `${diff}`,
+    isHigher,
+    isLower,
+    annualGapRupees,
+    categoryBreakdown,
+    // Emotional narrative
+    explanation: isHigher
+      ? `Your spending pattern is experiencing higher inflation than the headline rate because of the categories you spend more heavily on.`
+      : isLower
+      ? `Your spending pattern is experiencing lower inflation than the national average due to your frugal category allocations.`
+      : `Your personal inflation matches the national headline average of ${nationalCPI}%.`,
+    deepDiveNote: `While India's official CPI basket (6.1%) is heavily weighted toward rural cereals and basic food staples (46% weight), your urban lifestyle spends more heavily on private healthcare (11.0%), education (10.0%), and metro housing (7.5%).`
+  };
+}
+
 

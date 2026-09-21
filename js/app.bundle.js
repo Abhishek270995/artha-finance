@@ -299,6 +299,83 @@
       lockerWarning: `If you stash ${formatINR(price)} cash in a locker until ${tYear}, its real buying power melts to just ${formatINR(erodedPurchasingPower)} today. Inflation steals ${formatINR(purchasingPowerLoss)} (${erodedPct}%) silently.`
     };
   }
+  var INDIA_VS_ME_CATEGORIES = [
+    { id: "housing", name: "Rent & Housing", emoji: "\u{1F3E0}", rate: 7.5, defaultWeight: 30, color: "#38bdf8" },
+    { id: "food", name: "Groceries & Dining", emoji: "\u{1F35A}", rate: 6, defaultWeight: 30, color: "#10b981" },
+    { id: "healthcare", name: "Healthcare & Insurance", emoji: "\u{1F3E5}", rate: 11, defaultWeight: 10, color: "#f43f5e" },
+    { id: "education", name: "Education & Fees", emoji: "\u{1F393}", rate: 10, defaultWeight: 10, color: "#f59e0b" },
+    { id: "lifestyle", name: "Travel & Lifestyle", emoji: "\u2708\uFE0F", rate: 6.25, defaultWeight: 20, color: "#a855f7" }
+  ];
+  var INDIA_VS_ME_PRESETS = [
+    {
+      id: "urban_pro",
+      name: "Urban Professional",
+      emoji: "\u{1F4BC}",
+      description: "Rents metro 1/2 BHK, orders food online, active lifestyle & insurance",
+      weights: { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 }
+    },
+    {
+      id: "family_kids",
+      name: "Family with School Kids",
+      emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}",
+      description: "School fees, coaching, tuition, balanced healthcare & groceries",
+      weights: { housing: 25, food: 25, healthcare: 15, education: 25, lifestyle: 10 }
+    },
+    {
+      id: "frugal_minimalist",
+      name: "Frugal Minimalist",
+      emoji: "\u{1F9D8}",
+      description: "Cooks at home, low rent, minimal discretionary expenses",
+      weights: { housing: 25, food: 45, healthcare: 10, education: 5, lifestyle: 15 }
+    },
+    {
+      id: "senior_health",
+      name: "Senior / Medical Focus",
+      emoji: "\u{1F9D3}",
+      description: "High medical, diagnostic & prescription bills, owned house",
+      weights: { housing: 20, food: 30, healthcare: 35, education: 0, lifestyle: 15 }
+    }
+  ];
+  function calculateIndiaVsMeInflation({
+    weights = { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 },
+    nationalCPI = 6.1,
+    monthlySpend = 5e4
+  } = {}) {
+    let totalWeight = 0;
+    let weightedRateSum = 0;
+    const categoryBreakdown = INDIA_VS_ME_CATEGORIES.map((cat) => {
+      const rawWeight = Math.max(0, Number(weights[cat.id] ?? cat.defaultWeight) || 0);
+      totalWeight += rawWeight;
+      weightedRateSum += rawWeight * cat.rate;
+      return {
+        ...cat,
+        weight: rawWeight,
+        rateContribution: rawWeight * cat.rate
+      };
+    });
+    const safeTotalWeight = totalWeight > 0 ? totalWeight : 100;
+    const userRate = +(weightedRateSum / safeTotalWeight).toFixed(1);
+    const diff = +(userRate - nationalCPI).toFixed(1);
+    const isHigher = diff > 0;
+    const isLower = diff < 0;
+    const annualSpend = monthlySpend * 12;
+    const nationalAnnualErosion = Math.round(annualSpend * (nationalCPI / 100));
+    const personalAnnualErosion = Math.round(annualSpend * (userRate / 100));
+    const annualGapRupees = personalAnnualErosion - nationalAnnualErosion;
+    return {
+      nationalCPI,
+      userRate,
+      diff,
+      diffFormatted: diff >= 0 ? `+${diff}` : `${diff}`,
+      isHigher,
+      isLower,
+      annualGapRupees,
+      categoryBreakdown,
+      // Emotional narrative
+      explanation: isHigher ? `Your spending pattern is experiencing higher inflation than the headline rate because of the categories you spend more heavily on.` : isLower ? `Your spending pattern is experiencing lower inflation than the national average due to your frugal category allocations.` : `Your personal inflation matches the national headline average of ${nationalCPI}%.`,
+      deepDiveNote: `While India's official CPI basket (6.1%) is heavily weighted toward rural cereals and basic food staples (46% weight), your urban lifestyle spends more heavily on private healthcare (11.0%), education (10.0%), and metro housing (7.5%).`
+    };
+  }
 
   // js/profile.js
   var STORAGE_KEY = "artha_user_profile_v1";
@@ -881,6 +958,11 @@
         this.bindInflationTool();
       } catch (e) {
         console.error("Inflation tool error:", e);
+      }
+      try {
+        this.bindIndiaVsMeTool();
+      } catch (e) {
+        console.error("India vs Me tool error:", e);
       }
       try {
         this.bindTaxTool();
@@ -1499,6 +1581,101 @@
       const canvas = document.getElementById("inflationCanvas");
       if (canvas) {
         drawInflationCurve(canvas, sim.milestones, targetYear);
+      }
+      this.renderIndiaVsMeTool();
+    }
+    /* -------------------------------------------------------------
+       6B. INDIA VS ME: PERSONAL LIFESTYLE INFLATION DUEL
+       ------------------------------------------------------------- */
+    bindIndiaVsMeTool() {
+      this.duelWeights = { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 };
+      this.duelActivePreset = "urban_pro";
+      document.querySelectorAll("[data-duel-preset]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const presetId = e.currentTarget.getAttribute("data-duel-preset");
+          const preset = INDIA_VS_ME_PRESETS.find((p) => p.id === presetId);
+          if (!preset) return;
+          this.duelActivePreset = presetId;
+          this.duelWeights = { ...preset.weights };
+          document.querySelectorAll("[data-duel-preset]").forEach((b) => b.classList.remove("active"));
+          e.currentTarget.classList.add("active");
+          this.renderIndiaVsMeTool();
+        });
+      });
+      this.renderIndiaVsMeTool();
+    }
+    renderIndiaVsMeTool() {
+      const vitals = profileManager.getVitals();
+      const monthlySpend = vitals.expenses || 5e4;
+      const result = calculateIndiaVsMeInflation({
+        weights: this.duelWeights || { housing: 30, food: 30, healthcare: 10, education: 10, lifestyle: 20 },
+        nationalCPI: 6.1,
+        monthlySpend
+      });
+      const indiaRateEl = document.getElementById("duelIndiaRate");
+      const userRateEl = document.getElementById("duelUserRate");
+      const diffBadgeEl = document.getElementById("duelDiffBadge");
+      const diffValEl = document.getElementById("duelDiffVal");
+      const diffSubEl = document.getElementById("duelDiffSub");
+      const explTitleEl = document.getElementById("duelExplanationTitle");
+      const explBodyEl = document.getElementById("duelExplanationBody");
+      if (indiaRateEl) indiaRateEl.textContent = `${result.nationalCPI.toFixed(1)}%`;
+      if (userRateEl) userRateEl.textContent = `${result.userRate.toFixed(1)}%`;
+      if (diffValEl) {
+        diffValEl.textContent = `${result.diffFormatted} percentage points`;
+      }
+      if (diffBadgeEl) {
+        diffBadgeEl.classList.toggle("frugal", result.isLower);
+      }
+      if (diffSubEl) {
+        if (result.annualGapRupees > 0) {
+          diffSubEl.innerHTML = `You pay <strong id="duelDiffRupees">+${formatINR(result.annualGapRupees)}/yr</strong> in stealth inflation`;
+        } else if (result.annualGapRupees < 0) {
+          diffSubEl.innerHTML = `You save <strong id="duelDiffRupees" style="color: var(--emerald-400);">${formatINR(Math.abs(result.annualGapRupees))}/yr</strong> vs national CPI`;
+        } else {
+          diffSubEl.innerHTML = `Your expenses match national headline inflation exactly`;
+        }
+      }
+      if (explTitleEl) explTitleEl.textContent = result.explanation;
+      if (explBodyEl) explBodyEl.textContent = result.deepDiveNote;
+      const gridEl = document.getElementById("duelWeightsGrid");
+      if (gridEl && !gridEl.dataset.initialized) {
+        gridEl.dataset.initialized = "true";
+        gridEl.innerHTML = INDIA_VS_ME_CATEGORIES.map((cat) => {
+          const currentWeight = this.duelWeights && this.duelWeights[cat.id] !== void 0 ? this.duelWeights[cat.id] : cat.defaultWeight;
+          return `
+          <div class="duel-weight-card" data-cat-id="${cat.id}">
+            <div class="duel-weight-meta">
+              <span class="duel-weight-title">${cat.emoji} ${cat.name}</span>
+              <span class="duel-weight-rate-tag">${cat.rate}% p.a.</span>
+            </div>
+            <div class="duel-weight-slider-row">
+              <input type="range" class="custom-slider duel-slider" min="0" max="60" step="5" value="${currentWeight}" data-cat-slider="${cat.id}">
+              <span class="duel-weight-pct" id="duelPct_${cat.id}">${currentWeight}%</span>
+            </div>
+          </div>
+        `;
+        }).join("");
+        gridEl.querySelectorAll("[data-cat-slider]").forEach((slider) => {
+          slider.addEventListener("input", (e) => {
+            const catId = e.currentTarget.getAttribute("data-cat-slider");
+            const val = parseInt(e.currentTarget.value, 10) || 0;
+            if (!this.duelWeights) this.duelWeights = {};
+            this.duelWeights[catId] = val;
+            const pctLabel = document.getElementById(`duelPct_${catId}`);
+            if (pctLabel) pctLabel.textContent = `${val}%`;
+            document.querySelectorAll("[data-duel-preset]").forEach((b) => b.classList.remove("active"));
+            this.renderIndiaVsMeTool();
+          });
+        });
+      } else if (gridEl) {
+        INDIA_VS_ME_CATEGORIES.forEach((cat) => {
+          const slider = gridEl.querySelector(`[data-cat-slider="${cat.id}"]`);
+          const pctLabel = document.getElementById(`duelPct_${cat.id}`);
+          const currentWeight = this.duelWeights && this.duelWeights[cat.id] !== void 0 ? this.duelWeights[cat.id] : cat.defaultWeight;
+          if (slider) slider.value = currentWeight;
+          if (pctLabel) pctLabel.textContent = `${currentWeight}%`;
+        });
       }
     }
     /* -------------------------------------------------------------
