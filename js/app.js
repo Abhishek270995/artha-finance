@@ -1,6 +1,6 @@
 /**
  * Artha - The Indian Personal Finance Copilot
- * Main Application Orchestrator
+ * Main Application Orchestrator (Notion + Zerodha + Duolingo Visual Overhaul)
  */
 
 import { profileManager, PRESETS } from './profile.js';
@@ -11,10 +11,22 @@ import {
   calculateIndianTax, 
   calculateInflationImpact, 
   compareLoanPrepaymentVsSIP, 
-  calculateSIP 
+  calculateSIP,
+  getHealthBadge,
+  getInflationHumanMessage
 } from './calculations.js';
 import { evaluatePurchase } from './purchase.js';
 import { drawDonutChart, drawComparisonBarChart, drawInflationCurve } from './charts.js';
+
+function setRingProgress(elemId, percentage, color) {
+  const ring = document.getElementById(elemId);
+  if (!ring) return;
+  const circumference = 283; // 2 * PI * 45
+  const clamped = Math.min(100, Math.max(0, percentage));
+  const offset = circumference * (1 - clamped / 100);
+  ring.style.strokeDashoffset = offset;
+  if (color) ring.style.stroke = color;
+}
 
 class ArthaApp {
   constructor() {
@@ -26,6 +38,7 @@ class ArthaApp {
 
   init() {
     this.bindThemeToggle();
+    this.bindSteppers();
     this.bindProfileControls();
     this.bindTabs();
     this.bindTickerAndHoverFacts();
@@ -92,6 +105,24 @@ class ArthaApp {
   }
 
   /* -------------------------------------------------------------
+     0.1 QUICK STEPPER BUTTONS (+/-)
+     ------------------------------------------------------------- */
+  bindSteppers() {
+    document.querySelectorAll('.step-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetId = e.currentTarget.getAttribute('data-step-target');
+        const delta = parseInt(e.currentTarget.getAttribute('data-step-val'), 10);
+        const input = document.getElementById(targetId);
+        if (input) {
+          const currentVal = parseInt(input.value, 10) || 0;
+          input.value = Math.max(0, currentVal + delta);
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    });
+  }
+
+  /* -------------------------------------------------------------
      1. PROFILE CONTROLS & HUD
      ------------------------------------------------------------- */
   bindProfileControls() {
@@ -154,36 +185,65 @@ class ArthaApp {
     const hudDTI = document.getElementById('hudDTI');
     const hudDTIBadge = document.getElementById('hudDTIBadge');
     const hudHealthScore = document.getElementById('hudHealthScore');
-    const hudHealthLabel = document.getElementById('hudHealthLabel');
+    const hudHealthBadge = document.getElementById('hudHealthBadge');
     const hudEmergencyRunway = document.getElementById('hudEmergencyRunway');
+    const hudRunwayBadge = document.getElementById('hudRunwayBadge');
+
+    // Notion-style Human Callout Message
+    const storyTitle = document.getElementById('storyGreetingTitle');
+    const storyBody = document.getElementById('storyGreetingBody');
+    if (storyTitle) {
+      storyTitle.textContent = `You have ${formatINR(vitals.surplus)} of pure freedom cash every month.`;
+    }
+    if (storyBody) {
+      storyBody.innerHTML = `From your <strong>${formatINR(vitals.salary)}</strong> take-home salary, <strong>${formatINR(vitals.emi)}</strong> pays past EMIs and <strong>${formatINR(vitals.expenses)}</strong> covers survival needs.`;
+    }
 
     if (hudSalary) hudSalary.textContent = formatINR(vitals.salary);
     if (hudSurplus) hudSurplus.textContent = formatINR(vitals.surplus);
     
+    // DTI Display & Ring
     if (hudDTI) hudDTI.textContent = `${vitals.dti}%`;
+    const dtiColor = vitals.dti <= 35 ? '#10b981' : vitals.dti <= 45 ? '#f59e0b' : '#ef4444';
+    setRingProgress('ringDtiProgress', Math.min(100, vitals.dti * 1.5), dtiColor);
+
     if (hudDTIBadge) {
       if (vitals.dti <= 35) {
-        hudDTIBadge.className = 'status-pill safe';
-        hudDTIBadge.textContent = 'Safe (<35%)';
+        hudDTIBadge.className = 'ring-badge-pill fortified';
+        hudDTIBadge.textContent = '🛡️ Safe (<35%)';
       } else if (vitals.dti <= 45) {
-        hudDTIBadge.className = 'status-pill warning';
-        hudDTIBadge.textContent = 'Caution (35-45%)';
+        hudDTIBadge.className = 'ring-badge-pill warning';
+        hudDTIBadge.textContent = '⚠️ Caution (35-45%)';
       } else {
-        hudDTIBadge.className = 'status-pill danger';
-        hudDTIBadge.textContent = 'Critical (>45%)';
+        hudDTIBadge.className = 'ring-badge-pill danger';
+        hudDTIBadge.textContent = '🚨 Critical (>45%)';
       }
     }
 
+    // Health Score Display & Ring (Duolingo Style)
     if (hudHealthScore) {
       hudHealthScore.textContent = vitals.health.score;
       hudHealthScore.style.color = vitals.health.color;
     }
-    if (hudHealthLabel) {
-      hudHealthLabel.textContent = vitals.health.status;
+    setRingProgress('ringHealthProgress', vitals.health.score, vitals.health.color);
+
+    const levelBadge = getHealthBadge(vitals.health.score);
+    if (hudHealthBadge) {
+      hudHealthBadge.textContent = `${levelBadge.emoji} ${levelBadge.title.split(': ')[1] || levelBadge.title}`;
+      hudHealthBadge.className = `ring-badge-pill ${levelBadge.tag.toLowerCase()}`;
     }
 
+    // Emergency Buffer Display & Ring
     if (hudEmergencyRunway) {
-      hudEmergencyRunway.textContent = `${vitals.emergencyMonthsCovered} Months`;
+      hudEmergencyRunway.textContent = vitals.emergencyMonthsCovered;
+    }
+    const runwayPct = Math.min(100, Math.round((vitals.emergencyMonthsCovered / 6) * 100));
+    const runwayColor = runwayPct >= 80 ? '#10b981' : runwayPct >= 40 ? '#f59e0b' : '#ef4444';
+    setRingProgress('ringRunwayProgress', runwayPct, runwayColor);
+
+    if (hudRunwayBadge) {
+      hudRunwayBadge.textContent = `🔋 ${vitals.emergencyMonthsCovered} / 6.0 Months`;
+      hudRunwayBadge.className = `ring-badge-pill ${runwayPct >= 80 ? 'fortified' : runwayPct >= 40 ? 'warning' : 'danger'}`;
     }
   }
 
@@ -393,7 +453,7 @@ class ArthaApp {
       userProfile: vitals.profile
     });
 
-    // Update Verdict Card
+    // Update Duolingo-style Verdict Card
     const verdictBanner = document.getElementById('verdictBanner');
     const verdictTitle = document.getElementById('verdictTitle');
     const verdictSubtitle = document.getElementById('verdictSubtitle');
@@ -414,31 +474,65 @@ class ArthaApp {
       verdictReasons.innerHTML = evaluation.verdict.reasons.map(r => `<li>${r}</li>`).join('');
     }
     if (verdictTip && evaluation.verdict.coolingDays > 0) {
-      verdictTip.innerHTML = `<strong>Dopamine Check:</strong> We recommend a <strong>${evaluation.verdict.coolingDays}-day cooling-off rule</strong> for purchases over ${formatINR(cost >= 100000 ? 100000 : 25000)}.`;
+      verdictTip.innerHTML = `<strong>Dopamine Check:</strong> We recommend a <strong>${evaluation.verdict.coolingDays}-day cooling-off rule</strong> before pulling the trigger.`;
       verdictTip.style.display = 'block';
     } else if (verdictTip) {
       verdictTip.style.display = 'none';
     }
 
-    // Update Metrics
+    // Update Before vs After Visual Duel
+    const { before, after } = evaluation.beforeAfter;
+    const beforeSurplusEl = document.getElementById('duelBeforeSurplus');
+    const beforeEmiEl = document.getElementById('duelBeforeEmi');
+    const beforeDtiEl = document.getElementById('duelBeforeDti');
+    const afterSurplusEl = document.getElementById('duelAfterSurplus');
+    const surplusDiffEl = document.getElementById('duelSurplusDiffText');
+    const afterEmiEl = document.getElementById('duelAfterEmi');
+    const afterDtiEl = document.getElementById('duelAfterDti');
+
+    if (beforeSurplusEl) beforeSurplusEl.textContent = formatINR(before.surplus);
+    if (beforeEmiEl) beforeEmiEl.textContent = formatINR(before.emi);
+    if (beforeDtiEl) beforeDtiEl.textContent = `${before.dti}% (${before.dti <= 35 ? 'Safe' : 'Caution'})`;
+
+    if (afterSurplusEl) afterSurplusEl.textContent = formatINR(after.surplus);
+    if (surplusDiffEl) surplusDiffEl.textContent = `-${formatINR(after.surplusDiff)}/month impact`;
+    if (afterEmiEl) afterEmiEl.textContent = formatINR(after.emi);
+    if (afterDtiEl) afterDtiEl.textContent = `${after.dti}% (${after.dti <= 35 ? 'Safe' : after.dti <= 45 ? 'Caution' : 'Critical'})`;
+
+    // Life-Energy Calendar Workdays Grid
     const lifeDaysElem = document.getElementById('metricLifeDays');
-    const lifeHoursElem = document.getElementById('metricLifeHours');
-    const postDtiElem = document.getElementById('metricPostDti');
-    const postSurplusElem = document.getElementById('metricPostSurplus');
+    const lifeStoryElem = document.getElementById('lifeEnergyStory');
+    const pipsGrid = document.getElementById('workdaysPipsGrid');
 
     if (lifeDaysElem) lifeDaysElem.textContent = `${evaluation.daysOfLife} Working Days`;
-    if (lifeHoursElem) lifeHoursElem.textContent = `(${evaluation.hoursOfLife} working hours of your life)`;
-    if (postDtiElem) postDtiElem.textContent = `${evaluation.newDTI}% (was ${evaluation.currentDTI}%)`;
-    if (postSurplusElem) postSurplusElem.textContent = formatINR(evaluation.newMonthlySurplus);
+    if (lifeStoryElem) lifeStoryElem.textContent = evaluation.lifeEnergyStory;
 
-    // Opportunity Cost Metrics
-    const opp5yr = document.getElementById('oppCost5yr');
-    const opp10yr = document.getElementById('oppCost10yr');
-    const opp20yr = document.getElementById('oppCost20yr');
+    if (pipsGrid) {
+      const committedDays = Math.min(60, Math.round(parseFloat(evaluation.daysOfLife) || 0));
+      let pipsHtml = '';
+      const totalDisplayPips = Math.max(22, committedDays);
+      for (let i = 0; i < totalDisplayPips; i++) {
+        const isCommitted = i < committedDays;
+        pipsHtml += `<div class="workday-pip ${isCommitted ? 'committed' : ''}" title="${isCommitted ? 'Committed Workday ' + (i+1) : 'Free Workday'}"></div>`;
+      }
+      pipsGrid.innerHTML = pipsHtml;
+    }
 
-    if (opp5yr) opp5yr.textContent = formatINR(evaluation.opportunityCost.in5Years);
-    if (opp10yr) opp10yr.textContent = formatINR(evaluation.opportunityCost.in10Years);
-    if (opp20yr) opp20yr.textContent = formatINR(evaluation.opportunityCost.in20Years);
+    // Interactive Opportunity Cost Scrubber
+    const scrubber = document.getElementById('oppCostScrubber');
+    const scrubberVal = document.getElementById('oppScrubberVal');
+    const scrubberExplanation = document.getElementById('oppScrubberExplanation');
+
+    if (scrubber && scrubberVal && scrubberExplanation) {
+      const updateScrubber = () => {
+        const yrs = parseInt(scrubber.value, 10) || 10;
+        const fv = Math.round(cost * Math.pow(1.12, yrs));
+        scrubberVal.textContent = formatINR(fv, true);
+        scrubberExplanation.innerHTML = `In <strong>${yrs} years</strong> at historical 12% Nifty 50 CAGR, this <strong>${formatINR(cost)}</strong> purchase amount compounds into <strong>${formatINR(fv)}</strong>.`;
+      };
+      scrubber.oninput = updateScrubber;
+      updateScrubber();
+    }
   }
 
   /* -------------------------------------------------------------
@@ -464,18 +558,34 @@ class ArthaApp {
     const wantsPct = salary > 0 ? Math.round((wants / salary) * 100) : 0;
     const investPct = salary > 0 ? Math.round((investments / salary) * 100) : 0;
 
-    // Update labels
-    document.getElementById('budgetNeedsVal').textContent = `${formatINR(needs)} (${needsPct}%)`;
-    document.getElementById('budgetDebtVal').textContent = `${formatINR(debtServicing)} (${debtPct}%)`;
-    document.getElementById('budgetWantsVal').textContent = `${formatINR(wants)} (${wantsPct}%)`;
-    document.getElementById('budgetInvestVal').textContent = `${formatINR(investments)} (${investPct}%)`;
+    // Update Story Buckets
+    const bNeedsVal = document.getElementById('bucketNeedsVal');
+    const bNeedsBar = document.getElementById('bucketNeedsBar');
+    const bDebtVal = document.getElementById('bucketDebtVal');
+    const bDebtBar = document.getElementById('bucketDebtBar');
+    const bWantsVal = document.getElementById('bucketWantsVal');
+    const bWantsBar = document.getElementById('bucketWantsBar');
+    const bInvestVal = document.getElementById('bucketInvestVal');
+    const bInvestBar = document.getElementById('bucketInvestBar');
+
+    if (bNeedsVal) bNeedsVal.textContent = `${formatINR(needs)} (${needsPct}%)`;
+    if (bNeedsBar) bNeedsBar.style.width = `${Math.min(100, needsPct)}%`;
+
+    if (bDebtVal) bDebtVal.textContent = `${formatINR(debtServicing)} (${debtPct}%)`;
+    if (bDebtBar) bDebtBar.style.width = `${Math.min(100, debtPct)}%`;
+
+    if (bWantsVal) bWantsVal.textContent = `${formatINR(wants)} (${wantsPct}%)`;
+    if (bWantsBar) bWantsBar.style.width = `${Math.min(100, wantsPct)}%`;
+
+    if (bInvestVal) bInvestVal.textContent = `${formatINR(investments)} (${investPct}%)`;
+    if (bInvestBar) bInvestBar.style.width = `${Math.min(100, investPct)}%`;
 
     // Draw Donut
     const segments = [
-      { label: 'Essential Needs', value: needs, color: '#38bdf8' },
+      { label: 'Survival Needs', value: needs, color: '#38bdf8' },
       { label: 'Debt / EMIs', value: debtServicing, color: '#ef4444' },
-      { label: 'Discretionary Wants', value: wants, color: '#f59e0b' },
-      { label: 'Investments & Savings', value: investments, color: '#10b981' }
+      { label: 'Joy & Lifestyle', value: wants, color: '#f59e0b' },
+      { label: 'Future Freedom', value: investments, color: '#10b981' }
     ];
 
     drawDonutChart(canvas, segments, {
@@ -483,15 +593,15 @@ class ArthaApp {
       subtitle: 'Monthly In-Hand'
     });
 
-    // Budget Diagnosis
+    // Budget Diagnosis Callout
     const diagnosis = document.getElementById('budgetDiagnosisText');
     if (diagnosis) {
       if (debtPct > 40) {
-        diagnosis.innerHTML = `⚠️ <strong>High Debt Servicing (${debtPct}%):</strong> RBI prudential norms advise keeping EMIs below 35-40%. You should aggressively prepay high-cost debt before increasing lifestyle expenses.`;
+        diagnosis.innerHTML = `<div class="notion-callout-icon">⚠️</div><div class="notion-callout-content"><div class="notion-callout-title">Heavy Debt Load (${debtPct}% of income)</div><div class="notion-callout-body">RBI alerts indicate that when EMIs exceed 35-40%, families face severe stress during emergencies. Prepay high-cost personal loans before expanding lifestyle spending.</div></div>`;
       } else if (investPct < 20) {
-        diagnosis.innerHTML = `⚡ <strong>Low Savings Rate (${investPct}%):</strong> Financial independence in India requires saving at least 25-30% of income to beat 5.5% CPI inflation and 12% healthcare inflation.`;
+        diagnosis.innerHTML = `<div class="notion-callout-icon">⚡</div><div class="notion-callout-content"><div class="notion-callout-title">Low Savings Velocity (${investPct}% to freedom)</div><div class="notion-callout-body">In India, healthcare inflates at 12% and education at 10%. Boosting your equity SIP to at least 25% creates a durable shield for your future.</div></div>`;
       } else {
-        diagnosis.innerHTML = `✨ <strong>Excellent Cashflow Discipline:</strong> Your budget allocates ${investPct}% to future wealth creation while maintaining debt at a safe ${debtPct}%. Keep compounding!`;
+        diagnosis.innerHTML = `<div class="notion-callout-icon">✨</div><div class="notion-callout-content"><div class="notion-callout-title">Exceptional Financial Fitness!</div><div class="notion-callout-body">You dedicate <strong>${investPct}%</strong> directly to future freedom while containing debt at a safe <strong>${debtPct}%</strong>. Your wealth engine is humming smoothly.</div></div>`;
       }
     }
   }
@@ -522,7 +632,7 @@ class ArthaApp {
 
   renderInflationTool(vitals) {
     const currentMonthlyExpense = parseINR(document.getElementById('inflationExpense')?.value) || vitals.expenses || 40000;
-    const inflationRate = parseFloat(document.getElementById('inflationRate')?.value) || 5.5;
+    const inflationRate = parseFloat(document.getElementById('inflationRate')?.value) || 6.2;
     const years = parseInt(document.getElementById('inflationYears')?.value, 10) || 15;
 
     document.getElementById('lblInflationExpense').textContent = formatINR(currentMonthlyExpense);
@@ -534,6 +644,21 @@ class ArthaApp {
       inflationRate,
       years
     });
+
+    // Conversational Storytelling Headline & Subline
+    const humanInf = getInflationHumanMessage(inflationRate, currentMonthlyExpense, years);
+    const humanHeadlineEl = document.getElementById('infHumanHeadline');
+    const humanSublineEl = document.getElementById('infHumanSubline');
+    if (humanHeadlineEl) humanHeadlineEl.textContent = humanInf.headline;
+    if (humanSublineEl) humanSublineEl.textContent = humanInf.basketComparison;
+
+    // Grocery Basket Cards
+    const basketFutureEl = document.getElementById('infBasketFuture');
+    const basketYearsEl = document.getElementById('infBasketYears');
+    if (basketFutureEl) {
+      basketFutureEl.textContent = formatINR(Math.round(100 * Math.pow(1 + inflationRate / 100, years)));
+    }
+    if (basketYearsEl) basketYearsEl.textContent = years;
 
     document.getElementById('infFutureExpense').textContent = formatINR(impact.futureMonthlyExpense);
     document.getElementById('infMultiplier').textContent = `${impact.multiplier}x`;
@@ -565,7 +690,6 @@ class ArthaApp {
     if (syncBtn) {
       syncBtn.addEventListener('click', () => {
         const v = profileManager.getVitals();
-        // Annual estimate from in-hand (add roughly 15-20% for gross estimate)
         const grossEst = Math.round(v.salary * 12 * 1.15);
         if (grossInput) grossInput.value = grossEst;
         trigger();
@@ -610,10 +734,10 @@ class ArthaApp {
     if (recBanner) {
       if (result.recommendedRegime === 'NEW') {
         recBanner.className = 'tax-rec-banner new-wins';
-        recBanner.innerHTML = `🏆 <strong>New Tax Regime is Cheaper!</strong> You save <strong>${formatINR(result.taxSavings)}</strong> in tax per year with zero hassle of saving tax investment receipts.`;
+        recBanner.innerHTML = `🏆 <strong>New Tax Regime Wins!</strong> You save <strong>${formatINR(result.taxSavings)}</strong> in tax per year with zero hassle of collecting investment bills.`;
       } else {
         recBanner.className = 'tax-rec-banner old-wins';
-        recBanner.innerHTML = `🏆 <strong>Old Tax Regime is Cheaper!</strong> Your deductions (80C, HRA, Home Loan) save you <strong>${formatINR(result.taxSavings)}</strong> more than the New Regime.`;
+        recBanner.innerHTML = `🏆 <strong>Old Tax Regime Wins!</strong> Your deductions (80C, HRA, Home Loan) save you <strong>${formatINR(result.taxSavings)}</strong> more than the New Regime.`;
       }
     }
 
@@ -657,24 +781,24 @@ class ArthaApp {
       expectedSIPReturn
     });
 
-    document.getElementById('loanSavedInterest').textContent = formatINR(result.interestSaved);
+    document.getElementById('loanSavedInterest').textContent = formatINR(result.interestSaved, true);
     document.getElementById('loanYearsSaved').textContent = `${result.yearsSaved} Years sooner`;
-    document.getElementById('sipWealthAccumulated').textContent = formatINR(result.sipFutureValue);
-    document.getElementById('sipNetProfit').textContent = `+${formatINR(result.sipGains)} in pure wealth`;
+    document.getElementById('sipWealthAccumulated').textContent = formatINR(result.sipFutureValue, true);
+    document.getElementById('sipNetProfit').textContent = `+${formatINR(result.sipGains, true)} in pure wealth`;
 
     const verdict = document.getElementById('loanVsSipVerdict');
     if (verdict) {
       if (result.netAdvantage > 0) {
-        verdict.innerHTML = `💡 <strong>Wealth Creator Choice:</strong> Investing the extra ${formatINR(extraMonthlyCash)}/mo in a diversified Equity Index SIP beats prepaying your ${interestRate}% loan by <strong>${formatINR(result.netAdvantage)}</strong> over ${remainingTenureYears} years.<br><span class="text-subtle">Tip: If emotional peace of mind without debt is your #1 priority, prepaying guarantees a risk-free ${interestRate}% return.</span>`;
+        verdict.innerHTML = `<div class="notion-callout-icon">🚀</div><div class="notion-callout-content"><div class="notion-callout-title">The Wealth-Creator Path Wins</div><div class="notion-callout-body">Investing the extra <strong>${formatINR(extraMonthlyCash)}/mo</strong> in a Nifty 50 Index SIP beats prepaying your ${interestRate}% loan by <strong>${formatINR(result.netAdvantage)}</strong> over ${remainingTenureYears} years.<br><span class="text-subtle">Tip: If emotional peace of mind without debt is your #1 priority, prepaying guarantees a risk-free ${interestRate}% return.</span></div></div>`;
       } else {
-        verdict.innerHTML = `💡 <strong>Debt Prepayment Choice:</strong> Prepaying your loan saves <strong>${formatINR(result.interestSaved)}</strong> in guaranteed interest and clears your liability ${result.yearsSaved} years earlier!`;
+        verdict.innerHTML = `<div class="notion-callout-icon">🛡️</div><div class="notion-callout-content"><div class="notion-callout-title">The Debt Prepayment Path Wins</div><div class="notion-callout-body">Prepaying your loan saves <strong>${formatINR(result.interestSaved)}</strong> in guaranteed interest and clears your liability ${result.yearsSaved} years earlier!</div></div>`;
       }
     }
 
     const canvas = document.getElementById('loanVsSipCanvas');
     drawComparisonBarChart(canvas, [
-      { label: 'Interest Saved (Prepay)', value: result.interestSaved, formattedValue: formatINR(result.interestSaved), color: '#38bdf8' },
-      { label: 'SIP Corpus Created', value: result.sipFutureValue, formattedValue: formatINR(result.sipFutureValue), color: '#10b981' }
+      { label: 'Interest Saved', value: result.interestSaved, formattedValue: formatINR(result.interestSaved), color: '#38bdf8' },
+      { label: 'SIP Corpus', value: result.sipFutureValue, formattedValue: formatINR(result.sipFutureValue), color: '#10b981' }
     ]);
   }
 
@@ -698,12 +822,36 @@ class ArthaApp {
     const yearsToRetire = Math.max(1, targetRetirementAge - age);
     document.getElementById('retYearsLeft').textContent = `${yearsToRetire} Years`;
 
+    // Chronological Life Bar
+    const spentPct = Math.min(100, Math.round((age / 85) * 100));
+    const retirePct = Math.min(100, Math.round((targetRetirementAge / 85) * 100));
+    const earningWidth = Math.max(0, retirePct - spentPct);
+
+    const lifeSpentEl = document.getElementById('lifeBarSpent');
+    const lifeEarningEl = document.getElementById('lifeBarEarning');
+    const lifeCurrentEl = document.getElementById('lifeChronCurrent');
+    const lifeRetireEl = document.getElementById('lifeChronRetire');
+    const lifeStoryEl = document.getElementById('lifeTimelineStory');
+
+    if (lifeSpentEl) lifeSpentEl.style.width = `${spentPct}%`;
+    if (lifeEarningEl) {
+      lifeEarningEl.style.left = `${spentPct}%`;
+      lifeEarningEl.style.width = `${earningWidth}%`;
+    }
+    if (lifeCurrentEl) lifeCurrentEl.textContent = `Current: Age ${age}`;
+    if (lifeRetireEl) lifeRetireEl.textContent = `Freedom: Age ${targetRetirementAge}`;
+    if (lifeStoryEl) {
+      lifeStoryEl.innerHTML = `You have <strong>${yearsToRetire} earning years</strong> remaining to build your independence corpus before stepping away from active work.`;
+    }
+
     // Rule of (100 - Age) for Asset Allocation
     const equityAllocation = Math.max(20, Math.min(80, 100 - age));
     const debtAllocation = 100 - equityAllocation;
 
     document.getElementById('retEquityPct').textContent = `${equityAllocation}%`;
     document.getElementById('retDebtPct').textContent = `${debtAllocation}%`;
+    document.getElementById('retEquityBar').style.width = `${equityAllocation}%`;
+    document.getElementById('retDebtBar').style.width = `${debtAllocation}%`;
 
     // Recommended Insurance Covers
     const recommendedTermCover = vitals.salary * 12 * 20; // 20x annual income
@@ -713,9 +861,7 @@ class ArthaApp {
     document.getElementById('recHealthCover').textContent = recommendedHealthCover;
 
     // Target Retirement Corpus at 5.5% inflation
-    // Monthly expense inflated to retirement age:
     const inflatedMonthly = desiredMonthlyInRetirement * Math.pow(1.055, yearsToRetire);
-    // 25x rule for 25-30 years post retirement (4% safe withdrawal rate)
     const requiredCorpus = Math.round(inflatedMonthly * 12 * 25);
     document.getElementById('retTargetCorpus').textContent = formatINR(requiredCorpus, true);
 

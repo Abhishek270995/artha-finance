@@ -326,3 +326,39 @@ export function compareLoanPrepaymentVsSIP({
     netAdvantage: sipOutcome.totalGains - interestSaved
   };
 }
+
+/**
+ * Duolingo-style Financial Level Badges
+ */
+export function getHealthBadge(score) {
+  if (score >= 85) {
+    return { title: "Level 5: Master Wealth Builder", emoji: "🏆", tag: "Fortified", color: "#10b981" };
+  } else if (score >= 70) {
+    return { title: "Level 4: Fortified Builder", emoji: "🛡️", tag: "Resilient", color: "#10b981" };
+  } else if (score >= 50) {
+    return { title: "Level 3: Balanced Striver", emoji: "⚖️", tag: "Stable", color: "#f59e0b" };
+  } else if (score >= 35) {
+    return { title: "Level 2: Stretched Spender", emoji: "⚠️", tag: "Caution", color: "#f59e0b" };
+  } else {
+    return { title: "Level 1: Debt Vulnerable", emoji: "🚨", tag: "Danger", color: "#ef4444" };
+  }
+}
+
+/**
+ * Conversational Inflation Real-World Explainer
+ */
+export function getInflationHumanMessage(rate, expense, years) {
+  const annualLossPerLakh = Math.round(100000 * (rate / 100));
+  const rateFactor = Math.pow(1 + rate / 100, years);
+  const futureBasketCost = Math.round(100 * rateFactor);
+  const futureTotalExpense = Math.round(expense * rateFactor);
+  const lossOn100k = Math.round(100000 - (100000 / rateFactor));
+
+  return {
+    headline: `Your money is losing ~${formatINR(annualLossPerLakh)} of purchasing power per ₹1 Lakh each year at ${rate}% inflation.`,
+    basketComparison: `A ₹100 grocery bag today will cost ${formatINR(futureBasketCost)} in ${years} years to take home the exact same groceries!`,
+    totalMonthlyComparison: `Your current ${formatINR(expense)}/month lifestyle will require ${formatINR(futureTotalExpense)}/month in ${years} years.`,
+    savingsAccountWarning: `₹1 Lakh left idle in a standard 3% bank account will silently forfeit ${formatINR(lossOn100k)} of real wealth.`
+  };
+}
+

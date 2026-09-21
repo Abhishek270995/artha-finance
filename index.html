@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artha (अर्थ) | Indian Personal Finance & Purchase Decision Copilot</title>
-  <meta name="description" content="One-stop zero-login financial copilot for Indians. Evaluate purchase decisions, optimize taxes under FY 24-25/25-26 slabs, simulate inflation, and get verified RBI/SEBI advisories.">
+  <title>Artha (अर्थ) | Visual Personal Finance & Purchase Copilot for Bharat</title>
+  <meta name="description" content="Visual personal finance copilot for Indians. Compare purchase decisions before and after, optimize taxes, visualize inflation erosion, and stay protected with verified RBI/SEBI advisories.">
   <meta name="theme-color" content="#07090e">
 
   <meta name="color-scheme" content="dark light">
@@ -46,7 +46,7 @@
             Artha <span class="text-subtle">| अर्थ</span>
             <span class="brand-badge">Zero-Login</span>
           </div>
-          <span class="brand-tagline">Personal Finance & Purchase Decision Copilot for Bharat</span>
+          <span class="brand-tagline">Visual Personal Finance & Purchase Copilot for Bharat</span>
         </div>
       </a>
 
@@ -98,11 +98,15 @@
     <!-- 3. Profile Setup & Financial Vitals Section -->
     <section class="profile-hero-section">
       <div class="container">
-        <div class="hero-header">
-          <h1>Make Confident Financial Decisions</h1>
-          <p class="hero-subtitle">
-            Zero sign-up required. Your numbers remain private on your device. Calibrated for Indian inflation and current Union Budget tax laws.
-          </p>
+        <!-- Notion-style Conversational Greeting Block -->
+        <div class="notion-callout" id="heroStoryCallout">
+          <div class="notion-callout-icon">💡</div>
+          <div class="notion-callout-content">
+            <div class="notion-callout-title" id="storyGreetingTitle">You have ₹56,000 of pure freedom money every month.</div>
+            <div class="notion-callout-body" id="storyGreetingBody">
+              From your <strong>₹1,20,000</strong> take-home salary, <strong>₹22,000</strong> pays past EMIs and <strong>₹42,000</strong> covers fixed survival expenses.
+            </div>
+          </div>
         </div>
 
         <div class="profile-card">
@@ -115,29 +119,37 @@
             <button class="preset-chip" data-preset="freelancer">⚡ Freelancer (₹85k/mo)</button>
           </div>
 
-          <!-- Inputs Grid -->
+          <!-- Inputs Grid with Visual Steppers -->
           <div class="inputs-grid">
             <div class="input-field">
               <label for="inputSalary">
-                Monthly In-Hand Salary
+                Monthly Take-Home
                 <span class="badge-required">Required</span>
               </label>
-              <div class="input-box">
-                <span class="input-prefix">₹</span>
-                <input type="number" id="inputSalary" value="120000" min="0" step="1000" placeholder="1,20,000">
+              <div class="input-with-steppers">
+                <div class="input-box" style="flex: 1;">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="inputSalary" value="120000" min="0" step="5000" placeholder="1,20,000">
+                </div>
+                <button type="button" class="step-btn" data-step-target="inputSalary" data-step-val="5000">+5k</button>
+                <button type="button" class="step-btn" data-step-target="inputSalary" data-step-val="-5000">-5k</button>
               </div>
-              <span class="input-hint">Net take-home credited to bank</span>
+              <span class="input-hint">Net in-hand deposited in bank</span>
             </div>
 
             <div class="input-field">
               <label for="inputAge">
-                Your Current Age
+                Your Age
                 <span class="badge-required">Required</span>
               </label>
-              <div class="input-box no-prefix">
-                <input type="number" id="inputAge" value="30" min="18" max="75" step="1">
+              <div class="input-with-steppers">
+                <div class="input-box no-prefix" style="flex: 1;">
+                  <input type="number" id="inputAge" value="30" min="18" max="75" step="1">
+                </div>
+                <button type="button" class="step-btn" data-step-target="inputAge" data-step-val="1">+1y</button>
+                <button type="button" class="step-btn" data-step-target="inputAge" data-step-val="-1">-1y</button>
               </div>
-              <span class="input-hint">Used for risk horizon & retirement</span>
+              <span class="input-hint">Risk horizon & life timeline</span>
             </div>
 
             <div class="input-field">
@@ -145,21 +157,29 @@
                 Current Monthly EMIs
                 <span class="badge-required">Required</span>
               </label>
-              <div class="input-box">
-                <span class="input-prefix">₹</span>
-                <input type="number" id="inputEMI" value="22000" min="0" step="500" placeholder="22,000">
+              <div class="input-with-steppers">
+                <div class="input-box" style="flex: 1;">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="inputEMI" value="22000" min="0" step="1000" placeholder="22,000">
+                </div>
+                <button type="button" class="step-btn" data-step-target="inputEMI" data-step-val="2000">+2k</button>
+                <button type="button" class="step-btn" data-step-target="inputEMI" data-step-val="-2000">-2k</button>
               </div>
               <span class="input-hint">Home, Car, Personal, Gadget EMIs</span>
             </div>
 
             <div class="input-field">
               <label for="inputExpenses">
-                Fixed Monthly Expenses
+                Fixed Needs (Survival)
                 <span class="badge-required">Required</span>
               </label>
-              <div class="input-box">
-                <span class="input-prefix">₹</span>
-                <input type="number" id="inputExpenses" value="42000" min="0" step="1000" placeholder="42,000">
+              <div class="input-with-steppers">
+                <div class="input-box" style="flex: 1;">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="inputExpenses" value="42000" min="0" step="2000" placeholder="42,000">
+                </div>
+                <button type="button" class="step-btn" data-step-target="inputExpenses" data-step-val="2000">+2k</button>
+                <button type="button" class="step-btn" data-step-target="inputExpenses" data-step-val="-2000">-2k</button>
               </div>
               <span class="input-hint">Rent, groceries, utilities, school fees</span>
             </div>
@@ -170,48 +190,70 @@
               </label>
               <div class="input-box">
                 <span class="input-prefix">₹</span>
-                <input type="number" id="inputEmergency" value="180000" min="0" step="5000" placeholder="1,80,000">
+                <input type="number" id="inputEmergency" value="180000" min="0" step="10000" placeholder="1,80,000">
               </div>
-              <span class="input-hint">Bank balance + Liquid FDs</span>
+              <span class="input-hint">Savings account + Instant FDs</span>
             </div>
           </div>
 
-          <!-- Live Financial Vitals HUD -->
+          <!-- Live Gamified Visual Progress Rings (Duolingo + Fintech HUD) -->
           <div class="vitals-hud">
-            <div class="hud-card surplus">
+            <!-- Freedom Cash Hero Card -->
+            <div class="hud-card surplus" style="justify-content: center;">
               <div class="hud-label">
-                <span>Monthly Surplus</span>
+                <span>Free Freedom Cash</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
               </div>
-              <div class="hud-value" id="hudSurplus">₹56,000</div>
-              <div class="hud-subtext text-emerald">Available for investments & lifestyle</div>
+              <div class="hero-stat-large text-emerald" id="hudSurplus">₹56,000</div>
+              <div class="hud-subtext text-emerald">Available for wealth compounding & joy</div>
             </div>
 
-            <div class="hud-card dti">
-              <div class="hud-label">
-                <span>Debt-To-Income (DTI)</span>
-                <span class="status-pill safe" id="hudDTIBadge">Safe (<35%)</span>
+            <!-- SVG Ring 1: Health Score & Level Badge -->
+            <div class="ring-card">
+              <div class="ring-title">Financial Health</div>
+              <div class="ring-wrapper">
+                <svg class="ring-svg" viewBox="0 0 100 100">
+                  <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-progress" id="ringHealthProgress" cx="50" cy="50" r="45" stroke="#10b981"></circle>
+                </svg>
+                <div class="ring-center-text">
+                  <span class="ring-center-score" id="hudHealthScore">85</span>
+                  <span class="ring-center-unit">/ 100</span>
+                </div>
               </div>
-              <div class="hud-value" id="hudDTI">18%</div>
-              <div class="hud-subtext">RBI Benchmark: Below 40%</div>
+              <div class="ring-badge-pill fortified" id="hudHealthBadge">🏆 Fortified Builder</div>
             </div>
 
-            <div class="hud-card score">
-              <div class="hud-label">
-                <span>Health Score</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            <!-- SVG Ring 2: Debt-to-Income (DTI) Meter -->
+            <div class="ring-card">
+              <div class="ring-title">Debt Burden (DTI)</div>
+              <div class="ring-wrapper">
+                <svg class="ring-svg" viewBox="0 0 100 100">
+                  <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-progress" id="ringDtiProgress" cx="50" cy="50" r="45" stroke="#38bdf8"></circle>
+                </svg>
+                <div class="ring-center-text">
+                  <span class="ring-center-score" id="hudDTI">18%</span>
+                  <span class="ring-center-unit">of Salary</span>
+                </div>
               </div>
-              <div class="hud-value" id="hudHealthScore">85</div>
-              <div class="hud-subtext" id="hudHealthLabel">Financially Robust</div>
+              <div class="ring-badge-pill fortified" id="hudDTIBadge">🛡️ Safe (<35%)</div>
             </div>
 
-            <div class="hud-card runway">
-              <div class="hud-label">
-                <span>Emergency Runway</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            <!-- SVG Ring 3: Emergency Runway Battery -->
+            <div class="ring-card">
+              <div class="ring-title">Emergency Buffer</div>
+              <div class="ring-wrapper">
+                <svg class="ring-svg" viewBox="0 0 100 100">
+                  <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-progress" id="ringRunwayProgress" cx="50" cy="50" r="45" stroke="#f59e0b"></circle>
+                </svg>
+                <div class="ring-center-text">
+                  <span class="ring-center-score" id="hudEmergencyRunway">2.8</span>
+                  <span class="ring-center-unit">Months</span>
+                </div>
               </div>
-              <div class="hud-value" id="hudEmergencyRunway">2.8 Months</div>
-              <div class="hud-subtext">Target: 6 Months (₹3.84 L)</div>
+              <div class="ring-badge-pill warning" id="hudRunwayBadge">🔋 2.8 / 6.0 Months</div>
             </div>
           </div>
         </div>
@@ -223,22 +265,22 @@
       <div class="container">
         <nav class="tabs-track" aria-label="Financial Tools">
           <button class="tab-btn active" data-tab-target="purchase">
-            🛒 "Can I Afford This?"
+            🛒 "Can I Afford This?" Duel
           </button>
           <button class="tab-btn" data-tab-target="budget">
-            📊 50-30-20 & Bharat Budget
+            📊 50-30-20 Visual Cashflow
           </button>
           <button class="tab-btn" data-tab-target="tax">
             📜 Tax Regime Optimizer (FY 24-26)
           </button>
           <button class="tab-btn" data-tab-target="inflation">
-            ⏳ Inflation Time Machine
+            ⏳ The Invisible Thief (Inflation)
           </button>
           <button class="tab-btn" data-tab-target="loan-vs-sip">
-            ⚖️ Loan Prepayment vs. SIP
+            ⚖️ Loan Prepay vs. SIP Battle
           </button>
           <button class="tab-btn" data-tab-target="retirement">
-            🎯 Age Goals & Retirement
+            🎯 Life Chronology & FIRE
           </button>
         </nav>
       </div>
@@ -254,7 +296,7 @@
           <div class="tool-card">
             <h2 class="tool-card-title">Purchase Decision Engine</h2>
             <p class="tool-card-desc">
-              Test any big expense before swiping your card or locking into EMI.
+              Test any big lifestyle purchase before swiping your card or locking into EMI.
             </p>
 
             <div class="form-stack">
@@ -323,7 +365,7 @@
 
           <!-- Evaluation Results -->
           <div class="tool-card">
-            <!-- Dynamic Verdict Banner -->
+            <!-- Duolingo-style Dynamic Verdict Banner -->
             <div class="verdict-banner green" id="verdictBanner">
               <div class="verdict-title" id="verdictTitle">Evaluating...</div>
               <div class="verdict-subtitle" id="verdictSubtitle">Checking against your cashflow & DTI...</div>
@@ -331,43 +373,95 @@
               <div class="verdict-tip" id="verdictTip" style="display: none;"></div>
             </div>
 
-            <!-- Impact Metrics -->
-            <div class="impact-metrics-grid">
-              <div class="metric-box">
-                <div class="metric-box-label">Life-Energy Cost</div>
-                <div class="metric-box-val text-amber" id="metricLifeDays">-- Days</div>
-                <div class="metric-box-sub" id="metricLifeHours">(-- working hours of your life)</div>
+            <!-- Before vs. After Visual Comparison Duel -->
+            <div class="duel-arena">
+              <div class="duel-title-row">
+                <span>Before vs After Purchase Reality</span>
+                <span class="text-subtle">Monthly Cash Impact</span>
               </div>
+              <div class="duel-grid">
+                <!-- Card 1: Before -->
+                <div class="duel-card before">
+                  <div class="duel-header">
+                    <span class="duel-tag">Your Life Today</span>
+                  </div>
+                  <div>
+                    <div class="duel-hero-metric text-cyan" id="duelBeforeSurplus">₹56,000</div>
+                    <div class="duel-hero-sub">Free freedom cash / month</div>
+                  </div>
+                  <div class="duel-stat-list">
+                    <div class="duel-stat-item">
+                      <span>Total EMIs:</span>
+                      <span class="duel-stat-val" id="duelBeforeEmi">₹22,000</span>
+                    </div>
+                    <div class="duel-stat-item">
+                      <span>Debt Burden:</span>
+                      <span class="duel-stat-val" id="duelBeforeDti">18% (Safe)</span>
+                    </div>
+                  </div>
+                </div>
 
-              <div class="metric-box">
-                <div class="metric-box-label">New DTI & Surplus</div>
-                <div class="metric-box-val" id="metricPostDti">--%</div>
-                <div class="metric-box-sub">Remaining surplus: <span id="metricPostSurplus" class="text-emerald">--</span></div>
+                <!-- Card 2: After -->
+                <div class="duel-card after">
+                  <div class="duel-header">
+                    <span class="duel-tag">Life After Purchase</span>
+                  </div>
+                  <div>
+                    <div class="duel-hero-metric text-amber" id="duelAfterSurplus">₹33,500</div>
+                    <div class="duel-hero-sub text-rose" id="duelSurplusDiffText">-₹22,500/mo impact</div>
+                  </div>
+                  <div class="duel-stat-list">
+                    <div class="duel-stat-item">
+                      <span>New Total EMIs:</span>
+                      <span class="duel-stat-val" id="duelAfterEmi">₹44,500</span>
+                    </div>
+                    <div class="duel-stat-item">
+                      <span>New Debt Burden:</span>
+                      <span class="duel-stat-val" id="duelAfterDti">37% (Caution)</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Nifty 50 Opportunity Cost Box -->
-            <div class="opp-cost-card">
-              <div class="opp-cost-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"></path><path d="M17 6h6v6"></path></svg>
-                Nifty 50 Index Opportunity Cost
+            <!-- Life Energy Calendar Visualizer -->
+            <div class="life-energy-box">
+              <div class="life-energy-header">
+                <div class="life-energy-title">
+                  <span>📅 Life-Energy Calendar Cost</span>
+                </div>
+                <strong class="text-amber" id="metricLifeDays">24.5 Days</strong>
               </div>
-              <div class="opp-cost-desc">
-                If this purchase amount was invested in an Indian Index Fund at 12% CAGR:
+              <div class="workdays-grid" id="workdaysPipsGrid" aria-label="Workdays traded away">
+                <!-- Injected via JavaScript as visual pips -->
               </div>
-              <div class="opp-projections-row">
-                <div class="opp-proj-box">
-                  <div class="opp-year">In 5 Years</div>
-                  <div class="opp-val" id="oppCost5yr">--</div>
+              <div class="life-energy-narrative" id="lifeEnergyStory">
+                To own this item, you are trading away working days of your life.
+              </div>
+            </div>
+
+            <!-- Interactive Nifty 50 Opportunity Cost Time Scrubber -->
+            <div class="time-scrubber-box">
+              <div class="time-scrubber-header">
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                    <span>📈 Nifty 50 Opportunity Cost Machine</span>
+                  </div>
+                  <span class="text-subtle">What if you invested this exact amount instead?</span>
                 </div>
-                <div class="opp-proj-box">
-                  <div class="opp-year">In 10 Years</div>
-                  <div class="opp-val" id="oppCost10yr">--</div>
-                </div>
-                <div class="opp-proj-box">
-                  <div class="opp-year">In 20 Years</div>
-                  <div class="opp-val" id="oppCost20yr">--</div>
-                </div>
+                <div class="time-scrubber-val" id="oppScrubberVal">₹4.18 L</div>
+              </div>
+
+              <input type="range" id="oppCostScrubber" class="custom-slider" min="1" max="25" value="10" step="1">
+              <div class="time-scrubber-milestones">
+                <span>1 Year</span>
+                <span>5 Years</span>
+                <span>10 Years</span>
+                <span>20 Years</span>
+                <span>25 Years</span>
+              </div>
+              <div class="text-subtle" style="margin-top: 0.65rem;" id="oppScrubberExplanation">
+                In 10 years at historical 12% Nifty 50 CAGR, this amount turns into <strong>₹4.18 Lakhs</strong>.
               </div>
             </div>
 
@@ -379,42 +473,73 @@
       <section class="tool-pane" id="pane-budget">
         <div class="tool-grid">
           <div class="tool-card">
-            <h2 class="tool-card-title">Bharat 50-30-20 Cashflow Split</h2>
+            <h2 class="tool-card-title">Bharat 50-30-20 Cashflow Buckets</h2>
             <p class="tool-card-desc">
-              Tailored for Indian realities where debt servicing and family support frequently exceed western 50-30-20 models.
+              Every rupee you earn should have a distinct mission in your life.
             </p>
 
-            <div class="form-stack">
-              <div class="tax-stat-row">
-                <span>Essential Needs (Rent, Utilities, Groceries)</span>
-                <strong id="budgetNeedsVal" class="text-cyan">₹0</strong>
+            <div class="story-buckets-container">
+              <!-- Bucket 1 -->
+              <div class="story-bucket-card">
+                <div class="bucket-top-row">
+                  <span class="bucket-name">🏠 Survival & Essential Needs</span>
+                  <span class="bucket-val text-cyan" id="bucketNeedsVal">₹42,000 (35%)</span>
+                </div>
+                <div class="bucket-track">
+                  <div class="bucket-fill needs" id="bucketNeedsBar" style="width: 35%;"></div>
+                </div>
+                <span class="bucket-desc">Rent, utilities, groceries, and schooling to keep the family running.</span>
               </div>
-              <div class="tax-stat-row">
-                <span>Debt Servicing (EMIs & Loans)</span>
-                <strong id="budgetDebtVal" class="text-rose">₹0</strong>
+
+              <!-- Bucket 2 -->
+              <div class="story-bucket-card">
+                <div class="bucket-top-row">
+                  <span class="bucket-name">💳 Debt Servicing (EMIs)</span>
+                  <span class="bucket-val text-rose" id="bucketDebtVal">₹22,000 (18%)</span>
+                </div>
+                <div class="bucket-track">
+                  <div class="bucket-fill debt" id="bucketDebtBar" style="width: 18%;"></div>
+                </div>
+                <span class="bucket-desc">Interest and principal paid to banks for past lifestyle choices.</span>
               </div>
-              <div class="tax-stat-row">
-                <span>Discretionary Wants (Dining, Outings, Subscriptions)</span>
-                <strong id="budgetWantsVal" class="text-amber">₹0</strong>
+
+              <!-- Bucket 3 -->
+              <div class="story-bucket-card">
+                <div class="bucket-top-row">
+                  <span class="bucket-name">☕ Joy & Lifestyle</span>
+                  <span class="bucket-val text-amber" id="bucketWantsVal">₹22,400 (19%)</span>
+                </div>
+                <div class="bucket-track">
+                  <div class="bucket-fill wants" id="bucketWantsBar" style="width: 19%;"></div>
+                </div>
+                <span class="bucket-desc">Guilt-free dining out, OTT subscriptions, weekend movies, and hobbies.</span>
               </div>
-              <div class="tax-stat-row">
-                <span>Future Wealth (Investments & Savings)</span>
-                <strong id="budgetInvestVal" class="text-emerald">₹0</strong>
+
+              <!-- Bucket 4 -->
+              <div class="story-bucket-card">
+                <div class="bucket-top-row">
+                  <span class="bucket-name">🚀 Future Freedom (SIPs & Wealth)</span>
+                  <span class="bucket-val text-emerald" id="bucketInvestVal">₹33,600 (28%)</span>
+                </div>
+                <div class="bucket-track">
+                  <div class="bucket-fill invest" id="bucketInvestBar" style="width: 28%;"></div>
+                </div>
+                <span class="bucket-desc">Buying back your future calendar through disciplined equity compounding.</span>
               </div>
             </div>
 
-            <div style="margin-top: 1.5rem; background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-md);" id="budgetDiagnosisText">
+            <div class="notion-callout" style="margin-bottom: 0;" id="budgetDiagnosisText">
               <!-- Dynamically populated -->
             </div>
           </div>
 
           <div class="tool-card">
-            <h3 style="margin-bottom: 0.5rem; text-align: center;">Monthly Cashflow Breakdown</h3>
+            <h3 style="margin-bottom: 0.5rem; text-align: center;">Interactive Cashflow Orbit</h3>
             <div class="chart-container">
               <canvas id="budgetDonutCanvas" class="chart-canvas"></canvas>
             </div>
             <p class="text-subtle" style="text-align: center;">
-              *Calculated reactively from your top profile numbers.
+              *Adapts reactively as you adjust salary and monthly expenses.
             </p>
           </div>
         </div>
@@ -542,10 +667,23 @@
       <section class="tool-pane" id="pane-inflation">
         <div class="tool-grid">
           <div class="tool-card">
-            <h2 class="tool-card-title">Indian Inflation Time Machine</h2>
+            <h2 class="tool-card-title">The Invisible Thief: Inflation</h2>
             <p class="tool-card-desc">
-              Understand why money kept in bank savings accounts (3%) guaranteed loses purchasing power.
+              Money in a 3% savings account isn't sitting safe—it is silently melting away.
             </p>
+
+            <!-- Conversational Human Headline -->
+            <div class="notion-callout" style="border-left: 4px solid var(--rose-500); margin-bottom: 1.25rem;">
+              <div class="notion-callout-icon">💸</div>
+              <div class="notion-callout-content">
+                <div class="notion-callout-title" id="infHumanHeadline">
+                  Your money is losing ~₹6,200 of purchasing power per ₹1 Lakh each year at 6.2% inflation.
+                </div>
+                <div class="notion-callout-body" id="infHumanSubline">
+                  A ₹100 grocery bag today will cost ₹248 in 15 years to take home the exact same groceries!
+                </div>
+              </div>
+            </div>
 
             <div class="form-stack">
               <div class="slider-group">
@@ -559,11 +697,12 @@
               <div class="slider-group">
                 <div class="slider-header">
                   <span>Annual Inflation Rate</span>
-                  <span class="slider-val" id="lblInflationRate">5.5%</span>
+                  <span class="slider-val" id="lblInflationRate">6.2%</span>
                 </div>
-                <input type="range" id="inflationRate" class="custom-slider" min="3.0" max="15.0" step="0.5" value="5.5">
+                <input type="range" id="inflationRate" class="custom-slider" min="3.0" max="15.0" step="0.1" value="6.2">
                 <div class="preset-purchases-bar" style="margin-top: 0.3rem;">
                   <button class="preset-purchase-btn" data-inf-preset="5.5">General CPI (5.5%)</button>
+                  <button class="preset-purchase-btn" data-inf-preset="6.2">Current Inflation (6.2%)</button>
                   <button class="preset-purchase-btn" data-inf-preset="10.0">Higher Education (10.0%)</button>
                   <button class="preset-purchase-btn" data-inf-preset="12.0">Medical Inflation (12.0%)</button>
                 </div>
@@ -580,22 +719,36 @@
           </div>
 
           <div class="tool-card">
+            <!-- Visual Grocery Basket Comparison Cards -->
+            <div class="basket-grid">
+              <div class="basket-card">
+                <div class="basket-emoji">🛒</div>
+                <div class="basket-price text-cyan">₹100</div>
+                <div class="basket-label">Cost of Grocery Basket <strong>Today</strong></div>
+              </div>
+              <div class="basket-card">
+                <div class="basket-emoji">🛍️</div>
+                <div class="basket-price text-rose" id="infBasketFuture">₹248</div>
+                <div class="basket-label">Cost for the <strong>Exact Same Basket</strong> in <span id="infBasketYears">15</span> Years</div>
+              </div>
+            </div>
+
             <div class="impact-metrics-grid">
               <div class="metric-box">
-                <div class="metric-box-label">Future Monthly Cost</div>
+                <div class="metric-box-label">Future Monthly Need</div>
                 <div class="metric-box-val text-rose" id="infFutureExpense">₹0</div>
-                <div class="metric-box-sub">Multiplier: <strong id="infMultiplier">1.0x</strong></div>
+                <div class="metric-box-sub">Lifestyle Multiplier: <strong id="infMultiplier">1.0x</strong></div>
               </div>
 
               <div class="metric-box">
-                <div class="metric-box-label">₹1 Lakh Purchasing Power</div>
+                <div class="metric-box-label">₹1 Lakh Real Purchasing Power</div>
                 <div class="metric-box-val text-amber" id="infPurchasingPower">₹0</div>
-                <div class="metric-box-sub">Value of ₹1 Lakh in future money</div>
+                <div class="metric-box-sub">What ₹1 Lakh in cash shrinks to</div>
               </div>
             </div>
 
             <!-- Inflation Curve Chart -->
-            <div class="chart-container" style="height: 190px;">
+            <div class="chart-container" style="height: 175px;">
               <canvas id="inflationCanvas" class="chart-canvas"></canvas>
             </div>
           </div>
@@ -606,9 +759,9 @@
       <section class="tool-pane" id="pane-loan-vs-sip">
         <div class="tool-grid">
           <div class="tool-card">
-            <h2 class="tool-card-title">Loan Prepayment vs. Equity SIP</h2>
+            <h2 class="tool-card-title">Loan Prepayment vs. Equity SIP Battle</h2>
             <p class="tool-card-desc">
-              The classic Indian dilemma: Prepay an 8.5%–9.5% Home Loan or invest surplus cash into a 12% Nifty 50 SIP?
+              The Great Indian Dilemma: Kill an 8.75% Home Loan early or build compound wealth at 12% in Nifty 50?
             </p>
 
             <div class="form-stack">
@@ -638,7 +791,7 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="input-field">
-                  <label for="loanExtraCash">Extra Surplus / Month</label>
+                  <label for="loanExtraCash">Extra Monthly Surplus</label>
                   <div class="input-box">
                     <span class="input-prefix">₹</span>
                     <input type="number" id="loanExtraCash" value="10000" step="1000">
@@ -656,25 +809,48 @@
           </div>
 
           <div class="tool-card">
-            <div id="loanVsSipVerdict" class="modal-snippet-box" style="margin-bottom: 1rem; border-left-color: var(--emerald-500);">
-              Calculating advantage...
-            </div>
-
-            <div class="impact-metrics-grid">
-              <div class="metric-box">
-                <div class="metric-box-label">Interest Saved (Prepayment)</div>
-                <div class="metric-box-val text-cyan" id="loanSavedInterest">₹0</div>
-                <div class="metric-box-sub" id="loanYearsSaved">-- Years sooner</div>
+            <!-- Head to Head Battle Arena -->
+            <div class="battle-arena">
+              <!-- Path 1: Prepay Loan -->
+              <div class="battle-path-card debt-path">
+                <div>
+                  <div class="battle-path-title text-cyan">
+                    <span>🛡️ Sleep-at-Night Path</span>
+                  </div>
+                  <span class="text-subtle">Prepay Home Loan</span>
+                </div>
+                <div>
+                  <div class="battle-hero-stat text-cyan" id="loanSavedInterest">₹9.52 L</div>
+                  <div class="text-subtle" id="loanYearsSaved">3.5 Years sooner</div>
+                </div>
+                <div class="text-subtle" style="font-size: 0.76rem;">
+                  Guaranteed risk-free savings. Zero debt burden on your family.
+                </div>
               </div>
 
-              <div class="metric-box">
-                <div class="metric-box-label">Corpus Created (SIP)</div>
-                <div class="metric-box-val text-emerald" id="sipWealthAccumulated">₹0</div>
-                <div class="metric-box-sub" id="sipNetProfit">-- in pure wealth</div>
+              <!-- Path 2: Equity SIP -->
+              <div class="battle-path-card sip-path">
+                <div>
+                  <div class="battle-path-title text-emerald">
+                    <span>🚀 Wealth-Creator Path</span>
+                  </div>
+                  <span class="text-subtle">Invest Surplus in Nifty 50</span>
+                </div>
+                <div>
+                  <div class="battle-hero-stat text-emerald" id="sipWealthAccumulated">₹50.45 L</div>
+                  <div class="text-subtle text-emerald" id="sipNetProfit">+₹22.9 L net advantage</div>
+                </div>
+                <div class="text-subtle" style="font-size: 0.76rem;">
+                  Generates 2.4x higher net wealth through long-term compounding.
+                </div>
               </div>
             </div>
 
-            <div class="chart-container" style="height: 180px;">
+            <div id="loanVsSipVerdict" class="notion-callout" style="margin-bottom: 1rem; border-color: rgba(16, 185, 129, 0.3);">
+              <!-- Populated by JavaScript -->
+            </div>
+
+            <div class="chart-container" style="height: 160px;">
               <canvas id="loanVsSipCanvas" class="chart-canvas"></canvas>
             </div>
           </div>
@@ -685,9 +861,9 @@
       <section class="tool-pane" id="pane-retirement">
         <div class="tool-grid">
           <div class="tool-card">
-            <h2 class="tool-card-title">Age-Based Financial Planning</h2>
+            <h2 class="tool-card-title">Life Chronology & FIRE Roadmap</h2>
             <p class="tool-card-desc">
-              Asset allocation, critical protection covers, and retirement corpus tailored for your age.
+              A visual timeline of your working career and the financial shield required to protect it.
             </p>
 
             <div class="form-stack">
@@ -700,8 +876,8 @@
                 </div>
 
                 <div class="input-field">
-                  <label>Years Left</label>
-                  <div class="metric-box-val" id="retYearsLeft" style="font-size: 1.2rem; padding: 0.5rem 0;">28 Years</div>
+                  <label>Active Career Left</label>
+                  <div class="hero-stat-large text-cyan" id="retYearsLeft" style="font-size: 1.8rem; padding: 0.4rem 0;">28 Years</div>
                 </div>
               </div>
 
@@ -714,15 +890,32 @@
               </div>
             </div>
 
-            <div style="margin-top: 1.5rem;">
-              <h4 style="font-size: 0.88rem; margin-bottom: 0.6rem; color: var(--text-secondary);">Age-Appropriate Asset Allocation (Rule of 100 - Age)</h4>
+            <!-- Life Chronology Timeline Bar -->
+            <div class="life-timeline-box">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700;">
+                <span>👶 Age 0</span>
+                <span class="text-cyan" id="lifeChronCurrent">Current: Age 30</span>
+                <span class="text-emerald" id="lifeChronRetire">Freedom: Age 58</span>
+                <span>👴 Age 85</span>
+              </div>
+              <div class="life-bar-track">
+                <div class="life-bar-spent" id="lifeBarSpent" style="width: 35%;"></div>
+                <div class="life-bar-earning" id="lifeBarEarning" style="left: 35%; width: 33%;"></div>
+              </div>
+              <div class="text-subtle" style="font-size: 0.76rem;" id="lifeTimelineStory">
+                You have 28 earning years remaining to build your independence corpus.
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <h4 style="font-size: 0.88rem; margin-bottom: 0.5rem; color: var(--text-secondary);">Rule of (100 - Age) Asset Allocation</h4>
               <div style="display: flex; height: 16px; border-radius: 8px; overflow: hidden; background: var(--bg-input);">
                 <div id="retEquityBar" style="background: var(--emerald-500); width: 70%;" title="Equity"></div>
                 <div id="retDebtBar" style="background: var(--cyan-500); width: 30%;" title="Debt / Fixed Income"></div>
               </div>
               <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.4rem; color: var(--text-muted);">
-                <span>Equity (Index/Mutual Funds): <strong id="retEquityPct" class="text-emerald">70%</strong></span>
-                <span>Debt (PPF/EPF/FDs): <strong id="retDebtPct" class="text-cyan">30%</strong></span>
+                <span>Equity (Index Funds/Stocks): <strong id="retEquityPct" class="text-emerald">70%</strong></span>
+                <span>Debt (PPF/EPF/Debt Funds): <strong id="retDebtPct" class="text-cyan">30%</strong></span>
               </div>
             </div>
           </div>
@@ -747,8 +940,14 @@
               <strong id="retMonthlySipNeeded" class="text-emerald">₹18,500/mo</strong>
             </div>
 
-            <div class="modal-tip-box" style="margin-top: 1.25rem; font-size: 0.78rem;">
-              🛡️ <strong>Rule of Thumb:</strong> Buy pure Term Insurance early. Premiums stay locked at your entry age for the entire 30-40 year tenure!
+            <div class="notion-callout" style="margin-top: 1.5rem; border-color: rgba(16, 185, 129, 0.3);">
+              <div class="notion-callout-icon">🛡️</div>
+              <div class="notion-callout-content">
+                <div class="notion-callout-title">Lock in Term Insurance Early</div>
+                <div class="notion-callout-body">
+                  Term life premiums stay fixed for life at your entry age. A 30-year-old locks in ₹1 Cr cover for ~₹900/month, whereas starting at 40 costs nearly 2.5x more!
+                </div>
+              </div>
             </div>
           </div>
         </div>

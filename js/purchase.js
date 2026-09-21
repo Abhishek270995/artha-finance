@@ -123,6 +123,23 @@ export function evaluatePurchase({
     newDTI: Math.round(newDTI),
     hoursOfLife,
     daysOfLife,
+    lifeEnergyStory: `To own this, you trade ${daysOfLife} working days (~${hoursOfLife} hours) of your life. That's about ${(daysOfLife / 5).toFixed(1)} full work-weeks dedicated entirely to this single purchase.`,
+    beforeAfter: {
+      before: {
+        surplus: currentSurplus,
+        dti: Math.round(currentDTI),
+        emi: currentEMI,
+        freeCashPct: salary > 0 ? Math.round((currentSurplus / salary) * 100) : 0
+      },
+      after: {
+        surplus: newMonthlySurplus,
+        dti: Math.round(newDTI),
+        emi: newMonthlyEMI,
+        freeCashPct: salary > 0 ? Math.round((newMonthlySurplus / salary) * 100) : 0,
+        surplusDiff: currentSurplus - newMonthlySurplus,
+        dtiDiff: Math.round(newDTI - currentDTI)
+      }
+    },
     opportunityCost: {
       in5Years: n5yr,
       in10Years: n10yr,
