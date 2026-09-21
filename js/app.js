@@ -13,7 +13,9 @@ import {
   compareLoanPrepaymentVsSIP, 
   calculateSIP,
   getHealthBadge,
-  getInflationHumanMessage
+  getInflationHumanMessage,
+  simulateInflation,
+  INFLATION_ITEMS
 } from './calculations.js';
 import { evaluatePurchase } from './purchase.js';
 import { drawDonutChart, drawComparisonBarChart, drawInflationCurve } from './charts.js';
@@ -646,65 +648,147 @@ class ArthaApp {
   }
 
   /* -------------------------------------------------------------
-     6. TOOL 3: INFLATION TIME MACHINE
+     6. TOOL 4: SIGNATURE INFLATION SIMULATOR
      ------------------------------------------------------------- */
   bindInflationTool() {
-    const expenseSlider = document.getElementById('inflationExpense');
-    const rateSlider = document.getElementById('inflationRate');
-    const yearsSlider = document.getElementById('inflationYears');
+    const itemNameInput = document.getElementById('simItemName');
+    const priceInput = document.getElementById('simCurrentPrice');
+    const yearSlider = document.getElementById('simYearSlider');
+    const rateSlider = document.getElementById('simRateSlider');
 
     const update = () => this.renderInflationTool(profileManager.getVitals());
 
-    [expenseSlider, rateSlider, yearsSlider].forEach(s => {
-      if (s) s.addEventListener('input', update);
+    // Input & Slider listeners
+    [itemNameInput, priceInput, yearSlider, rateSlider].forEach(el => {
+      if (el) {
+        el.addEventListener('input', update);
+        el.addEventListener('change', update);
+      }
     });
 
-    // Inflation rate presets
-    document.querySelectorAll('[data-inf-preset]').forEach(btn => {
+    // Quick steppers for current price
+    document.querySelectorAll('[data-sim-step]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const rate = e.currentTarget.getAttribute('data-inf-preset');
-        if (rateSlider) rateSlider.value = rate;
+        const step = parseInt(e.currentTarget.getAttribute('data-sim-step'), 10) || 0;
+        const currentVal = parseINR(priceInput?.value) || 50000;
+        const nextVal = Math.max(100, currentVal + step);
+        if (priceInput) priceInput.value = nextVal;
+        update();
+      });
+    });
+
+    // Quick Target Year Pills (2031, 2036, 2041, 2046)
+    document.querySelectorAll('[data-sim-year]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const yr = parseInt(e.currentTarget.getAttribute('data-sim-year'), 10);
+        if (yearSlider && yr) yearSlider.value = yr;
+        document.querySelectorAll('[data-sim-year]').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        update();
+      });
+    });
+
+    // Sector Rate Presets
+    document.querySelectorAll('[data-sim-rate]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const r = parseFloat(e.currentTarget.getAttribute('data-sim-rate'));
+        if (rateSlider && r) rateSlider.value = r;
+        document.querySelectorAll('[data-sim-rate]').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        update();
+      });
+    });
+
+    // Spending Shelf Chips (House, Car, Smartphone, Milk, Groceries, Education, Healthcare, Travel, Gold, Electronics, etc.)
+    document.querySelectorAll('.spending-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        const itemId = e.currentTarget.getAttribute('data-item-id');
+        const item = INFLATION_ITEMS.find(it => it.id === itemId);
+        if (!item) return;
+
+        document.querySelectorAll('.spending-chip').forEach(c => c.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        if (itemNameInput) itemNameInput.value = item.name;
+        if (priceInput) priceInput.value = item.defaultPrice;
+        if (rateSlider) rateSlider.value = item.defaultRate;
+
+        // Sync active state on presets if matches
+        document.querySelectorAll('[data-sim-rate]').forEach(b => {
+          const btnRate = parseFloat(b.getAttribute('data-sim-rate'));
+          b.classList.toggle('active', Math.abs(btnRate - item.defaultRate) < 0.05);
+        });
+
         update();
       });
     });
   }
 
   renderInflationTool(vitals) {
-    const currentMonthlyExpense = parseINR(document.getElementById('inflationExpense')?.value) || vitals.expenses || 40000;
-    const inflationRate = parseFloat(document.getElementById('inflationRate')?.value) || 6.2;
-    const years = parseInt(document.getElementById('inflationYears')?.value, 10) || 15;
+    const itemName = document.getElementById('simItemName')?.value?.trim() || "₹50k Benchmark Basket";
+    const currentPrice = parseINR(document.getElementById('simCurrentPrice')?.value) || 50000;
+    const targetYear = parseInt(document.getElementById('simYearSlider')?.value, 10) || 2036;
+    const inflationRate = parseFloat(document.getElementById('simRateSlider')?.value) || 6.0;
+    const baseYear = 2026;
 
-    document.getElementById('lblInflationExpense').textContent = formatINR(currentMonthlyExpense);
-    document.getElementById('lblInflationRate').textContent = `${inflationRate}%`;
-    document.getElementById('lblInflationYears').textContent = `${years} Years`;
+    // Update Slider text labels
+    const lblYear = document.getElementById('lblSimYear');
+    if (lblYear) lblYear.textContent = `${targetYear} (in ${targetYear - baseYear} yrs)`;
 
-    const impact = calculateInflationImpact({
-      currentMonthlyExpense,
-      inflationRate,
-      years
+    const lblRate = document.getElementById('lblSimRate');
+    if (lblRate) lblRate.textContent = `${inflationRate.toFixed(1)}%`;
+
+    const heroRateTag = document.getElementById('simHeroRateTag');
+    if (heroRateTag) heroRateTag.textContent = `${inflationRate.toFixed(1)}% p.a.`;
+
+    // Sync Year pills active state
+    document.querySelectorAll('[data-sim-year]').forEach(btn => {
+      const yr = parseInt(btn.getAttribute('data-sim-year'), 10);
+      btn.classList.toggle('active', yr === targetYear);
     });
 
-    // Conversational Storytelling Headline & Subline
-    const humanInf = getInflationHumanMessage(inflationRate, currentMonthlyExpense, years);
-    const humanHeadlineEl = document.getElementById('infHumanHeadline');
-    const humanSublineEl = document.getElementById('infHumanSubline');
-    if (humanHeadlineEl) humanHeadlineEl.textContent = humanInf.headline;
-    if (humanSublineEl) humanSublineEl.textContent = humanInf.basketComparison;
+    // Compute simulation
+    const sim = simulateInflation({
+      currentPrice,
+      inflationRate,
+      targetYear,
+      baseYear,
+      itemName
+    });
 
-    // Grocery Basket Cards
-    const basketFutureEl = document.getElementById('infBasketFuture');
-    const basketYearsEl = document.getElementById('infBasketYears');
-    if (basketFutureEl) {
-      basketFutureEl.textContent = formatINR(Math.round(100 * Math.pow(1 + inflationRate / 100, years)));
+    // Update Hero Card elements
+    const heroQuestionEl = document.getElementById('simHeroQuestion');
+    const heroResultEl = document.getElementById('simHeroResult');
+    const heroStoryEl = document.getElementById('simHeroStory');
+    const lockerWarningEl = document.getElementById('simLockerWarning');
+
+    if (heroQuestionEl) heroQuestionEl.textContent = sim.questionPrompt;
+    if (heroResultEl) heroResultEl.textContent = sim.headlineResult;
+    if (heroStoryEl) heroStoryEl.textContent = sim.extraMoneyStory;
+    if (lockerWarningEl) lockerWarningEl.textContent = sim.lockerWarning;
+
+    // Render Milestone Cards (Today, 2031, 2036, 2041, 2046)
+    const milestoneGrid = document.getElementById('simMilestoneGrid');
+    if (milestoneGrid && sim.milestones) {
+      milestoneGrid.innerHTML = sim.milestones.map(m => {
+        const isTarget = m.year === targetYear;
+        const diffText = m.diff > 0 ? `+${formatINR(m.diff)}` : 'Baseline';
+        return `
+          <div class="milestone-card ${isTarget ? 'is-target' : ''}">
+            ${isTarget ? '<span class="milestone-target-flag">Target Year</span>' : ''}
+            <span class="milestone-year-badge">${m.label}</span>
+            <div class="milestone-price">${formatINR(m.price)}</div>
+            <span class="milestone-multiplier">${m.multiplier}x · ${diffText}</span>
+          </div>
+        `;
+      }).join('');
     }
-    if (basketYearsEl) basketYearsEl.textContent = years;
 
-    document.getElementById('infFutureExpense').textContent = formatINR(impact.futureMonthlyExpense);
-    document.getElementById('infMultiplier').textContent = `${impact.multiplier}x`;
-    document.getElementById('infPurchasingPower').textContent = formatINR(impact.purchasingPowerOf100k);
-
+    // Render multi-year curve chart
     const canvas = document.getElementById('inflationCanvas');
-    drawInflationCurve(canvas, impact.progression);
+    if (canvas) {
+      drawInflationCurve(canvas, sim.milestones, targetYear);
+    }
   }
 
   /* -------------------------------------------------------------

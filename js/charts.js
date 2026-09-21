@@ -140,20 +140,21 @@ export function drawComparisonBarChart(canvas, items) {
 /**
  * Draws an Inflation Erosion / Growth line chart
  */
-export function drawInflationCurve(canvas, progression) {
+export function drawInflationCurve(canvas, progression, targetYear) {
   if (!canvas || !progression || progression.length === 0) return;
   const { ctx, width, height } = setupCanvas(canvas);
   const isLight = isLightMode();
 
-  const padding = { top: 30, right: 35, bottom: 40, left: 65 };
+  const padding = { top: 32, right: 35, bottom: 42, left: 65 };
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
-  const maxExpense = Math.max(...progression.map(p => p.expense));
-  const minExpense = Math.min(...progression.map(p => p.expense));
+  const getVal = p => Number(p.price || p.expense || 0);
+  const maxExpense = Math.max(...progression.map(getVal));
+  const minExpense = Math.min(...progression.map(getVal));
   const valRange = Math.max(1, maxExpense - minExpense * 0.8);
 
-  // Background grid
+  // Background grid & Y-axis labels
   ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
@@ -162,13 +163,23 @@ export function drawInflationCurve(canvas, progression) {
     ctx.moveTo(padding.left, y);
     ctx.lineTo(width - padding.right, y);
     ctx.stroke();
+
+    const v = maxExpense - (valRange / 4) * i;
+    ctx.textAlign = 'right';
+    ctx.font = '500 10px "Inter", sans-serif';
+    ctx.fillStyle = isLight ? '#64748b' : '#94a3b8';
+    const formattedV = v >= 10000000 ? `₹${(v / 10000000).toFixed(1)}Cr` :
+                      v >= 100000 ? `₹${(v / 100000).toFixed(1)}L` :
+                      v >= 1000 ? `₹${(v / 1000).toFixed(0)}k` : `₹${Math.round(v)}`;
+    ctx.fillText(formattedV, padding.left - 8, y + 3);
   }
 
   // Draw Area Gradient
   ctx.beginPath();
   progression.forEach((pt, i) => {
-    const x = padding.left + (i / (progression.length - 1)) * chartWidth;
-    const y = padding.top + chartHeight - ((pt.expense - minExpense * 0.8) / valRange) * chartHeight;
+    const val = getVal(pt);
+    const x = padding.left + (i / Math.max(1, progression.length - 1)) * chartWidth;
+    const y = padding.top + chartHeight - ((val - minExpense * 0.8) / valRange) * chartHeight;
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
@@ -179,7 +190,7 @@ export function drawInflationCurve(canvas, progression) {
   ctx.closePath();
 
   const areaGrad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
-  areaGrad.addColorStop(0, isLight ? 'rgba(239, 68, 68, 0.18)' : 'rgba(239, 68, 68, 0.28)');
+  areaGrad.addColorStop(0, isLight ? 'rgba(239, 68, 68, 0.22)' : 'rgba(239, 68, 68, 0.32)');
   areaGrad.addColorStop(1, 'rgba(239, 68, 68, 0.01)');
   ctx.fillStyle = areaGrad;
   ctx.fill();
@@ -187,8 +198,9 @@ export function drawInflationCurve(canvas, progression) {
   // Draw Line
   ctx.beginPath();
   progression.forEach((pt, i) => {
-    const x = padding.left + (i / (progression.length - 1)) * chartWidth;
-    const y = padding.top + chartHeight - ((pt.expense - minExpense * 0.8) / valRange) * chartHeight;
+    const val = getVal(pt);
+    const x = padding.left + (i / Math.max(1, progression.length - 1)) * chartWidth;
+    const y = padding.top + chartHeight - ((val - minExpense * 0.8) / valRange) * chartHeight;
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
@@ -198,12 +210,21 @@ export function drawInflationCurve(canvas, progression) {
 
   // Draw Points & Labels
   progression.forEach((pt, i) => {
-    const x = padding.left + (i / (progression.length - 1)) * chartWidth;
-    const y = padding.top + chartHeight - ((pt.expense - minExpense * 0.8) / valRange) * chartHeight;
+    const val = getVal(pt);
+    const x = padding.left + (i / Math.max(1, progression.length - 1)) * chartWidth;
+    const y = padding.top + chartHeight - ((val - minExpense * 0.8) / valRange) * chartHeight;
+    const isTarget = pt.isTarget || (targetYear && pt.year === targetYear);
+
+    if (isTarget) {
+      ctx.beginPath();
+      ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = isLight ? 'rgba(239, 68, 68, 0.25)' : 'rgba(244, 63, 94, 0.4)';
+      ctx.fill();
+    }
 
     ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#ef4444';
+    ctx.arc(x, y, isTarget ? 6 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = isTarget ? '#e11d48' : '#ef4444';
     ctx.fill();
     ctx.strokeStyle = isLight ? '#ffffff' : '#0f172a';
     ctx.lineWidth = 2;
@@ -211,8 +232,10 @@ export function drawInflationCurve(canvas, progression) {
 
     // Axis Labels
     ctx.textAlign = 'center';
-    ctx.font = '500 11px "Inter", sans-serif';
-    ctx.fillStyle = isLight ? '#475569' : '#94a3b8';
-    ctx.fillText(`Yr ${pt.year}`, x, padding.top + chartHeight + 18);
+    ctx.font = isTarget ? '700 11px "Inter", sans-serif' : '500 10px "Inter", sans-serif';
+    ctx.fillStyle = isTarget ? (isLight ? '#0f172a' : '#ffffff') : (isLight ? '#475569' : '#94a3b8');
+    const label = pt.label || (pt.year >= 2000 ? `${pt.year}` : `Yr ${pt.year}`);
+    ctx.fillText(label, x, padding.top + chartHeight + 18);
   });
 }
+

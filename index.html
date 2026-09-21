@@ -274,7 +274,7 @@
             📜 Tax Regime Optimizer (FY 24-26)
           </button>
           <button class="tab-btn" data-tab-target="inflation">
-            ⏳ The Invisible Thief (Inflation)
+            🔥 Inflation Simulator <span class="tab-signature-badge">Signature</span>
           </button>
           <button class="tab-btn" data-tab-target="loan-vs-sip">
             ⚖️ Loan Prepay vs. SIP Battle
@@ -663,92 +663,198 @@
         </div>
       </section>
 
-      <!-- TOOL 4: INFLATION TIME MACHINE -->
+      <!-- TOOL 4: SIGNATURE INFLATION SIMULATOR -->
       <section class="tool-pane" id="pane-inflation">
-        <div class="tool-grid">
-          <div class="tool-card">
-            <h2 class="tool-card-title">The Invisible Thief: Inflation</h2>
-            <p class="tool-card-desc">
-              Money in a 3% savings account isn't sitting safe—it is silently melting away.
-            </p>
+        <div class="tool-card" style="margin-bottom: 1.25rem;">
+          <div class="badge-signature-pill">⭐ Artha Signature Feature</div>
+          <h2 class="tool-card-title" style="font-size: 1.45rem; margin-top: 0.25rem;">
+            🔥 Inflation Simulator: What Indians Actually Spend On
+          </h2>
+          <p class="tool-card-desc" style="margin-bottom: 0.75rem;">
+            Forget abstract 6% macro jargon. Select real Indian lifestyle expenses or enter any amount, and see how silent rupee decay transforms prices across your lifetime.
+          </p>
 
-            <!-- Conversational Human Headline -->
-            <div class="notion-callout" style="border-left: 4px solid var(--rose-500); margin-bottom: 1.25rem;">
-              <div class="notion-callout-icon">💸</div>
-              <div class="notion-callout-content">
-                <div class="notion-callout-title" id="infHumanHeadline">
-                  Your money is losing ~₹6,200 of purchasing power per ₹1 Lakh each year at 6.2% inflation.
-                </div>
-                <div class="notion-callout-body" id="infHumanSubline">
-                  A ₹100 grocery bag today will cost ₹248 in 15 years to take home the exact same groceries!
-                </div>
-              </div>
-            </div>
+          <!-- Spending Shelf: Things Indians Actually Spend Money On -->
+          <div class="spending-shelf-header">
+            <span class="shelf-label">Select What Indians Actually Spend Money On:</span>
+            <span class="shelf-sub">Tap any item to auto-populate Indian market price & sector inflation</span>
+          </div>
+          <div class="spending-shelf" id="inflationItemShelf">
+            <button type="button" class="spending-chip active" data-item-id="custom50k">
+              <span class="chip-emoji">🎯</span>
+              <span class="chip-name">₹50k Benchmark</span>
+              <span class="chip-price">₹50,000 · 6.0%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="house">
+              <span class="chip-emoji">🏠</span>
+              <span class="chip-name">House</span>
+              <span class="chip-price">₹75 Lakhs · 7.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="car">
+              <span class="chip-emoji">🚗</span>
+              <span class="chip-name">Car</span>
+              <span class="chip-price">₹12 Lakhs · 6.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="smartphone">
+              <span class="chip-emoji">📱</span>
+              <span class="chip-name">Smartphone</span>
+              <span class="chip-price">₹65,000 · 4.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="milk">
+              <span class="chip-emoji">🥛</span>
+              <span class="chip-name">Milk (Annual)</span>
+              <span class="chip-price">₹24,000 · 6.8%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="groceries">
+              <span class="chip-emoji">🍚</span>
+              <span class="chip-name">Groceries</span>
+              <span class="chip-price">₹15,000/mo · 6.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="education">
+              <span class="chip-emoji">🎓</span>
+              <span class="chip-name">Education</span>
+              <span class="chip-price">₹20 Lakhs · 10.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="healthcare">
+              <span class="chip-emoji">🏥</span>
+              <span class="chip-name">Healthcare</span>
+              <span class="chip-price">₹10 Lakhs · 12.0%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="travel">
+              <span class="chip-emoji">✈️</span>
+              <span class="chip-name">Travel</span>
+              <span class="chip-price">₹2 Lakhs · 8.0%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="gold">
+              <span class="chip-emoji">💍</span>
+              <span class="chip-name">Gold (10g)</span>
+              <span class="chip-price">₹75,000 · 9.5%</span>
+            </button>
+            <button type="button" class="spending-chip" data-item-id="electronics">
+              <span class="chip-emoji">💻</span>
+              <span class="chip-name">Electronics</span>
+              <span class="chip-price">₹85,000 · 5.0%</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tool-grid">
+          <!-- Left Column: Interactive Simulator Controls -->
+          <div class="tool-card">
+            <h3 class="tool-card-title" style="font-size: 1.15rem; margin-bottom: 0.85rem;">
+              ⚙️ Simulator Parameters
+            </h3>
 
             <div class="form-stack">
-              <div class="slider-group">
-                <div class="slider-header">
-                  <span>Current Monthly Expense</span>
-                  <span class="slider-val" id="lblInflationExpense">₹40,000</span>
+              <!-- Item Description Input -->
+              <div class="input-field">
+                <label for="simItemName">Expense / Goal Description</label>
+                <div class="input-box no-prefix">
+                  <input type="text" id="simItemName" value="₹50k Benchmark Basket" placeholder="e.g. 2 BHK Flat, Child MBA, Flagship Phone">
                 </div>
-                <input type="range" id="inflationExpense" class="custom-slider" min="15000" max="300000" step="5000" value="40000">
               </div>
 
+              <!-- Current Price Input with Quick Steppers -->
+              <div class="input-field">
+                <label for="simCurrentPrice">
+                  Current Price Today (2026)
+                  <span class="badge-required">Required</span>
+                </label>
+                <div class="input-with-steppers">
+                  <div class="input-box" style="flex: 1;">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="simCurrentPrice" value="50000" min="100" step="1000" placeholder="50,000">
+                  </div>
+                  <button type="button" class="step-btn" data-sim-step="5000">+5k</button>
+                  <button type="button" class="step-btn" data-sim-step="-5000">-5k</button>
+                  <button type="button" class="step-btn" data-sim-step="50000">+50k</button>
+                  <button type="button" class="step-btn" data-sim-step="100000">+1L</button>
+                </div>
+                <span class="input-hint">What this item or basket costs in India today</span>
+              </div>
+
+              <!-- Target Year Slider & Quick Milestone Pills -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Target Future Year</span>
+                  <span class="slider-val" id="lblSimYear">2036 (in 10 yrs)</span>
+                </div>
+                <input type="range" id="simYearSlider" class="custom-slider" min="2027" max="2056" step="1" value="2036">
+                
+                <!-- Quick Year Selector Pills -->
+                <div class="preset-purchases-bar" style="margin-top: 0.45rem;">
+                  <button type="button" class="preset-purchase-btn" data-sim-year="2031">2031 (+5y)</button>
+                  <button type="button" class="preset-purchase-btn active" data-sim-year="2036">2036 (+10y)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-year="2041">2041 (+15y)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-year="2046">2046 (+20y)</button>
+                </div>
+              </div>
+
+              <!-- Annual Inflation Rate Slider -->
               <div class="slider-group">
                 <div class="slider-header">
                   <span>Annual Inflation Rate</span>
-                  <span class="slider-val" id="lblInflationRate">6.2%</span>
+                  <span class="slider-val" id="lblSimRate">6.0%</span>
                 </div>
-                <input type="range" id="inflationRate" class="custom-slider" min="3.0" max="15.0" step="0.1" value="6.2">
-                <div class="preset-purchases-bar" style="margin-top: 0.3rem;">
-                  <button class="preset-purchase-btn" data-inf-preset="5.5">General CPI (5.5%)</button>
-                  <button class="preset-purchase-btn" data-inf-preset="6.2">Current Inflation (6.2%)</button>
-                  <button class="preset-purchase-btn" data-inf-preset="10.0">Higher Education (10.0%)</button>
-                  <button class="preset-purchase-btn" data-inf-preset="12.0">Medical Inflation (12.0%)</button>
+                <input type="range" id="simRateSlider" class="custom-slider" min="2.0" max="16.0" step="0.1" value="6.0">
+                
+                <!-- Sector Rate Presets -->
+                <div class="preset-purchases-bar" style="margin-top: 0.45rem;">
+                  <button type="button" class="preset-purchase-btn active" data-sim-rate="6.0">General CPI (6.0%)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-rate="7.5">Real Estate (7.5%)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-rate="9.5">Gold (9.5%)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-rate="10.5">Education (10.5%)</button>
+                  <button type="button" class="preset-purchase-btn" data-sim-rate="12.0">Healthcare (12.0%)</button>
                 </div>
-              </div>
-
-              <div class="slider-group">
-                <div class="slider-header">
-                  <span>Time Horizon</span>
-                  <span class="slider-val" id="lblInflationYears">15 Years</span>
-                </div>
-                <input type="range" id="inflationYears" class="custom-slider" min="5" max="35" step="1" value="15">
               </div>
             </div>
           </div>
 
+          <!-- Right Column: Emotional Output & Milestones -->
           <div class="tool-card">
-            <!-- Visual Grocery Basket Comparison Cards -->
-            <div class="basket-grid">
-              <div class="basket-card">
-                <div class="basket-emoji">🛒</div>
-                <div class="basket-price text-cyan">₹100</div>
-                <div class="basket-label">Cost of Grocery Basket <strong>Today</strong></div>
+            <!-- Signature Hero Card: What will ₹50,000 cost in 2036? -->
+            <div class="sim-hero-card">
+              <div class="sim-hero-pill">
+                <span>🔮 TIME MACHINE CALCULATION</span>
+                <span class="sim-hero-rate-tag" id="simHeroRateTag">6.0% p.a.</span>
               </div>
-              <div class="basket-card">
-                <div class="basket-emoji">🛍️</div>
-                <div class="basket-price text-rose" id="infBasketFuture">₹248</div>
-                <div class="basket-label">Cost for the <strong>Exact Same Basket</strong> in <span id="infBasketYears">15</span> Years</div>
+              <h3 class="sim-hero-question" id="simHeroQuestion">
+                What will ₹50,000 cost in 2036?
+              </h3>
+              <div class="sim-hero-result-wrap">
+                <div class="sim-hero-result" id="simHeroResult">
+                  ₹50,000 today ≈ ₹89,542 in 2036
+                </div>
+              </div>
+              <p class="sim-hero-story" id="simHeroStory">
+                To buy this exact same item in 2036, you will need an extra +₹39,542 (+79.1% price hike) — a 1.79x multiplier on your hard-earned rupees.
+              </p>
+            </div>
+
+            <!-- Milestone Progression Deck (Today, 2031, 2036, 2041, 2046) -->
+            <div class="milestones-section">
+              <div class="milestones-header">
+                <span class="milestones-title">📅 Chronological Price Progression</span>
+                <span class="milestones-subtitle">Compounding timeline of your expense</span>
+              </div>
+              <div class="milestone-grid" id="simMilestoneGrid">
+                <!-- Milestone cards rendered dynamically -->
               </div>
             </div>
 
-            <div class="impact-metrics-grid">
-              <div class="metric-box">
-                <div class="metric-box-label">Future Monthly Need</div>
-                <div class="metric-box-val text-rose" id="infFutureExpense">₹0</div>
-                <div class="metric-box-sub">Lifestyle Multiplier: <strong id="infMultiplier">1.0x</strong></div>
-              </div>
-
-              <div class="metric-box">
-                <div class="metric-box-label">₹1 Lakh Real Purchasing Power</div>
-                <div class="metric-box-val text-amber" id="infPurchasingPower">₹0</div>
-                <div class="metric-box-sub">What ₹1 Lakh in cash shrinks to</div>
+            <!-- The Locker/Almirah Test Card -->
+            <div class="locker-warning-card">
+              <div class="locker-icon">🔐</div>
+              <div class="locker-content">
+                <div class="locker-title">The Almirah / Locker Test</div>
+                <div class="locker-text" id="simLockerWarning">
+                  If you stash ₹50,000 in cash in your steel almirah until 2036, its real buying power melts to just ₹27,920 today. Inflation silently steals ₹22,080 (44%) of your wealth without touching the lock.
+                </div>
               </div>
             </div>
 
-            <!-- Inflation Curve Chart -->
-            <div class="chart-container" style="height: 175px;">
+            <!-- Multi-Year Inflation Curve Chart -->
+            <div class="chart-container" style="height: 180px; margin-top: 1.15rem;">
               <canvas id="inflationCanvas" class="chart-canvas"></canvas>
             </div>
           </div>

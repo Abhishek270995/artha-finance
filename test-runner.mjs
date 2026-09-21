@@ -5,7 +5,8 @@ import {
   calculateIndianTax, 
   calculateInflationImpact, 
   compareLoanPrepaymentVsSIP, 
-  calculateSIP 
+  calculateSIP,
+  simulateInflation
 } from './js/calculations.js';
 import { evaluatePurchase } from './js/purchase.js';
 import { VERIFIED_FACTS } from './js/facts.js';
@@ -58,5 +59,19 @@ const infTest = calculateInflationImpact({
   years: 15
 });
 console.log(`✓ Inflation 15 Yrs: ${formatINR(50000)}/mo becomes ${formatINR(infTest.futureMonthlyExpense)}/mo (${infTest.multiplier}x)`);
+
+// Test 7: Signature Inflation Simulator (User's Exact Example: ₹50,000 in 2036 at 6%)
+const sim50k = simulateInflation({
+  currentPrice: 50000,
+  inflationRate: 6.0,
+  targetYear: 2036,
+  baseYear: 2026,
+  itemName: "Benchmark Basket"
+});
+console.assert(sim50k.futureCost === 89542, `Expected ₹89,542 in 2036, got ${sim50k.futureCost}`);
+console.assert(sim50k.milestones.find(m => m.year === 2031)?.price === 66911, `Expected ₹66,911 in 2031, got ${sim50k.milestones.find(m => m.year === 2031)?.price}`);
+console.assert(sim50k.milestones.find(m => m.year === 2036)?.price === 89542, `Expected ₹89,542 in 2036, got ${sim50k.milestones.find(m => m.year === 2036)?.price}`);
+console.assert(Math.abs((sim50k.milestones.find(m => m.year === 2041)?.price || 0) - 119828) <= 200, `Expected ~₹1,19,828 (or user's ₹119,714) in 2041, got ${sim50k.milestones.find(m => m.year === 2041)?.price}`);
+console.log(`✓ Signature Inflation Simulator: ₹50,000 today -> ${formatINR(sim50k.futureCost)} in 2036 (Today: ₹50,000, 2031: ${formatINR(sim50k.milestones[1].price)}, 2036: ${formatINR(sim50k.milestones[2].price)}, 2041: ${formatINR(sim50k.milestones[3].price)})`);
 
 console.log("=== ALL MATHEMATICAL MODELS & DECISION LOGIC VERIFIED SUCCESSFULLY ===");

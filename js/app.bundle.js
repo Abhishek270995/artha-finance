@@ -154,31 +154,6 @@
       taxSavings
     };
   }
-  function calculateInflationImpact({
-    currentMonthlyExpense,
-    inflationRate = 5.5,
-    years = 15
-  }) {
-    const rate = inflationRate / 100;
-    const futureMonthlyExpense = Math.round(currentMonthlyExpense * Math.pow(1 + rate, years));
-    const multiplier = (futureMonthlyExpense / currentMonthlyExpense).toFixed(2);
-    const purchasingPowerOf100k = Math.round(1e5 / Math.pow(1 + rate, years));
-    const progression = [];
-    for (let y = 0; y <= years; y += Math.max(1, Math.floor(years / 6))) {
-      progression.push({
-        year: y,
-        expense: Math.round(currentMonthlyExpense * Math.pow(1 + rate, y)),
-        valueRemaining: Math.round(1e5 / Math.pow(1 + rate, y))
-      });
-    }
-    return {
-      currentMonthlyExpense,
-      futureMonthlyExpense,
-      multiplier,
-      purchasingPowerOf100k,
-      progression
-    };
-  }
   function calculateSIP({ monthlyAmount, annualCAGR = 12, years = 10 }) {
     const months = years * 12;
     const monthlyRate = annualCAGR / 12 / 100;
@@ -249,17 +224,79 @@
       return { title: "Level 1: Debt Vulnerable", emoji: "\u{1F6A8}", tag: "Danger", color: "#ef4444" };
     }
   }
-  function getInflationHumanMessage(rate, expense, years) {
-    const annualLossPerLakh = Math.round(1e5 * (rate / 100));
-    const rateFactor = Math.pow(1 + rate / 100, years);
-    const futureBasketCost = Math.round(100 * rateFactor);
-    const futureTotalExpense = Math.round(expense * rateFactor);
-    const lossOn100k = Math.round(1e5 - 1e5 / rateFactor);
+  var INFLATION_ITEMS = [
+    { id: "custom50k", name: "\u20B950k Benchmark", emoji: "\u{1F3AF}", defaultPrice: 5e4, defaultRate: 6, category: "Standard", note: "Standard reference benchmark" },
+    { id: "house", name: "House (2 BHK Flat)", emoji: "\u{1F3E0}", defaultPrice: 75e5, defaultRate: 7.5, category: "Real Estate", note: "Metro residential real estate" },
+    { id: "car", name: "Car (Mid-size SUV)", emoji: "\u{1F697}", defaultPrice: 12e5, defaultRate: 6.5, category: "Automobile", note: "Automobile index & input metals" },
+    { id: "smartphone", name: "Smartphone (Flagship)", emoji: "\u{1F4F1}", defaultPrice: 65e3, defaultRate: 4.5, category: "Electronics", note: "Annual tech price hikes" },
+    { id: "milk", name: "Milk (Daily 1L / Year)", emoji: "\u{1F95B}", defaultPrice: 24e3, defaultRate: 6.8, category: "Dairy & Staples", note: "Dairy feed & packaging costs" },
+    { id: "groceries", name: "Monthly Groceries", emoji: "\u{1F35A}", defaultPrice: 15e3, defaultRate: 6.5, category: "Food CPI", note: "Vegetables, grains & oil" },
+    { id: "education", name: "Higher Education (MBA/Eng)", emoji: "\u{1F393}", defaultPrice: 2e6, defaultRate: 10.5, category: "Education", note: "Private college fee index" },
+    { id: "healthcare", name: "Healthcare (Surgery/Cover)", emoji: "\u{1F3E5}", defaultPrice: 1e6, defaultRate: 12, category: "Medical", note: "Hospital & pharmaceutical inflation" },
+    { id: "travel", name: "Family Vacation", emoji: "\u2708\uFE0F", defaultPrice: 2e5, defaultRate: 8, category: "Travel", note: "Airfares & hospitality" },
+    { id: "gold", name: "Gold (10g 24K)", emoji: "\u{1F48D}", defaultPrice: 75e3, defaultRate: 9.5, category: "Precious Metals", note: "Historical bullion appreciation" },
+    { id: "electronics", name: "Laptop / PC Workstation", emoji: "\u{1F4BB}", defaultPrice: 85e3, defaultRate: 5, category: "Tech Gadgets", note: "Semiconductors & imports" }
+  ];
+  function simulateInflation({
+    currentPrice = 5e4,
+    inflationRate = 6,
+    targetYear = 2036,
+    baseYear = 2026,
+    itemName = "Item"
+  }) {
+    const price = Math.max(1, Number(currentPrice) || 5e4);
+    const rate = Math.max(0.1, Number(inflationRate) || 6);
+    const tYear = Math.max(baseYear + 1, Number(targetYear) || 2036);
+    const years = tYear - baseYear;
+    const r = rate / 100;
+    const futureCost = Math.round(price * Math.pow(1 + r, years));
+    const absoluteIncrease = futureCost - price;
+    const percentageIncrease = (futureCost - price) / price * 100;
+    const multiplier = +(futureCost / price).toFixed(2);
+    const erodedPurchasingPower = Math.round(price / Math.pow(1 + r, years));
+    const purchasingPowerLoss = price - erodedPurchasingPower;
+    const erodedPct = Math.round(purchasingPowerLoss / price * 100);
+    const milestoneYears = [
+      { offset: 0, label: "Today" },
+      { offset: 5, label: `${baseYear + 5}` },
+      { offset: 10, label: `${baseYear + 10}` },
+      { offset: 15, label: `${baseYear + 15}` },
+      { offset: 20, label: `${baseYear + 20}` }
+    ];
+    const milestones = milestoneYears.map((m) => {
+      const y = baseYear + m.offset;
+      const costAtYear = Math.round(price * Math.pow(1 + r, m.offset));
+      const isTarget = y === tYear;
+      return {
+        year: y,
+        offset: m.offset,
+        label: m.label,
+        price: costAtYear,
+        multiplier: +Math.pow(1 + r, m.offset).toFixed(2),
+        diff: costAtYear - price,
+        isTarget
+      };
+    });
     return {
-      headline: `Your money is losing ~${formatINR(annualLossPerLakh)} of purchasing power per \u20B91 Lakh each year at ${rate}% inflation.`,
-      basketComparison: `A \u20B9100 grocery bag today will cost ${formatINR(futureBasketCost)} in ${years} years to take home the exact same groceries!`,
-      totalMonthlyComparison: `Your current ${formatINR(expense)}/month lifestyle will require ${formatINR(futureTotalExpense)}/month in ${years} years.`,
-      savingsAccountWarning: `\u20B91 Lakh left idle in a standard 3% bank account will silently forfeit ${formatINR(lossOn100k)} of real wealth.`
+      itemName,
+      currentPrice: price,
+      inflationRate: rate,
+      baseYear,
+      targetYear: tYear,
+      years,
+      futureCost,
+      absoluteIncrease,
+      percentageIncrease: percentageIncrease.toFixed(1),
+      multiplier,
+      erodedPurchasingPower,
+      purchasingPowerLoss,
+      erodedPct,
+      milestones,
+      // Emotional explanations
+      questionPrompt: `What will ${formatINR(price)} cost in ${tYear}?`,
+      headlineResult: `${formatINR(price)} today \u2248 ${formatINR(futureCost)} in ${tYear}`,
+      extraMoneyStory: `To buy this exact same ${itemName.toLowerCase()} in ${tYear}, you will need an extra +${formatINR(absoluteIncrease)} (+${percentageIncrease.toFixed(1)}% price hike).`,
+      lockerWarning: `If you stash ${formatINR(price)} cash in a locker until ${tYear}, its real buying power melts to just ${formatINR(erodedPurchasingPower)} today. Inflation steals ${formatINR(purchasingPowerLoss)} (${erodedPct}%) silently.`
     };
   }
 
@@ -707,15 +744,16 @@
       ctx.fillText(item.label, x + barWidth / 2, padding.top + chartHeight + 20);
     });
   }
-  function drawInflationCurve(canvas, progression) {
+  function drawInflationCurve(canvas, progression, targetYear) {
     if (!canvas || !progression || progression.length === 0) return;
     const { ctx, width, height } = setupCanvas(canvas);
     const isLight = isLightMode();
-    const padding = { top: 30, right: 35, bottom: 40, left: 65 };
+    const padding = { top: 32, right: 35, bottom: 42, left: 65 };
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
-    const maxExpense = Math.max(...progression.map((p) => p.expense));
-    const minExpense = Math.min(...progression.map((p) => p.expense));
+    const getVal = (p) => Number(p.price || p.expense || 0);
+    const maxExpense = Math.max(...progression.map(getVal));
+    const minExpense = Math.min(...progression.map(getVal));
     const valRange = Math.max(1, maxExpense - minExpense * 0.8);
     ctx.strokeStyle = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.05)";
     ctx.lineWidth = 1;
@@ -725,11 +763,18 @@
       ctx.moveTo(padding.left, y);
       ctx.lineTo(width - padding.right, y);
       ctx.stroke();
+      const v = maxExpense - valRange / 4 * i;
+      ctx.textAlign = "right";
+      ctx.font = '500 10px "Inter", sans-serif';
+      ctx.fillStyle = isLight ? "#64748b" : "#94a3b8";
+      const formattedV = v >= 1e7 ? `\u20B9${(v / 1e7).toFixed(1)}Cr` : v >= 1e5 ? `\u20B9${(v / 1e5).toFixed(1)}L` : v >= 1e3 ? `\u20B9${(v / 1e3).toFixed(0)}k` : `\u20B9${Math.round(v)}`;
+      ctx.fillText(formattedV, padding.left - 8, y + 3);
     }
     ctx.beginPath();
     progression.forEach((pt, i) => {
-      const x = padding.left + i / (progression.length - 1) * chartWidth;
-      const y = padding.top + chartHeight - (pt.expense - minExpense * 0.8) / valRange * chartHeight;
+      const val = getVal(pt);
+      const x = padding.left + i / Math.max(1, progression.length - 1) * chartWidth;
+      const y = padding.top + chartHeight - (val - minExpense * 0.8) / valRange * chartHeight;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     });
@@ -738,14 +783,15 @@
     ctx.lineTo(padding.left, padding.top + chartHeight);
     ctx.closePath();
     const areaGrad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
-    areaGrad.addColorStop(0, isLight ? "rgba(239, 68, 68, 0.18)" : "rgba(239, 68, 68, 0.28)");
+    areaGrad.addColorStop(0, isLight ? "rgba(239, 68, 68, 0.22)" : "rgba(239, 68, 68, 0.32)");
     areaGrad.addColorStop(1, "rgba(239, 68, 68, 0.01)");
     ctx.fillStyle = areaGrad;
     ctx.fill();
     ctx.beginPath();
     progression.forEach((pt, i) => {
-      const x = padding.left + i / (progression.length - 1) * chartWidth;
-      const y = padding.top + chartHeight - (pt.expense - minExpense * 0.8) / valRange * chartHeight;
+      const val = getVal(pt);
+      const x = padding.left + i / Math.max(1, progression.length - 1) * chartWidth;
+      const y = padding.top + chartHeight - (val - minExpense * 0.8) / valRange * chartHeight;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     });
@@ -753,19 +799,28 @@
     ctx.lineWidth = 3;
     ctx.stroke();
     progression.forEach((pt, i) => {
-      const x = padding.left + i / (progression.length - 1) * chartWidth;
-      const y = padding.top + chartHeight - (pt.expense - minExpense * 0.8) / valRange * chartHeight;
+      const val = getVal(pt);
+      const x = padding.left + i / Math.max(1, progression.length - 1) * chartWidth;
+      const y = padding.top + chartHeight - (val - minExpense * 0.8) / valRange * chartHeight;
+      const isTarget = pt.isTarget || targetYear && pt.year === targetYear;
+      if (isTarget) {
+        ctx.beginPath();
+        ctx.arc(x, y, 9, 0, Math.PI * 2);
+        ctx.fillStyle = isLight ? "rgba(239, 68, 68, 0.25)" : "rgba(244, 63, 94, 0.4)";
+        ctx.fill();
+      }
       ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#ef4444";
+      ctx.arc(x, y, isTarget ? 6 : 4, 0, Math.PI * 2);
+      ctx.fillStyle = isTarget ? "#e11d48" : "#ef4444";
       ctx.fill();
       ctx.strokeStyle = isLight ? "#ffffff" : "#0f172a";
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.textAlign = "center";
-      ctx.font = '500 11px "Inter", sans-serif';
-      ctx.fillStyle = isLight ? "#475569" : "#94a3b8";
-      ctx.fillText(`Yr ${pt.year}`, x, padding.top + chartHeight + 18);
+      ctx.font = isTarget ? '700 11px "Inter", sans-serif' : '500 10px "Inter", sans-serif';
+      ctx.fillStyle = isTarget ? isLight ? "#0f172a" : "#ffffff" : isLight ? "#475569" : "#94a3b8";
+      const label = pt.label || (pt.year >= 2e3 ? `${pt.year}` : `Yr ${pt.year}`);
+      ctx.fillText(label, x, padding.top + chartHeight + 18);
     });
   }
 
@@ -1336,52 +1391,115 @@
       }
     }
     /* -------------------------------------------------------------
-       6. TOOL 3: INFLATION TIME MACHINE
+       6. TOOL 4: SIGNATURE INFLATION SIMULATOR
        ------------------------------------------------------------- */
     bindInflationTool() {
-      const expenseSlider = document.getElementById("inflationExpense");
-      const rateSlider = document.getElementById("inflationRate");
-      const yearsSlider = document.getElementById("inflationYears");
+      const itemNameInput = document.getElementById("simItemName");
+      const priceInput = document.getElementById("simCurrentPrice");
+      const yearSlider = document.getElementById("simYearSlider");
+      const rateSlider = document.getElementById("simRateSlider");
       const update = () => this.renderInflationTool(profileManager.getVitals());
-      [expenseSlider, rateSlider, yearsSlider].forEach((s) => {
-        if (s) s.addEventListener("input", update);
+      [itemNameInput, priceInput, yearSlider, rateSlider].forEach((el) => {
+        if (el) {
+          el.addEventListener("input", update);
+          el.addEventListener("change", update);
+        }
       });
-      document.querySelectorAll("[data-inf-preset]").forEach((btn) => {
+      document.querySelectorAll("[data-sim-step]").forEach((btn) => {
         btn.addEventListener("click", (e) => {
-          const rate = e.currentTarget.getAttribute("data-inf-preset");
-          if (rateSlider) rateSlider.value = rate;
+          const step = parseInt(e.currentTarget.getAttribute("data-sim-step"), 10) || 0;
+          const currentVal = parseINR(priceInput?.value) || 5e4;
+          const nextVal = Math.max(100, currentVal + step);
+          if (priceInput) priceInput.value = nextVal;
+          update();
+        });
+      });
+      document.querySelectorAll("[data-sim-year]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const yr = parseInt(e.currentTarget.getAttribute("data-sim-year"), 10);
+          if (yearSlider && yr) yearSlider.value = yr;
+          document.querySelectorAll("[data-sim-year]").forEach((b) => b.classList.remove("active"));
+          e.currentTarget.classList.add("active");
+          update();
+        });
+      });
+      document.querySelectorAll("[data-sim-rate]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const r = parseFloat(e.currentTarget.getAttribute("data-sim-rate"));
+          if (rateSlider && r) rateSlider.value = r;
+          document.querySelectorAll("[data-sim-rate]").forEach((b) => b.classList.remove("active"));
+          e.currentTarget.classList.add("active");
+          update();
+        });
+      });
+      document.querySelectorAll(".spending-chip").forEach((chip) => {
+        chip.addEventListener("click", (e) => {
+          const itemId = e.currentTarget.getAttribute("data-item-id");
+          const item = INFLATION_ITEMS.find((it) => it.id === itemId);
+          if (!item) return;
+          document.querySelectorAll(".spending-chip").forEach((c) => c.classList.remove("active"));
+          e.currentTarget.classList.add("active");
+          if (itemNameInput) itemNameInput.value = item.name;
+          if (priceInput) priceInput.value = item.defaultPrice;
+          if (rateSlider) rateSlider.value = item.defaultRate;
+          document.querySelectorAll("[data-sim-rate]").forEach((b) => {
+            const btnRate = parseFloat(b.getAttribute("data-sim-rate"));
+            b.classList.toggle("active", Math.abs(btnRate - item.defaultRate) < 0.05);
+          });
           update();
         });
       });
     }
     renderInflationTool(vitals) {
-      const currentMonthlyExpense = parseINR(document.getElementById("inflationExpense")?.value) || vitals.expenses || 4e4;
-      const inflationRate = parseFloat(document.getElementById("inflationRate")?.value) || 6.2;
-      const years = parseInt(document.getElementById("inflationYears")?.value, 10) || 15;
-      document.getElementById("lblInflationExpense").textContent = formatINR(currentMonthlyExpense);
-      document.getElementById("lblInflationRate").textContent = `${inflationRate}%`;
-      document.getElementById("lblInflationYears").textContent = `${years} Years`;
-      const impact = calculateInflationImpact({
-        currentMonthlyExpense,
-        inflationRate,
-        years
+      const itemName = document.getElementById("simItemName")?.value?.trim() || "\u20B950k Benchmark Basket";
+      const currentPrice = parseINR(document.getElementById("simCurrentPrice")?.value) || 5e4;
+      const targetYear = parseInt(document.getElementById("simYearSlider")?.value, 10) || 2036;
+      const inflationRate = parseFloat(document.getElementById("simRateSlider")?.value) || 6;
+      const baseYear = 2026;
+      const lblYear = document.getElementById("lblSimYear");
+      if (lblYear) lblYear.textContent = `${targetYear} (in ${targetYear - baseYear} yrs)`;
+      const lblRate = document.getElementById("lblSimRate");
+      if (lblRate) lblRate.textContent = `${inflationRate.toFixed(1)}%`;
+      const heroRateTag = document.getElementById("simHeroRateTag");
+      if (heroRateTag) heroRateTag.textContent = `${inflationRate.toFixed(1)}% p.a.`;
+      document.querySelectorAll("[data-sim-year]").forEach((btn) => {
+        const yr = parseInt(btn.getAttribute("data-sim-year"), 10);
+        btn.classList.toggle("active", yr === targetYear);
       });
-      const humanInf = getInflationHumanMessage(inflationRate, currentMonthlyExpense, years);
-      const humanHeadlineEl = document.getElementById("infHumanHeadline");
-      const humanSublineEl = document.getElementById("infHumanSubline");
-      if (humanHeadlineEl) humanHeadlineEl.textContent = humanInf.headline;
-      if (humanSublineEl) humanSublineEl.textContent = humanInf.basketComparison;
-      const basketFutureEl = document.getElementById("infBasketFuture");
-      const basketYearsEl = document.getElementById("infBasketYears");
-      if (basketFutureEl) {
-        basketFutureEl.textContent = formatINR(Math.round(100 * Math.pow(1 + inflationRate / 100, years)));
+      const sim = simulateInflation({
+        currentPrice,
+        inflationRate,
+        targetYear,
+        baseYear,
+        itemName
+      });
+      const heroQuestionEl = document.getElementById("simHeroQuestion");
+      const heroResultEl = document.getElementById("simHeroResult");
+      const heroStoryEl = document.getElementById("simHeroStory");
+      const lockerWarningEl = document.getElementById("simLockerWarning");
+      if (heroQuestionEl) heroQuestionEl.textContent = sim.questionPrompt;
+      if (heroResultEl) heroResultEl.textContent = sim.headlineResult;
+      if (heroStoryEl) heroStoryEl.textContent = sim.extraMoneyStory;
+      if (lockerWarningEl) lockerWarningEl.textContent = sim.lockerWarning;
+      const milestoneGrid = document.getElementById("simMilestoneGrid");
+      if (milestoneGrid && sim.milestones) {
+        milestoneGrid.innerHTML = sim.milestones.map((m) => {
+          const isTarget = m.year === targetYear;
+          const diffText = m.diff > 0 ? `+${formatINR(m.diff)}` : "Baseline";
+          return `
+          <div class="milestone-card ${isTarget ? "is-target" : ""}">
+            ${isTarget ? '<span class="milestone-target-flag">Target Year</span>' : ""}
+            <span class="milestone-year-badge">${m.label}</span>
+            <div class="milestone-price">${formatINR(m.price)}</div>
+            <span class="milestone-multiplier">${m.multiplier}x \xB7 ${diffText}</span>
+          </div>
+        `;
+        }).join("");
       }
-      if (basketYearsEl) basketYearsEl.textContent = years;
-      document.getElementById("infFutureExpense").textContent = formatINR(impact.futureMonthlyExpense);
-      document.getElementById("infMultiplier").textContent = `${impact.multiplier}x`;
-      document.getElementById("infPurchasingPower").textContent = formatINR(impact.purchasingPowerOf100k);
       const canvas = document.getElementById("inflationCanvas");
-      drawInflationCurve(canvas, impact.progression);
+      if (canvas) {
+        drawInflationCurve(canvas, sim.milestones, targetYear);
+      }
     }
     /* -------------------------------------------------------------
        7. TOOL 4: INDIAN TAX COMPARATOR (NEW VS OLD FY 24-25/25-26)

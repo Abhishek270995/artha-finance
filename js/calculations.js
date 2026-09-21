@@ -362,3 +362,95 @@ export function getInflationHumanMessage(rate, expense, years) {
   };
 }
 
+/**
+ * Things Indians Actually Spend Money On (Inflation Presets)
+ */
+export const INFLATION_ITEMS = [
+  { id: 'custom50k', name: '₹50k Benchmark', emoji: '🎯', defaultPrice: 50000, defaultRate: 6.0, category: 'Standard', note: 'Standard reference benchmark' },
+  { id: 'house', name: 'House (2 BHK Flat)', emoji: '🏠', defaultPrice: 7500000, defaultRate: 7.5, category: 'Real Estate', note: 'Metro residential real estate' },
+  { id: 'car', name: 'Car (Mid-size SUV)', emoji: '🚗', defaultPrice: 1200000, defaultRate: 6.5, category: 'Automobile', note: 'Automobile index & input metals' },
+  { id: 'smartphone', name: 'Smartphone (Flagship)', emoji: '📱', defaultPrice: 65000, defaultRate: 4.5, category: 'Electronics', note: 'Annual tech price hikes' },
+  { id: 'milk', name: 'Milk (Daily 1L / Year)', emoji: '🥛', defaultPrice: 24000, defaultRate: 6.8, category: 'Dairy & Staples', note: 'Dairy feed & packaging costs' },
+  { id: 'groceries', name: 'Monthly Groceries', emoji: '🍚', defaultPrice: 15000, defaultRate: 6.5, category: 'Food CPI', note: 'Vegetables, grains & oil' },
+  { id: 'education', name: 'Higher Education (MBA/Eng)', emoji: '🎓', defaultPrice: 2000000, defaultRate: 10.5, category: 'Education', note: 'Private college fee index' },
+  { id: 'healthcare', name: 'Healthcare (Surgery/Cover)', emoji: '🏥', defaultPrice: 1000000, defaultRate: 12.0, category: 'Medical', note: 'Hospital & pharmaceutical inflation' },
+  { id: 'travel', name: 'Family Vacation', emoji: '✈️', defaultPrice: 200000, defaultRate: 8.0, category: 'Travel', note: 'Airfares & hospitality' },
+  { id: 'gold', name: 'Gold (10g 24K)', emoji: '💍', defaultPrice: 75000, defaultRate: 9.5, category: 'Precious Metals', note: 'Historical bullion appreciation' },
+  { id: 'electronics', name: 'Laptop / PC Workstation', emoji: '💻', defaultPrice: 85000, defaultRate: 5.0, category: 'Tech Gadgets', note: 'Semiconductors & imports' }
+];
+
+/**
+ * Signature Inflation Simulator
+ * Answers: "What will ₹50,000 cost in 2036?" with emotional milestones
+ */
+export function simulateInflation({
+  currentPrice = 50000,
+  inflationRate = 6.0,
+  targetYear = 2036,
+  baseYear = 2026,
+  itemName = "Item"
+}) {
+  const price = Math.max(1, Number(currentPrice) || 50000);
+  const rate = Math.max(0.1, Number(inflationRate) || 6.0);
+  const tYear = Math.max(baseYear + 1, Number(targetYear) || 2036);
+  const years = tYear - baseYear;
+  const r = rate / 100;
+
+  const futureCost = Math.round(price * Math.pow(1 + r, years));
+  const absoluteIncrease = futureCost - price;
+  const percentageIncrease = ((futureCost - price) / price) * 100;
+  const multiplier = +(futureCost / price).toFixed(2);
+
+  // Purchasing power erosion: what today's amount will feel like in the future
+  const erodedPurchasingPower = Math.round(price / Math.pow(1 + r, years));
+  const purchasingPowerLoss = price - erodedPurchasingPower;
+  const erodedPct = Math.round((purchasingPowerLoss / price) * 100);
+
+  // Milestones: Today, +5 Years, +10 Years, +15 Years, +20 Years
+  const milestoneYears = [
+    { offset: 0, label: "Today" },
+    { offset: 5, label: `${baseYear + 5}` },
+    { offset: 10, label: `${baseYear + 10}` },
+    { offset: 15, label: `${baseYear + 15}` },
+    { offset: 20, label: `${baseYear + 20}` }
+  ];
+
+  const milestones = milestoneYears.map(m => {
+    const y = baseYear + m.offset;
+    const costAtYear = Math.round(price * Math.pow(1 + r, m.offset));
+    const isTarget = y === tYear;
+    return {
+      year: y,
+      offset: m.offset,
+      label: m.label,
+      price: costAtYear,
+      multiplier: +(Math.pow(1 + r, m.offset)).toFixed(2),
+      diff: costAtYear - price,
+      isTarget
+    };
+  });
+
+  return {
+    itemName,
+    currentPrice: price,
+    inflationRate: rate,
+    baseYear,
+    targetYear: tYear,
+    years,
+    futureCost,
+    absoluteIncrease,
+    percentageIncrease: percentageIncrease.toFixed(1),
+    multiplier,
+    erodedPurchasingPower,
+    purchasingPowerLoss,
+    erodedPct,
+    milestones,
+    // Emotional explanations
+    questionPrompt: `What will ${formatINR(price)} cost in ${tYear}?`,
+    headlineResult: `${formatINR(price)} today ≈ ${formatINR(futureCost)} in ${tYear}`,
+    extraMoneyStory: `To buy this exact same ${itemName.toLowerCase()} in ${tYear}, you will need an extra +${formatINR(absoluteIncrease)} (+${percentageIncrease.toFixed(1)}% price hike).`,
+    lockerWarning: `If you stash ${formatINR(price)} cash in a locker until ${tYear}, its real buying power melts to just ${formatINR(erodedPurchasingPower)} today. Inflation steals ${formatINR(purchasingPowerLoss)} (${erodedPct}%) silently.`
+  };
+}
+
+
