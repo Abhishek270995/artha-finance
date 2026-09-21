@@ -7,7 +7,9 @@
    1. TICKER: CONTINUOUS VERIFIED FACTS MARQUEE
    ------------------------------------------------------------- */
 .ticker-container {
-  background: rgba(15, 21, 35, 0.95);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border-subtle);
   overflow: hidden;
   position: relative;
@@ -26,8 +28,8 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--amber-400);
-  background: #090d16;
+  color: var(--amber-500);
+  background: var(--bg-card);
   height: 100%;
   z-index: 5;
   border-right: 1px solid var(--border-subtle);
@@ -117,7 +119,7 @@
 
 .ticker-text {
   font-size: 0.8rem;
-  color: #cbd5e1;
+  color: var(--text-secondary);
 }
 
 /* -------------------------------------------------------------
@@ -128,13 +130,13 @@
   bottom: 1.5rem;
   right: 1.5rem;
   max-width: 360px;
-  background: rgba(15, 21, 35, 0.92);
+  background: var(--glass-bg);
   border: 1px solid var(--border-medium);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
   padding: 1rem 1.15rem;
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(0,0,0,0.25);
   z-index: 40;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -258,7 +260,7 @@
 }
 
 .preset-chip:hover {
-  background: #24304d;
+  background: var(--bg-card-hover);
   color: var(--text-primary);
   border-color: var(--border-medium);
 }
@@ -568,7 +570,7 @@
 }
 
 .preset-purchase-btn:hover {
-  background: #24304d;
+  background: var(--bg-card-hover);
   color: var(--text-primary);
 }
 
@@ -904,7 +906,7 @@
 }
 
 .modal-close-btn:hover {
-  background: #334155;
+  background: var(--bg-surface);
   color: var(--text-primary);
 }
 
@@ -981,7 +983,7 @@
 }
 
 .modal-fact-chip:hover {
-  background: #24304d;
+  background: var(--bg-card-hover);
   border-color: var(--border-medium);
 }
 

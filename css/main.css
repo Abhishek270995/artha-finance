@@ -5,7 +5,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
-:root {
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+
   /* Color Palette - Obsidian Fintech */
   --bg-app: #07090e;
   --bg-card: #0f1523;
@@ -17,10 +20,66 @@
   --border-subtle: rgba(255, 255, 255, 0.07);
   --border-medium: rgba(255, 255, 255, 0.12);
   --border-accent: rgba(16, 185, 129, 0.3);
-  --glass-bg: rgba(15, 21, 35, 0.75);
+  --glass-bg: rgba(15, 21, 35, 0.8);
   --glass-blur: blur(16px);
 
-  /* Brand Accents */
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --brand-text: linear-gradient(to right, #ffffff, #94a3b8);
+
+  /* Body Background */
+  --body-gradient: 
+    radial-gradient(ellipse at 15% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 15%, rgba(6, 182, 212, 0.07) 0%, transparent 55%),
+    radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 60%),
+    var(--bg-app);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.8);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+
+  /* Color Palette - Clean Luxe Light Fintech */
+  --bg-app: #f4f6f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-surface: #eef2f6;
+  --bg-input: #ffffff;
+
+  /* Glassmorphism & Borders */
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-medium: rgba(15, 23, 42, 0.15);
+  --border-accent: rgba(16, 185, 129, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-blur: blur(16px);
+
+  /* Typography Colors */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --brand-text: linear-gradient(to right, #0f172a, #334155);
+
+  /* Body Background */
+  --body-gradient: 
+    radial-gradient(ellipse at 15% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 55%),
+    radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+    var(--bg-app);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 36px -6px rgba(15, 23, 42, 0.12);
+}
+
+:root {
+  /* Brand Accents (Consistent across themes for recognition) */
   --emerald-400: #34d399;
   --emerald-500: #10b981;
   --emerald-600: #059669;
@@ -45,20 +104,13 @@
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-
-  /* Radii & Shadows */
+  /* Radii */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.8);
   --shadow-glow-emerald: 0 0 25px var(--emerald-glow);
   --shadow-glow-cyan: 0 0 25px var(--cyan-glow);
 
@@ -81,19 +133,17 @@ html {
   font-family: var(--font-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: 
-    radial-gradient(ellipse at 15% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 15%, rgba(6, 182, 212, 0.07) 0%, transparent 55%),
-    radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 60%),
-    var(--bg-app);
+  background: var(--body-gradient);
   background-attachment: fixed;
   overflow-x: hidden;
+  transition: background var(--transition-normal);
 }
 
 /* Typography Helpers */
@@ -174,7 +224,7 @@ p { color: var(--text-secondary); }
   font-family: var(--font-heading);
   font-size: 1.35rem;
   font-weight: 800;
-  background: linear-gradient(to right, #ffffff, #94a3b8);
+  background: var(--brand-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
@@ -188,7 +238,7 @@ p { color: var(--text-secondary); }
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: rgba(16, 185, 129, 0.15);
-  color: var(--emerald-400);
+  color: var(--emerald-500);
   border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-full);
@@ -204,6 +254,57 @@ p { color: var(--text-secondary); }
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-surface);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+/* Toggle icon display based on active theme */
+html[data-theme="dark"] .theme-toggle-icon.moon-icon {
+  display: none;
+}
+html[data-theme="dark"] .theme-toggle-icon.sun-icon {
+  display: inline-flex;
+  color: var(--amber-400);
+}
+
+html[data-theme="light"] .theme-toggle-icon.sun-icon {
+  display: none;
+}
+html[data-theme="light"] .theme-toggle-icon.moon-icon {
+  display: inline-flex;
+  color: var(--indigo-500);
+}
+
+.theme-toggle-btn:hover .theme-toggle-icon {
+  transform: rotate(15deg) scale(1.1);
 }
 
 .btn-secondary, .btn-primary {

@@ -25,6 +25,7 @@ class ArthaApp {
   }
 
   init() {
+    this.bindThemeToggle();
     this.bindProfileControls();
     this.bindTabs();
     this.bindTickerAndHoverFacts();
@@ -46,6 +47,48 @@ class ArthaApp {
     window.addEventListener('resize', () => {
       this.refreshCurrentTool(profileManager.getVitals());
     });
+  }
+
+  /* -------------------------------------------------------------
+     0. THEME TOGGLE (DARK / LIGHT MODE)
+     ------------------------------------------------------------- */
+  bindThemeToggle() {
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeText = document.getElementById('themeToggleText');
+
+    const updateThemeUI = (theme) => {
+      document.documentElement.setAttribute('data-theme', theme);
+      if (themeText) {
+        themeText.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      }
+      // Re-render current tool to update Canvas chart palettes
+      this.refreshCurrentTool(profileManager.getVitals());
+    };
+
+    // Initialize button label from current attribute or system
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    if (themeText) {
+      themeText.textContent = currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('artha_theme', nextTheme);
+        updateThemeUI(nextTheme);
+      });
+    }
+
+    // Listen to OS-level theme preference changes if user hasn't explicitly set one
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+        if (!localStorage.getItem('artha_theme')) {
+          const sysTheme = e.matches ? 'light' : 'dark';
+          updateThemeUI(sysTheme);
+        }
+      });
+    }
   }
 
   /* -------------------------------------------------------------
