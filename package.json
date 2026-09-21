@@ -1,0 +1,13 @@
+{
+  "name": "artha-finance",
+  "version": "1.0.0",
+  "description": "Visual Personal Finance & Purchase Copilot for Bharat",
+  "type": "module",
+  "scripts": {
+    "build": "npx esbuild js/app.js --bundle --outfile=js/app.bundle.js --format=iife --target=es2020",
+    "test": "node test-runner.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.0"
+  }
+}

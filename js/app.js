@@ -37,28 +37,36 @@ class ArthaApp {
   }
 
   init() {
-    this.bindThemeToggle();
-    this.bindSteppers();
-    this.bindProfileControls();
-    this.bindTabs();
-    this.bindTickerAndHoverFacts();
-    this.bindPurchaseTool();
-    this.bindBudgetTool();
-    this.bindInflationTool();
-    this.bindTaxTool();
-    this.bindLoanVsSipTool();
-    this.bindRetirementTool();
-    this.bindExportReport();
+    try { this.bindThemeToggle(); } catch (e) { console.error("Theme toggle error:", e); }
+    try { this.bindSteppers(); } catch (e) { console.error("Steppers error:", e); }
+    try { this.bindProfileControls(); } catch (e) { console.error("Profile controls error:", e); }
+    try { this.bindTabs(); } catch (e) { console.error("Tabs error:", e); }
+    try { this.bindTickerAndHoverFacts(); } catch (e) { console.error("Ticker/Facts error:", e); }
+    try { this.bindPurchaseTool(); } catch (e) { console.error("Purchase tool error:", e); }
+    try { this.bindBudgetTool(); } catch (e) { console.error("Budget tool error:", e); }
+    try { this.bindInflationTool(); } catch (e) { console.error("Inflation tool error:", e); }
+    try { this.bindTaxTool(); } catch (e) { console.error("Tax tool error:", e); }
+    try { this.bindLoanVsSipTool(); } catch (e) { console.error("Loan tool error:", e); }
+    try { this.bindRetirementTool(); } catch (e) { console.error("Retirement tool error:", e); }
+    try { this.bindExportReport(); } catch (e) { console.error("Export report error:", e); }
 
     // Subscribe to profile updates
-    profileManager.subscribe(vitals => {
-      this.renderHUD(vitals);
-      this.refreshCurrentTool(vitals);
-    });
+    try {
+      profileManager.subscribe(vitals => {
+        this.renderHUD(vitals);
+        this.refreshCurrentTool(vitals);
+      });
+    } catch (e) {
+      console.error("Profile subscribe error:", e);
+    }
 
     // Handle window resize for charts
     window.addEventListener('resize', () => {
-      this.refreshCurrentTool(profileManager.getVitals());
+      try {
+        this.refreshCurrentTool(profileManager.getVitals());
+      } catch (e) {
+        console.warn("Resize refresh error:", e);
+      }
     });
   }
 
@@ -72,20 +80,25 @@ class ArthaApp {
     const updateThemeUI = (theme) => {
       document.documentElement.setAttribute('data-theme', theme);
       if (themeText) {
-        themeText.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        themeText.textContent = theme === 'dark' ? 'Dark Mode' : 'Light Mode';
       }
       // Re-render current tool to update Canvas chart palettes
-      this.refreshCurrentTool(profileManager.getVitals());
+      try {
+        this.refreshCurrentTool(profileManager.getVitals());
+      } catch (e) {
+        console.warn("Chart refresh error on theme change", e);
+      }
     };
 
     // Initialize button label from current attribute or system
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     if (themeText) {
-      themeText.textContent = currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      themeText.textContent = currentTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
     }
 
     if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
+      themeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
         localStorage.setItem('artha_theme', nextTheme);
@@ -110,6 +123,7 @@ class ArthaApp {
   bindSteppers() {
     document.querySelectorAll('.step-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const targetId = e.currentTarget.getAttribute('data-step-target');
         const delta = parseInt(e.currentTarget.getAttribute('data-step-val'), 10);
         const input = document.getElementById(targetId);
@@ -117,6 +131,7 @@ class ArthaApp {
           const currentVal = parseInt(input.value, 10) || 0;
           input.value = Math.max(0, currentVal + delta);
           input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
         }
       });
     });
@@ -131,6 +146,7 @@ class ArthaApp {
     const emiInput = document.getElementById('inputEMI');
     const expensesInput = document.getElementById('inputExpenses');
     const emergencyInput = document.getElementById('inputEmergency');
+    const presetButtons = document.querySelectorAll('[data-preset]');
 
     // Populate initial values from stored profile
     const p = profileManager.profile;
@@ -142,11 +158,12 @@ class ArthaApp {
 
     // Handle live input changes
     const handleProfileChange = () => {
+      presetButtons.forEach(b => b.classList.remove('active'));
       profileManager.update({
-        salary: parseINR(salaryInput.value),
-        age: parseInt(ageInput.value, 10) || 25,
-        emi: parseINR(emiInput.value),
-        expenses: parseINR(expensesInput.value),
+        salary: parseINR(salaryInput ? salaryInput.value : 0),
+        age: parseInt(ageInput ? ageInput.value : 25, 10) || 25,
+        emi: parseINR(emiInput ? emiInput.value : 0),
+        expenses: parseINR(expensesInput ? expensesInput.value : 0),
         emergencyFund: parseINR(emergencyInput ? emergencyInput.value : 0)
       });
     };
@@ -154,13 +171,15 @@ class ArthaApp {
     [salaryInput, ageInput, emiInput, expensesInput, emergencyInput].forEach(elem => {
       if (elem) {
         elem.addEventListener('input', handleProfileChange);
+        elem.addEventListener('change', handleProfileChange);
+        elem.addEventListener('keyup', handleProfileChange);
       }
     });
 
     // Persona preset buttons
-    const presetButtons = document.querySelectorAll('[data-preset]');
     presetButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const key = e.currentTarget.getAttribute('data-preset');
         profileManager.applyPreset(key);
         
@@ -339,15 +358,17 @@ class ArthaApp {
     this.factTickerInterval = setInterval(updateHoverCard, 7000);
 
     if (hoverCard) {
-      hoverCard.addEventListener('click', () => {
-        const idx = hoverCard.getAttribute('data-fact-index');
+      hoverCard.addEventListener('click', (e) => {
+        e.preventDefault();
+        const idx = parseInt(hoverCard.getAttribute('data-fact-index'), 10) || 0;
         this.openFactModal(VERIFIED_FACTS[idx] || VERIFIED_FACTS[0]);
       });
     }
 
     // Modal controls
     if (modalClose) {
-      modalClose.addEventListener('click', () => {
+      modalClose.addEventListener('click', (e) => {
+        e.preventDefault();
         if (factModal) factModal.classList.remove('open');
       });
     }
@@ -356,11 +377,17 @@ class ArthaApp {
         if (e.target === factModal) factModal.classList.remove('open');
       });
     }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && factModal && factModal.classList.contains('open')) {
+        factModal.classList.remove('open');
+      }
+    });
 
     // "Browse All Verified Facts" button
     const browseFactsBtn = document.getElementById('btnBrowseFacts');
     if (browseFactsBtn) {
-      browseFactsBtn.addEventListener('click', () => {
+      browseFactsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         this.openFactModal(VERIFIED_FACTS[0]);
       });
     }
@@ -885,7 +912,21 @@ class ArthaApp {
   }
 }
 
-// Bootstrap once DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.arthaApp = new ArthaApp();
-});
+// Robust bootstrap whether script loads before, during, or after DOMContentLoaded
+function initArtha() {
+  if (window.__arthaInitialized) return;
+  window.__arthaInitialized = true;
+  try {
+    window.arthaApp = new ArthaApp();
+    console.log("Artha initialized successfully");
+  } catch (err) {
+    console.error("Error initializing Artha:", err);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initArtha);
+} else {
+  // DOM is already parsed (interactive or complete)
+  initArtha();
+}
