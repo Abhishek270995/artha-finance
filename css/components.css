@@ -621,11 +621,12 @@
 
 .verdict-tip {
   margin-top: 0.85rem;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: var(--radius-sm);
   padding: 0.65rem 0.85rem;
   font-size: 0.78rem;
-  color: var(--amber-400);
+  color: var(--text-primary);
 }
 
 /* Impact Metrics Grid */
@@ -679,7 +680,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #c7d2fe;
+  color: var(--text-primary);
 }
 
 .opp-cost-desc {
@@ -696,7 +697,7 @@
 }
 
 .opp-proj-box {
-  background: rgba(15, 21, 35, 0.6);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 0.65rem 0.4rem;
@@ -836,13 +837,13 @@
 .tax-rec-banner.new-wins {
   background: rgba(16, 185, 129, 0.15);
   border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .tax-rec-banner.old-wins {
   background: rgba(56, 189, 248, 0.15);
   border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 /* -------------------------------------------------------------
@@ -958,7 +959,7 @@
   border-radius: var(--radius-md);
   padding: 0.85rem 1rem;
   font-size: 0.84rem;
-  color: #e2e8f0;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
 }
 

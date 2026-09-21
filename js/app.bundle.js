@@ -990,7 +990,11 @@
       if (hudSalary) hudSalary.textContent = formatINR(vitals.salary);
       if (hudSurplus) hudSurplus.textContent = formatINR(vitals.surplus);
       if (hudDTI) hudDTI.textContent = `${vitals.dti}%`;
-      const dtiColor = vitals.dti <= 35 ? "#10b981" : vitals.dti <= 45 ? "#f59e0b" : "#ef4444";
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const emeraldColor = isLight ? "#059669" : "#10b981";
+      const amberColor = isLight ? "#b45309" : "#f59e0b";
+      const roseColor = isLight ? "#dc2626" : "#ef4444";
+      const dtiColor = vitals.dti <= 35 ? emeraldColor : vitals.dti <= 45 ? amberColor : roseColor;
       setRingProgress("ringDtiProgress", Math.min(100, vitals.dti * 1.5), dtiColor);
       if (hudDTIBadge) {
         if (vitals.dti <= 35) {
@@ -1004,11 +1008,12 @@
           hudDTIBadge.textContent = "\u{1F6A8} Critical (>45%)";
         }
       }
+      const healthColor = vitals.health.score >= 70 ? emeraldColor : vitals.health.score >= 45 ? amberColor : roseColor;
       if (hudHealthScore) {
         hudHealthScore.textContent = vitals.health.score;
-        hudHealthScore.style.color = vitals.health.color;
+        hudHealthScore.style.color = healthColor;
       }
-      setRingProgress("ringHealthProgress", vitals.health.score, vitals.health.color);
+      setRingProgress("ringHealthProgress", vitals.health.score, healthColor);
       const levelBadge = getHealthBadge(vitals.health.score);
       if (hudHealthBadge) {
         hudHealthBadge.textContent = `${levelBadge.emoji} ${levelBadge.title.split(": ")[1] || levelBadge.title}`;
@@ -1018,7 +1023,7 @@
         hudEmergencyRunway.textContent = vitals.emergencyMonthsCovered;
       }
       const runwayPct = Math.min(100, Math.round(vitals.emergencyMonthsCovered / 6 * 100));
-      const runwayColor = runwayPct >= 80 ? "#10b981" : runwayPct >= 40 ? "#f59e0b" : "#ef4444";
+      const runwayColor = runwayPct >= 80 ? emeraldColor : runwayPct >= 40 ? amberColor : roseColor;
       setRingProgress("ringRunwayProgress", runwayPct, runwayColor);
       if (hudRunwayBadge) {
         hudRunwayBadge.textContent = `\u{1F50B} ${vitals.emergencyMonthsCovered} / 6.0 Months`;
@@ -1217,7 +1222,9 @@
       }
       if (verdictTitle) {
         verdictTitle.textContent = evaluation.verdict.title;
-        verdictTitle.style.color = evaluation.verdict.color;
+        const isLight = document.documentElement.getAttribute("data-theme") === "light";
+        const verdictColor = evaluation.verdict.code === "GREEN" ? isLight ? "#059669" : "#10b981" : evaluation.verdict.code === "AMBER" ? isLight ? "#b45309" : "#f59e0b" : isLight ? "#dc2626" : "#ef4444";
+        verdictTitle.style.color = verdictColor;
       }
       if (verdictSubtitle) {
         verdictSubtitle.textContent = evaluation.verdict.recommendation;

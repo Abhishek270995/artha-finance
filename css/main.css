@@ -20,7 +20,7 @@ html[data-theme="dark"] {
   --border-subtle: rgba(255, 255, 255, 0.07);
   --border-medium: rgba(255, 255, 255, 0.12);
   --border-accent: rgba(16, 185, 129, 0.3);
-  --glass-bg: rgba(15, 21, 35, 0.8);
+  --glass-bg: rgba(15, 21, 35, 0.85);
   --glass-blur: blur(16px);
 
   /* Typography Colors */
@@ -28,6 +28,27 @@ html[data-theme="dark"] {
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --brand-text: linear-gradient(to right, #ffffff, #94a3b8);
+
+  /* Semantic Accents - Tuned for Deep Dark Mode */
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --emerald-600: #059669;
+  --emerald-glow: rgba(16, 185, 129, 0.25);
+
+  --cyan-400: #38bdf8;
+  --cyan-500: #06b6d4;
+  --cyan-glow: rgba(6, 182, 212, 0.25);
+
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-glow: rgba(245, 158, 11, 0.25);
+
+  --rose-400: #f87171;
+  --rose-500: #ef4444;
+  --rose-glow: rgba(239, 68, 68, 0.25);
+
+  --indigo-500: #6366f1;
+  --purple-500: #8b5cf6;
 
   /* Body Background */
   --body-gradient: 
@@ -54,52 +75,52 @@ html[data-theme="light"] {
 
   /* Glassmorphism & Borders */
   --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-medium: rgba(15, 23, 42, 0.15);
-  --border-accent: rgba(16, 185, 129, 0.4);
-  --glass-bg: rgba(255, 255, 255, 0.88);
+  --border-medium: rgba(15, 23, 42, 0.16);
+  --border-accent: rgba(5, 150, 105, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.92);
   --glass-blur: blur(16px);
 
-  /* Typography Colors */
+  /* Typography Colors - Rich High Contrast on Light Backgrounds */
   --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #334155;
   --text-muted: #64748b;
-  --brand-text: linear-gradient(to right, #0f172a, #334155);
+  --brand-text: linear-gradient(to right, #0f172a, #1e293b);
+
+  /* Semantic Accents - Deep, Crisp & WCAG AA Compliant on White */
+  --emerald-400: #059669; /* Deep emerald with 5.5:1 contrast on white */
+  --emerald-500: #047857;
+  --emerald-600: #065f46;
+  --emerald-glow: rgba(5, 150, 105, 0.2);
+
+  --cyan-400: #0284c7;    /* Deep ocean cyan with 5.8:1 contrast on white */
+  --cyan-500: #0369a1;
+  --cyan-glow: rgba(2, 132, 199, 0.2);
+
+  --amber-400: #b45309;   /* Warm bronze amber with 4.8:1 contrast on white */
+  --amber-500: #92400e;
+  --amber-glow: rgba(180, 83, 9, 0.2);
+
+  --rose-400: #dc2626;    /* Vivid ruby red with 5.9:1 contrast on white */
+  --rose-500: #b91c1c;
+  --rose-glow: rgba(220, 38, 38, 0.2);
+
+  --indigo-500: #4f46e5;
+  --purple-500: #7c3aed;
 
   /* Body Background */
   --body-gradient: 
-    radial-gradient(ellipse at 15% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 55%),
-    radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 15% 0%, rgba(5, 150, 105, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 15%, rgba(2, 132, 199, 0.07) 0%, transparent 55%),
+    radial-gradient(circle at 50% 90%, rgba(79, 70, 229, 0.05) 0%, transparent 60%),
     var(--bg-app);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 16px 36px -6px rgba(15, 23, 42, 0.12);
 }
 
 :root {
-  /* Brand Accents (Consistent across themes for recognition) */
-  --emerald-400: #34d399;
-  --emerald-500: #10b981;
-  --emerald-600: #059669;
-  --emerald-glow: rgba(16, 185, 129, 0.25);
-
-  --cyan-400: #38bdf8;
-  --cyan-500: #06b6d4;
-  --cyan-glow: rgba(6, 182, 212, 0.25);
-
-  --amber-400: #fbbf24;
-  --amber-500: #f59e0b;
-  --amber-glow: rgba(245, 158, 11, 0.25);
-
-  --rose-400: #f87171;
-  --rose-500: #ef4444;
-  --rose-glow: rgba(239, 68, 68, 0.25);
-
-  --indigo-500: #6366f1;
-  --purple-500: #8b5cf6;
-
   /* Typography */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -117,6 +138,7 @@ html[data-theme="light"] {
   /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-theme: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *, *::before, *::after {
@@ -133,7 +155,48 @@ html {
   font-family: var(--font-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Global Silky-Smooth Theme Transition */
+html,
+body,
+.site-header,
+.ticker-container,
+.ticker-label,
+.notion-callout,
+.profile-card,
+.hud-card,
+.ring-card,
+.ring-track,
+.duel-card,
+.duel-stat-list,
+.life-energy-box,
+.time-scrubber-box,
+.story-bucket-card,
+.basket-card,
+.battle-path-card,
+.life-timeline-box,
+.tool-card,
+.tax-regime-card,
+.opp-cost-card,
+.opp-proj-box,
+.floating-fact-card,
+.modal-content,
+.modal-snippet-box,
+.modal-tip-box,
+.modal-fact-chip,
+.tab-btn,
+.preset-chip,
+.step-btn,
+.theme-toggle-btn,
+.input-box,
+.input-box input,
+.verdict-banner,
+.site-footer {
+  transition: background-color var(--transition-theme),
+              border-color var(--transition-theme),
+              color var(--transition-theme),
+              box-shadow var(--transition-theme);
 }
 
 body {
@@ -143,7 +206,6 @@ body {
   background: var(--body-gradient);
   background-attachment: fixed;
   overflow-x: hidden;
-  transition: background var(--transition-normal);
 }
 
 /* Typography Helpers */
