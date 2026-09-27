@@ -226,6 +226,32 @@ const retPane = document.getElementById('pane-retirement');
 console.assert(retPane && retPane.classList.contains('active'), "Clicking curiosity bridge should smoothly jump to retirement pane");
 console.log("✓ Curiosity Bridge Jump working: Navigated from Loan tool bottom bridge to Life & FIRE tool!");
 
+// 9. Test Verified Facts Modal & Updated Tax Advisory (₹12.75 Lakhs)
+const btnBrowseFacts = document.getElementById('btnBrowseFacts');
+console.assert(btnBrowseFacts, "Verified facts button must exist");
+btnBrowseFacts.click();
+
+const factModal = document.getElementById('factModal');
+console.assert(factModal.classList.contains('open'), "Fact modal should open on click");
+
+// Find the Tax Advisory chip
+const taxChip = Array.from(document.querySelectorAll('.modal-fact-chip')).find(c => c.textContent.includes('Tax Advisory') || c.textContent.includes('12.75'));
+console.assert(taxChip, "Tax Advisory chip must exist in modal");
+taxChip.click();
+
+const modalTitle = document.getElementById('modalTitle')?.textContent.trim();
+const modalSnippet = document.getElementById('modalSnippet')?.textContent.trim();
+console.assert(modalTitle.includes('₹12.75 Lakhs'), `Expected modal title to contain ₹12.75 Lakhs, got: ${modalTitle}`);
+console.assert(modalSnippet.includes('₹12.75 Lakhs') && modalSnippet.includes('Section 87A'), "Modal snippet should mention ₹12.75 Lakhs and Section 87A");
+console.log(`✓ Verified Facts Modal: Verified title "${modalTitle}"`);
+console.log(`✓ Modal Snippet: "${modalSnippet}"`);
+
+// Close modal
+const modalClose = document.getElementById('modalClose');
+modalClose.click();
+console.assert(!factModal.classList.contains('open'), "Modal should close on clicking close button");
+console.log("✓ Verified Facts Modal closed cleanly");
+
 console.log("=== DOM INTEGRATION TEST PASSED PERFECTLY ===");
 process.exit(0);
 
