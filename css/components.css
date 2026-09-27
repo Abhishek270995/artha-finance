@@ -427,7 +427,21 @@
    5. TOOL TABS BAR
    ------------------------------------------------------------- */
 .tools-navigation {
-  margin: 2rem 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  background: var(--bg-body);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.85rem 0 0.5rem;
+  margin: 1.5rem 0 1.5rem;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.25);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: all var(--transition-fast);
+}
+
+[data-theme="light"] .tools-navigation {
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
 }
 
 .tabs-track {
@@ -467,6 +481,42 @@
   border-color: var(--emerald-500);
   color: var(--emerald-400);
   box-shadow: 0 0 15px var(--emerald-glow);
+}
+
+.tab-badge-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.tab-badge-pill.hot {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: var(--amber-400);
+}
+
+.tab-badge-pill.tax {
+  background: rgba(6, 182, 212, 0.18);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: var(--cyan-400);
+}
+
+.tab-badge-pill.dict {
+  background: rgba(168, 85, 247, 0.18);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+}
+
+.tab-btn.active .tab-badge-pill {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--emerald-400);
+  color: var(--emerald-400);
 }
 
 .tool-pane {
@@ -2620,6 +2670,383 @@
   color: var(--text-muted);
   max-width: 450px;
   margin: 0 auto;
+}
+
+/* -------------------------------------------------------------
+   12. FEATURE CURIOSITY HUB & QUICK JUMP SHOWCASE
+   ------------------------------------------------------------- */
+.curiosity-hub-section {
+  margin: 2.25rem 0 1.25rem;
+}
+
+.curiosity-hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.curiosity-hub-title-group {
+  max-width: 650px;
+}
+
+.badge-curiosity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--amber-400);
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="light"] .badge-curiosity-pill {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.curiosity-hub-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.curiosity-hub-sub {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Duolingo-style Quest Card */
+.curiosity-quest-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.15rem;
+  min-width: 270px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.curiosity-quest-card:hover {
+  border-color: var(--emerald-500);
+  box-shadow: 0 0 15px var(--emerald-glow);
+}
+
+.quest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.quest-label {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.quest-count {
+  color: var(--emerald-400);
+}
+
+.quest-bar {
+  height: 6px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+}
+
+.quest-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quest-status-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* Feature Cards Grid */
+.curiosity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 1.25rem;
+}
+
+.curiosity-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.curiosity-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--card-accent, #10b981), transparent);
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.curiosity-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-lg), 0 8px 24px -6px var(--card-glow, rgba(16, 185, 129, 0.15));
+}
+
+.curiosity-card.active {
+  border-color: var(--emerald-500);
+  background: var(--bg-surface);
+  box-shadow: 0 0 20px var(--emerald-glow);
+}
+
+.curiosity-card.active::before {
+  opacity: 1;
+  background: var(--emerald-400);
+}
+
+.curiosity-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.curiosity-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.curiosity-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.curiosity-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.curiosity-priority-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.curiosity-priority-badge.hot {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.curiosity-priority-badge.green {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald-400);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.curiosity-priority-badge.cyan {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--cyan-400);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.curiosity-priority-badge.amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--amber-400);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.curiosity-priority-badge.purple {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.curiosity-teaser {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 0.9rem;
+}
+
+.curiosity-metric-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.curiosity-metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald-400);
+  flex-shrink: 0;
+}
+
+.curiosity-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0.85rem;
+  margin-top: auto;
+}
+
+.curiosity-jump-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--emerald-400);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: transform var(--transition-fast);
+}
+
+.curiosity-card:hover .curiosity-jump-link {
+  transform: translateX(4px);
+}
+
+/* -------------------------------------------------------------
+   13. CURIOSITY BRIDGES (BOTTOM OF EVERY TOOL)
+   ------------------------------------------------------------- */
+.curiosity-bridge {
+  margin-top: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.bridge-header {
+  margin-bottom: 1.25rem;
+}
+
+.bridge-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cyan-400);
+  margin-bottom: 0.25rem;
+}
+
+[data-theme="light"] .bridge-badge {
+  color: #0284c7;
+}
+
+.bridge-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.bridge-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bridge-item:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--emerald-500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px var(--emerald-glow);
+}
+
+.bridge-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.bridge-content {
+  flex: 1;
+}
+
+.bridge-content strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.bridge-content p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.bridge-arrow {
+  color: var(--emerald-400);
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: transform var(--transition-fast);
+}
+
+.bridge-item:hover .bridge-arrow {
+  transform: translateX(3px);
 }
 
 

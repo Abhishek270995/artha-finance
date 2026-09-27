@@ -260,30 +260,234 @@
       </div>
     </section>
 
-    <!-- 4. Tools Navigation Bar -->
+    <!-- 4. Interactive Curiosity Hub & Quick-Jump Superpowers -->
+    <section class="curiosity-hub-section" id="curiosityHub">
+      <div class="container">
+        <div class="curiosity-hub-header">
+          <div class="curiosity-hub-title-group">
+            <div class="badge-curiosity-pill">✨ 7 Financial Superpowers for Everyday Indians</div>
+            <h2 class="curiosity-hub-title">Explore What You Can Solve Today</h2>
+            <p class="curiosity-hub-sub">
+              Zero logins. 100% private in your browser. Tap any superpower below to jump straight into its interactive calculator.
+            </p>
+          </div>
+          <!-- Duolingo-style Quest Card -->
+          <div class="curiosity-quest-card">
+            <div class="quest-header">
+              <span class="quest-label">🎯 Financial Quest</span>
+              <span class="quest-count" id="questCountBadge">1 / 7 Superpowers Unlocked</span>
+            </div>
+            <div class="quest-bar">
+              <div class="quest-progress" id="questProgressBar" style="width: 14%;"></div>
+            </div>
+            <div class="quest-status-text" id="questStatusText">🌱 Curious Explorer: Explore all tools to master personal finance!</div>
+          </div>
+        </div>
+
+        <!-- 7 Feature Cards Grid -->
+        <div class="curiosity-grid">
+          <!-- 1. Inflation Simulator & India vs Me -->
+          <div class="curiosity-card active" data-curiosity-target="inflation" style="--card-accent: #f59e0b; --card-glow: rgba(245, 158, 11, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">🔥</span>
+                <div>
+                  <h3 class="curiosity-title">Inflation Simulator</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">& "India vs Me" Duel</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge hot">#1 Signature</span>
+            </div>
+            <p class="curiosity-teaser">
+              "What will ₹50,000 cost in 2036?" Test Indian lifestyle baskets (House, Car, Gold, Groceries) and see your real 7.4% personal lifestyle inflation vs 6.1% CPI.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#f59e0b;"></span>
+              <span>₹50k today ≈ ₹89,542 in 2036 • +1.3% lifestyle gap</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Signature Tool</span>
+              <span class="curiosity-jump-link">Simulate Future Rupee →</span>
+            </div>
+          </div>
+
+          <!-- 2. Purchase Decision Engine -->
+          <div class="curiosity-card" data-curiosity-target="purchase" style="--card-accent: #10b981; --card-glow: rgba(16, 185, 129, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">🛒</span>
+                <div>
+                  <h3 class="curiosity-title">"Can I Afford This?"</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Purchase Duel Arena</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge green">Decision Engine</span>
+            </div>
+            <p class="curiosity-teaser">
+              Test an iPhone 16 Pro, bike, or vacation. See before vs after cashflow, how many working days of your life you trade, and 10-year Nifty opportunity cost.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#10b981;"></span>
+              <span>Life-Energy Workdays • 10-Yr Compounding Opp. Cost</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Instant Sanity Check</span>
+              <span class="curiosity-jump-link">Duel Affordability Now →</span>
+            </div>
+          </div>
+
+          <!-- 3. Tax Regime Optimizer -->
+          <div class="curiosity-card" data-curiosity-target="tax" style="--card-accent: #06b6d4; --card-glow: rgba(6, 182, 212, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">📜</span>
+                <div>
+                  <h3 class="curiosity-title">Tax Regime Optimizer</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">FY 2024-26 Slabs</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge cyan">Budget 2025</span>
+            </div>
+            <p class="curiosity-teaser">
+              Are you paying unnecessary income tax? Discover how Section 87A makes ₹7.75 Lakhs tax-free in the New Regime, and compare New vs Old with zero paperwork.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#06b6d4;"></span>
+              <span>₹0 Tax at ₹7.75L • 80C/80D/HRA Deduction Simulator</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Save Up to ₹50k+</span>
+              <span class="curiosity-jump-link">Optimize Tax Savings →</span>
+            </div>
+          </div>
+
+          <!-- 4. Loan Prepay vs SIP Battle -->
+          <div class="curiosity-card" data-curiosity-target="loan-vs-sip" style="--card-accent: #6366f1; --card-glow: rgba(99, 102, 241, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">⚖️</span>
+                <div>
+                  <h3 class="curiosity-title">Loan Prepay vs. SIP</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Wealth Battle Arena</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge purple">Wealth Arena</span>
+            </div>
+            <p class="curiosity-teaser">
+              Should you pay off your 8.5% home loan early or invest extra monthly cash in a 12% Nifty 50 SIP? See exact net wealth advantage numbers over your loan tenure.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#6366f1;"></span>
+              <span>Interest Saved vs SIP Corpus • Wealth Gap Revealed</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Resolve the Dilemma</span>
+              <span class="curiosity-jump-link">Enter the Battle Arena →</span>
+            </div>
+          </div>
+
+          <!-- 5. 50-30-20 Visual Cashflow -->
+          <div class="curiosity-card" data-curiosity-target="budget" style="--card-accent: #8b5cf6; --card-glow: rgba(139, 92, 246, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">📊</span>
+                <div>
+                  <h3 class="curiosity-title">50-30-20 Cashflow</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Visual Salary Buckets</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge green">Budget Audit</span>
+            </div>
+            <p class="curiosity-teaser">
+              Where does your monthly paycheck leak? Visual story buckets dividing Needs (50%), Wants (30%), and Freedom Wealth (20%) with live leak warnings.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#8b5cf6;"></span>
+              <span>Needs vs Wants Balance • Spending Leak Warning</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Healthy Cashflow</span>
+              <span class="curiosity-jump-link">Audit Salary Buckets →</span>
+            </div>
+          </div>
+
+          <!-- 6. Finance Dictionary (ELI5) -->
+          <div class="curiosity-card" data-curiosity-target="dictionary" style="--card-accent: #ec4899; --card-glow: rgba(236, 72, 153, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">📚</span>
+                <div>
+                  <h3 class="curiosity-title">Finance Dictionary</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">ELI5 Encyclopedia</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge amber">Zero Jargon</span>
+            </div>
+            <p class="curiosity-teaser">
+              Zero-knowledge dictionary with 26+ Indian terms (TDS, Section 87A, DTI, Repo Rate, CAGR) explained with pizza slices, cricket teams, and tea stalls.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#ec4899;"></span>
+              <span>Relatable Analogies • Rupee Examples • Traps</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">26+ Terms Curated</span>
+              <span class="curiosity-jump-link">Browse Dictionary →</span>
+            </div>
+          </div>
+
+          <!-- 7. Life Chronology & FIRE -->
+          <div class="curiosity-card" data-curiosity-target="retirement" style="--card-accent: #f59e0b; --card-glow: rgba(245, 158, 11, 0.2);">
+            <div class="curiosity-card-header">
+              <div class="curiosity-card-title-group">
+                <span class="curiosity-icon">🎯</span>
+                <div>
+                  <h3 class="curiosity-title">Life & FIRE Target</h3>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Freedom Timeline</span>
+                </div>
+              </div>
+              <span class="curiosity-priority-badge hot">Freedom Age</span>
+            </div>
+            <p class="curiosity-teaser">
+              When will working for a paycheck become optional? Calculate your 25x freedom corpus based on real Indian living costs and your target retirement year.
+            </p>
+            <div class="curiosity-metric-box">
+              <span class="curiosity-metric-dot" style="background:#f59e0b;"></span>
+              <span>Rule of 25 Target • Freedom Year Countdown</span>
+            </div>
+            <div class="curiosity-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Retire Early</span>
+              <span class="curiosity-jump-link">Calculate FIRE Freedom →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Priority Tools Navigation Bar (Sticky with Live Badges) -->
     <section class="tools-navigation">
       <div class="container">
         <nav class="tabs-track" aria-label="Financial Tools">
-          <button class="tab-btn active" data-tab-target="purchase">
-            🛒 "Can I Afford This?" Duel
+          <button class="tab-btn active" data-tab-target="inflation">
+            🔥 Inflation Simulator <span class="tab-badge-pill hot">Signature</span>
           </button>
-          <button class="tab-btn" data-tab-target="budget">
-            📊 50-30-20 Visual Cashflow
+          <button class="tab-btn" data-tab-target="purchase">
+            🛒 "Can I Afford This?" <span class="tab-badge-pill">Life-Energy</span>
           </button>
           <button class="tab-btn" data-tab-target="tax">
-            📜 Tax Regime Optimizer (FY 24-26)
-          </button>
-          <button class="tab-btn" data-tab-target="inflation">
-            🔥 Inflation Simulator <span class="tab-signature-badge">Signature</span>
+            📜 Tax Optimizer <span class="tab-badge-pill tax">FY 24-26 • ₹0 Tax</span>
           </button>
           <button class="tab-btn" data-tab-target="loan-vs-sip">
-            ⚖️ Loan Prepay vs. SIP Battle
+            ⚖️ Loan vs. SIP <span class="tab-badge-pill">Wealth Arena</span>
           </button>
-          <button class="tab-btn" data-tab-target="retirement">
-            🎯 Life Chronology & FIRE
+          <button class="tab-btn" data-tab-target="budget">
+            📊 50-30-20 Cashflow <span class="tab-badge-pill">Budget</span>
           </button>
           <button class="tab-btn" data-tab-target="dictionary">
-            📚 Finance Dictionary (ELI5)
+            📚 Finance Dictionary <span class="tab-badge-pill dict">ELI5</span>
+          </button>
+          <button class="tab-btn" data-tab-target="retirement">
+            🎯 Life & FIRE <span class="tab-badge-pill">Freedom</span>
           </button>
         </nav>
       </div>
@@ -293,7 +497,7 @@
     <div class="container">
       
       <!-- TOOL 1: "CAN I AFFORD THIS?" -->
-      <section class="tool-pane active" id="pane-purchase">
+      <section class="tool-pane" id="pane-purchase">
         <div class="tool-grid">
           <!-- Input Configuration -->
           <div class="tool-card">
@@ -470,6 +674,40 @@
 
           </div>
         </div>
+
+        <!-- Curiosity Bridge: What to explore next -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Take Your Decision Further</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="inflation">
+              <div class="bridge-icon">🔥</div>
+              <div class="bridge-content">
+                <strong>Simulate Future Inflation</strong>
+                <p>Curious how much this item will cost in 2036? See long-term price decay.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="loan-vs-sip">
+              <div class="bridge-icon">⚖️</div>
+              <div class="bridge-content">
+                <strong>Prepay Loan or Invest in SIP?</strong>
+                <p>Instead of EMIs, see how investing this cash in Nifty 50 builds wealth.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="dictionary">
+              <div class="bridge-icon">📚</div>
+              <div class="bridge-content">
+                <strong>Finance Dictionary (ELI5)</strong>
+                <p>Look up DTI, APR, and Life-Energy Days explained with simple analogies.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 2: 50-30-20 & BHARAT BUDGET -->
@@ -544,6 +782,40 @@
             <p class="text-subtle" style="text-align: center;">
               *Adapts reactively as you adjust salary and monthly expenses.
             </p>
+          </div>
+        </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Put Your Cashflow into Action</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="purchase">
+              <div class="bridge-icon">🛒</div>
+              <div class="bridge-content">
+                <strong>Test a Purchase Affordability</strong>
+                <p>Check if a gadget or car EMI fits inside your 30% Wants bucket.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="tax">
+              <div class="bridge-icon">📜</div>
+              <div class="bridge-content">
+                <strong>Cut Down Income Tax</strong>
+                <p>Lower your tax bill under Budget 2025 to increase your take-home cashflow.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="retirement">
+              <div class="bridge-icon">🎯</div>
+              <div class="bridge-content">
+                <strong>Map Your FIRE Retirement Date</strong>
+                <p>See how your 20% future wealth bucket compounds into a retirement corpus.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
           </div>
         </div>
       </section>
@@ -664,10 +936,44 @@
             </div>
           </div>
         </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Put Your Tax Savings to Work</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="loan-vs-sip">
+              <div class="bridge-icon">⚖️</div>
+              <div class="bridge-content">
+                <strong>Loan Prepay vs. Nifty SIP Battle</strong>
+                <p>Use your tax savings to accelerate debt freedom or compound wealth.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="inflation">
+              <div class="bridge-icon">🔥</div>
+              <div class="bridge-content">
+                <strong>Simulate Inflation Decay</strong>
+                <p>Tax saved is rupee earned—see why keeping it in cash loses 6%+ to inflation.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="dictionary">
+              <div class="bridge-icon">📚</div>
+              <div class="bridge-content">
+                <strong>Taxes & Govt Dictionary (ELI5)</strong>
+                <p>Read zero-jargon explanations for Section 87A, TDS, HRA, and NPS.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 4: SIGNATURE INFLATION SIMULATOR -->
-      <section class="tool-pane" id="pane-inflation">
+      <section class="tool-pane active" id="pane-inflation">
         <div class="tool-card" style="margin-bottom: 1.25rem;">
           <div class="badge-signature-pill">⭐ Artha Signature Feature</div>
           <h2 class="tool-card-title" style="font-size: 1.45rem; margin-top: 0.25rem;">
@@ -956,6 +1262,40 @@
             </div>
           </div>
         </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Defend Your Future Against Inflation</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="purchase">
+              <div class="bridge-icon">🛒</div>
+              <div class="bridge-content">
+                <strong>"Can I Afford This?" Duel</strong>
+                <p>Test if you can afford that car or laptop before inflation increases its price.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="loan-vs-sip">
+              <div class="bridge-icon">⚖️</div>
+              <div class="bridge-content">
+                <strong>Loan Prepay vs. 12% Nifty SIP</strong>
+                <p>Investing in index equities is India's proven shield against 7%+ lifestyle inflation.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="dictionary">
+              <div class="bridge-icon">📚</div>
+              <div class="bridge-content">
+                <strong>Finance Dictionary (ELI5)</strong>
+                <p>Read simple analogies explaining CPI, Purchasing Power, and Lifestyle Creep.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 5: LOAN PREPAYMENT VS EQUITY SIP -->
@@ -1058,6 +1398,40 @@
             </div>
           </div>
         </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Chart Your Path to Financial Freedom</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="retirement">
+              <div class="bridge-icon">🎯</div>
+              <div class="bridge-content">
+                <strong>Life Chronology & FIRE Target</strong>
+                <p>See how extra SIP compounding accelerates your debt-free retirement date.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="inflation">
+              <div class="bridge-icon">🔥</div>
+              <div class="bridge-content">
+                <strong>Simulate Long-Term Inflation</strong>
+                <p>Factor in future price increases on your eventual investment corpus.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="dictionary">
+              <div class="bridge-icon">📚</div>
+              <div class="bridge-content">
+                <strong>Learn CAGR, XIRR & Expense Ratios</strong>
+                <p>Discover why choosing direct index funds saves lakhs in hidden commissions.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 6: AGE-BASED GOALS & RETIREMENT -->
@@ -1154,6 +1528,40 @@
             </div>
           </div>
         </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Next Financial Superpower to Explore</span>
+            <h3 class="bridge-title">Secure Your Wealth Journey</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="inflation">
+              <div class="bridge-icon">🔥</div>
+              <div class="bridge-content">
+                <strong>Simulate Future Living Expenses</strong>
+                <p>See what your ₹40,000 monthly living expense will be in 2045 with inflation.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="loan-vs-sip">
+              <div class="bridge-icon">⚖️</div>
+              <div class="bridge-content">
+                <strong>Loan Prepay vs. SIP Battle</strong>
+                <p>Discover whether prepaying debt or investing in Nifty gets you to FIRE faster.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="dictionary">
+              <div class="bridge-icon">📚</div>
+              <div class="bridge-content">
+                <strong>Read the FIRE & 50-30-20 Rules</strong>
+                <p>Understand the 25x safe withdrawal rule with simple, memorable analogies.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TOOL 7: FINANCE ENCYCLOPEDIA & ZERO-KNOWLEDGE DICTIONARY (ELI5) -->
@@ -1201,6 +1609,40 @@
           <div class="dict-empty-title">No matching financial terms found</div>
           <div class="dict-empty-sub">Try searching for terms like "EMI", "TDS", "SIP", "Tax", or clear your search filter.</div>
           <button type="button" class="preset-purchase-btn" id="btnResetDictSearch" style="margin-top: 0.75rem;">Reset Search</button>
+        </div>
+
+        <!-- Curiosity Bridge -->
+        <div class="curiosity-bridge">
+          <div class="bridge-header">
+            <span class="bridge-badge">🚀 Apply Your Knowledge in Artha</span>
+            <h3 class="bridge-title">Ready to Test These Concepts on Real Numbers?</h3>
+          </div>
+          <div class="bridge-grid">
+            <div class="bridge-item" data-jump-tool="inflation">
+              <div class="bridge-icon">🔥</div>
+              <div class="bridge-content">
+                <strong>Simulate Inflation On Goods</strong>
+                <p>See the CPI numbers you just learned applied to houses, cars, and groceries.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="tax">
+              <div class="bridge-icon">📜</div>
+              <div class="bridge-content">
+                <strong>Test Section 87A & Standard Deduction</strong>
+                <p>Run your actual salary to verify why ₹7.75 Lakhs is ₹0 tax in FY 24-26.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+            <div class="bridge-item" data-jump-tool="purchase">
+              <div class="bridge-icon">🛒</div>
+              <div class="bridge-content">
+                <strong>Test No-Cost EMI & Life-Days</strong>
+                <p>Run your desired gadget through the "Can I Afford This?" duel engine.</p>
+              </div>
+              <span class="bridge-arrow">→</span>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -1289,7 +1289,8 @@
   }
   var ArthaApp = class {
     constructor() {
-      this.currentTab = "purchase";
+      this.currentTab = "inflation";
+      this.exploredTools = /* @__PURE__ */ new Set(["inflation"]);
       this.currentFactIndex = 0;
       this.factTickerInterval = null;
       this.init();
@@ -1364,6 +1365,11 @@
         this.bindExportReport();
       } catch (e) {
         console.error("Export report error:", e);
+      }
+      try {
+        this.updateExplorationProgress();
+      } catch (e) {
+        console.error("Quest update error:", e);
       }
       try {
         profileManager.subscribe((vitals) => {
@@ -1551,23 +1557,86 @@
     /* -------------------------------------------------------------
        2. NAVIGATION & TABS
        ------------------------------------------------------------- */
-    switchTab(target) {
+    switchTab(target, shouldScroll = false) {
       this.currentTab = target;
       const tabButtons = document.querySelectorAll("[data-tab-target]");
       tabButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-tab-target") === target));
+      document.querySelectorAll("[data-curiosity-target]").forEach((card) => {
+        card.classList.toggle("active", card.getAttribute("data-curiosity-target") === target);
+      });
       document.querySelectorAll(".tool-pane").forEach((pane) => {
         pane.classList.toggle("active", pane.id === `pane-${target}`);
       });
+      this.trackExploredTool(target);
       this.refreshCurrentTool(profileManager.getVitals());
+      if (shouldScroll) {
+        const targetPane = document.getElementById(`pane-${target}`);
+        if (targetPane) {
+          const navEl = document.querySelector(".tools-navigation");
+          const offset = navEl ? navEl.offsetHeight + 10 : 70;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = targetPane.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: "smooth"
+          });
+        }
+      }
     }
     bindTabs() {
       const tabButtons = document.querySelectorAll("[data-tab-target]");
       tabButtons.forEach((btn) => {
         btn.addEventListener("click", (e) => {
           const target = e.currentTarget.getAttribute("data-tab-target");
-          this.switchTab(target);
+          this.switchTab(target, false);
         });
       });
+      const curiosityCards = document.querySelectorAll("[data-curiosity-target]");
+      curiosityCards.forEach((card) => {
+        card.addEventListener("click", (e) => {
+          const target = e.currentTarget.getAttribute("data-curiosity-target");
+          this.switchTab(target, true);
+        });
+      });
+      document.addEventListener("click", (e) => {
+        const jumpEl = e.target.closest("[data-jump-tool]");
+        if (jumpEl) {
+          e.preventDefault();
+          const targetTool = jumpEl.getAttribute("data-jump-tool");
+          if (targetTool) {
+            this.switchTab(targetTool, true);
+          }
+        }
+      });
+    }
+    trackExploredTool(target) {
+      if (!this.exploredTools) this.exploredTools = /* @__PURE__ */ new Set(["inflation"]);
+      this.exploredTools.add(target);
+      this.updateExplorationProgress();
+    }
+    updateExplorationProgress() {
+      const countBadge = document.getElementById("questCountBadge");
+      const progressBar = document.getElementById("questProgressBar");
+      const statusText = document.getElementById("questStatusText");
+      if (!this.exploredTools) this.exploredTools = /* @__PURE__ */ new Set(["inflation"]);
+      const count = this.exploredTools.size;
+      const total = 7;
+      const pct = Math.round(count / total * 100);
+      if (countBadge) countBadge.textContent = `${count} / ${total} Superpowers Unlocked`;
+      if (progressBar) progressBar.style.width = `${pct}%`;
+      if (statusText) {
+        if (count <= 2) {
+          statusText.textContent = `\u{1F331} Curious Explorer: ${total - count} more tools to discover!`;
+        } else if (count <= 4) {
+          statusText.textContent = `\u26A1 Smart Navigator: You're uncovering hidden wealth leaks!`;
+        } else if (count <= 6) {
+          statusText.textContent = `\u{1F525} Financial Tactician: Almost master of all 7 superpowers!`;
+        } else {
+          statusText.textContent = `\u{1F3C6} Grandmaster of Artha: You've unlocked all 7 superpowers!`;
+        }
+      }
     }
     refreshCurrentTool(vitals) {
       switch (this.currentTab) {

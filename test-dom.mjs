@@ -39,6 +39,9 @@ window.HTMLCanvasElement.prototype.getContext = function () {
   };
 };
 
+// Polyfill window.scrollTo for JSDOM
+window.scrollTo = () => {};
+
 // Execute bundle
 const scriptEl = document.createElement('script');
 scriptEl.textContent = bundleContent;
@@ -187,6 +190,41 @@ deepLinkBtn.click();
 const taxPane = document.getElementById('pane-tax');
 console.assert(taxPane && taxPane.classList.contains('active'), "Clicking deep link should switch active pane to Tax Regime Optimizer");
 console.log("✓ Deep-Link Jump working: Navigated from Dictionary card directly into Tax tool!");
+
+// 8. Test Feature Curiosity Hub & Exploration Bridges
+const curiosityHub = document.getElementById('curiosityHub');
+console.assert(curiosityHub, "Curiosity Hub section must exist in DOM");
+
+const curiosityCards = curiosityHub.querySelectorAll('[data-curiosity-target]');
+console.assert(curiosityCards.length === 7, `Expected 7 curiosity cards, found ${curiosityCards.length}`);
+console.log(`✓ Curiosity Hub Verified: ${curiosityCards.length} prioritized cards found`);
+
+// Click Curiosity Card for Loan Prepay vs SIP
+const loanCuriosityCard = document.querySelector('[data-curiosity-target="loan-vs-sip"]');
+console.assert(loanCuriosityCard, "Loan vs SIP curiosity card must exist");
+loanCuriosityCard.click();
+
+const loanPane = document.getElementById('pane-loan-vs-sip');
+console.assert(loanPane && loanPane.classList.contains('active'), "Clicking curiosity card should activate loan-vs-sip pane");
+console.assert(loanCuriosityCard.classList.contains('active'), "Clicked curiosity card should receive active class");
+
+// Check Duolingo-style Quest Counter
+const questCountBadge = document.getElementById('questCountBadge');
+const questProgressBar = document.getElementById('questProgressBar');
+console.assert(questCountBadge && questCountBadge.textContent.includes('Superpowers Unlocked'), "Quest count badge should be updated");
+console.log(`✓ Exploration Quest Progress: "${questCountBadge?.textContent.trim()}" (Bar: ${questProgressBar?.style.width})`);
+
+// Test Curiosity Bridge at bottom of Loan pane
+const loanBridge = loanPane.querySelector('.curiosity-bridge');
+console.assert(loanBridge, "Curiosity bridge must exist at the bottom of loan-vs-sip pane");
+
+const retBridgeItem = loanBridge.querySelector('[data-jump-tool="retirement"]');
+console.assert(retBridgeItem, "Retirement bridge item must exist in loan bridge");
+retBridgeItem.click();
+
+const retPane = document.getElementById('pane-retirement');
+console.assert(retPane && retPane.classList.contains('active'), "Clicking curiosity bridge should smoothly jump to retirement pane");
+console.log("✓ Curiosity Bridge Jump working: Navigated from Loan tool bottom bridge to Life & FIRE tool!");
 
 console.log("=== DOM INTEGRATION TEST PASSED PERFECTLY ===");
 process.exit(0);
