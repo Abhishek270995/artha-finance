@@ -1506,10 +1506,10 @@
       const storyTitle = document.getElementById("storyGreetingTitle");
       const storyBody = document.getElementById("storyGreetingBody");
       if (storyTitle) {
-        storyTitle.textContent = `\u0928\u092E\u0938\u094D\u0924\u0947! You have ${formatINR(vitals.surplus)} of pure freedom cash (\u0938\u094D\u0935\u093E\u0935\u0932\u0902\u092C\u0928 \u0927\u0928) every month.`;
+        storyTitle.textContent = `You have ${formatINR(vitals.surplus)} of pure freedom cash every month.`;
       }
       if (storyBody) {
-        storyBody.innerHTML = `From your <strong>${formatINR(vitals.salary)}</strong> take-home salary, <strong>${formatINR(vitals.emi)}</strong> pays past EMIs and <strong>${formatINR(vitals.expenses)}</strong> covers household survival expenses.`;
+        storyBody.innerHTML = `From your <strong>${formatINR(vitals.salary)}</strong> take-home salary, <strong>${formatINR(vitals.emi)}</strong> pays past EMIs and <strong>${formatINR(vitals.expenses)}</strong> covers survival expenses.`;
       }
       if (hudSalary) hudSalary.textContent = formatINR(vitals.salary);
       if (hudSurplus) hudSurplus.textContent = formatINR(vitals.surplus);
