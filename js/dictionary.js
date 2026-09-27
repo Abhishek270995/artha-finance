@@ -36,8 +36,8 @@ export const FINANCE_DICTIONARY = [
     level: 'Beginner',
     eli5: 'A special government discount rule that makes your total income tax exactly ₹0 if your taxable salary stays under the statutory limit.',
     analogy: 'A 100% discount coupon applied at checkout: the bill is calculated, but the coupon wipes the total down to zero.',
-    example: 'In the New Tax Regime, total tax on ₹7.75 Lakhs (with ₹75,000 standard deduction) is ₹25,000, but 87A gives a ₹25,000 rebate = ₹0 tax!',
-    trapWarning: 'If your net taxable income exceeds ₹7 Lakhs by even ₹100, the rebate drops away and you pay full slab tax.',
+    example: 'In the New Tax Regime, total tax on ₹12.75 Lakhs gross salary (with ₹75,000 standard deduction) is ₹60,000, but Section 87A provides a full ₹60,000 rebate = ₹0 tax!',
+    trapWarning: 'Under the latest rules, zero tax applies up to ₹12 Lakhs taxable income (₹12.75L gross for salaried). If taxable income slightly exceeds ₹12L, marginal relief prevents your tax from exceeding the extra income earned.',
     usedInTool: 'tax',
     usedInToolLabel: '📜 Tax Regime Optimizer'
   },

@@ -117,33 +117,38 @@ export function calculateIndianTax({
 }) {
   const gross = Math.max(0, annualGrossSalary);
 
-  // --- NEW TAX REGIME (FY 24-25 / 25-26 Budget Slabs) ---
+  // --- NEW TAX REGIME (FY 2025-26 Budget Slabs) ---
+  // Slabs: 0-4L: Nil, 4-8L: 5%, 8-12L: 10%, 12-16L: 15%, 16-20L: 20%, 20-24L: 25%, >24L: 30%
   const newStdDeduction = 75000;
   const newTaxableIncome = Math.max(0, gross - newStdDeduction);
 
   let newTax = 0;
-  if (newTaxableIncome <= 300000) {
+  if (newTaxableIncome <= 400000) {
     newTax = 0;
-  } else if (newTaxableIncome <= 700000) {
-    newTax = (newTaxableIncome - 300000) * 0.05;
-  } else if (newTaxableIncome <= 1000000) {
-    newTax = 400000 * 0.05 + (newTaxableIncome - 700000) * 0.10;
+  } else if (newTaxableIncome <= 800000) {
+    newTax = (newTaxableIncome - 400000) * 0.05;
   } else if (newTaxableIncome <= 1200000) {
-    newTax = 400000 * 0.05 + 300000 * 0.10 + (newTaxableIncome - 1000000) * 0.15;
-  } else if (newTaxableIncome <= 1500000) {
-    newTax = 400000 * 0.05 + 300000 * 0.10 + 200000 * 0.15 + (newTaxableIncome - 1200000) * 0.20;
+    newTax = 400000 * 0.05 + (newTaxableIncome - 800000) * 0.10;
+  } else if (newTaxableIncome <= 1600000) {
+    newTax = 400000 * 0.05 + 400000 * 0.10 + (newTaxableIncome - 1200000) * 0.15;
+  } else if (newTaxableIncome <= 2000000) {
+    newTax = 400000 * 0.05 + 400000 * 0.10 + 400000 * 0.15 + (newTaxableIncome - 1600000) * 0.20;
+  } else if (newTaxableIncome <= 2400000) {
+    newTax = 400000 * 0.05 + 400000 * 0.10 + 400000 * 0.15 + 400000 * 0.20 + (newTaxableIncome - 2000000) * 0.25;
   } else {
-    newTax = 400000 * 0.05 + 300000 * 0.10 + 200000 * 0.15 + 300000 * 0.20 + (newTaxableIncome - 1500000) * 0.30;
+    newTax = 400000 * 0.05 + 400000 * 0.10 + 400000 * 0.15 + 400000 * 0.20 + 400000 * 0.25 + (newTaxableIncome - 2400000) * 0.30;
   }
 
-  // Section 87A rebate under New Regime: Taxable income up to ₹7,00,000 is 100% rebated
-  if (newTaxableIncome <= 700000) {
+  // Section 87A rebate under New Regime: Taxable income up to ₹12,00,000 gets 100% rebate (up to ₹60,000)
+  // For salaried individuals with ₹75k standard deduction, gross income up to ₹12.75 Lakhs pays ₹0 tax!
+  if (newTaxableIncome <= 1200000) {
     newTax = 0;
-  }
-  // Marginal relief if slightly above 7L
-  if (newTaxableIncome > 700000 && newTaxableIncome <= 727770) {
-    const excess = newTaxableIncome - 700000;
-    if (newTax > excess) newTax = excess;
+  } else if (newTaxableIncome <= 1270588) {
+    // Marginal relief under Section 87A: tax payable cannot exceed the amount by which income exceeds ₹12 Lakhs
+    const excess = newTaxableIncome - 1200000;
+    if (newTax > excess) {
+      newTax = excess;
+    }
   }
 
   const newCess = newTax * 0.04;

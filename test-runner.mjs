@@ -19,10 +19,15 @@ console.log("=== RUNNING ARTHA TEST SUITE ===");
 console.assert(VERIFIED_FACTS.length >= 8, `Expected at least 8 facts, got ${VERIFIED_FACTS.length}`);
 console.log(`✓ Verified Facts Loaded: ${VERIFIED_FACTS.length} advisories from RBI, SEBI, AMFI`);
 
-// Test 2: Tax under ₹7.75 Lakhs in New Regime (₹75k std deduction + 87A rebate)
-const tax750k = calculateIndianTax({ annualGrossSalary: 775000 });
-console.assert(tax750k.newRegime.totalTax === 0, `Tax for ₹7.75L should be 0, got ${tax750k.newRegime.totalTax}`);
-console.log(`✓ Tax at ₹7.75L in New Regime: ${formatINR(tax750k.newRegime.totalTax)} (Zero Tax verified)`);
+// Test 2: Tax under ₹12.75 Lakhs in New Regime (₹75k std deduction + Section 87A ₹60k rebate)
+const tax1275k = calculateIndianTax({ annualGrossSalary: 1275000 });
+console.assert(tax1275k.newRegime.totalTax === 0, `Tax for ₹12.75L should be 0, got ${tax1275k.newRegime.totalTax}`);
+console.log(`✓ Tax at ₹12.75L in New Regime: ${formatINR(tax1275k.newRegime.totalTax)} (Zero Tax at ₹12L taxable verified)`);
+
+// Test 2b: Marginal relief just above ₹12 Lakhs taxable (₹12,85,000 gross = ₹12,10,000 taxable)
+const taxMarginal = calculateIndianTax({ annualGrossSalary: 1285000 });
+console.assert(taxMarginal.newRegime.baseTax === 10000, `Marginal relief base tax should be excess ₹10,000, got ${taxMarginal.newRegime.baseTax}`);
+console.log(`✓ Marginal Relief at ₹12.85L (₹10k excess income): Base Tax = ${formatINR(taxMarginal.newRegime.baseTax)} (Capped to excess)`);
 
 // Test 3: Higher income tax comparison (₹16.5 Lakhs)
 const tax1650k = calculateIndianTax({

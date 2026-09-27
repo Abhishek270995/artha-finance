@@ -86,25 +86,28 @@
     const newStdDeduction = 75e3;
     const newTaxableIncome = Math.max(0, gross - newStdDeduction);
     let newTax = 0;
-    if (newTaxableIncome <= 3e5) {
+    if (newTaxableIncome <= 4e5) {
       newTax = 0;
-    } else if (newTaxableIncome <= 7e5) {
-      newTax = (newTaxableIncome - 3e5) * 0.05;
-    } else if (newTaxableIncome <= 1e6) {
-      newTax = 4e5 * 0.05 + (newTaxableIncome - 7e5) * 0.1;
+    } else if (newTaxableIncome <= 8e5) {
+      newTax = (newTaxableIncome - 4e5) * 0.05;
     } else if (newTaxableIncome <= 12e5) {
-      newTax = 4e5 * 0.05 + 3e5 * 0.1 + (newTaxableIncome - 1e6) * 0.15;
-    } else if (newTaxableIncome <= 15e5) {
-      newTax = 4e5 * 0.05 + 3e5 * 0.1 + 2e5 * 0.15 + (newTaxableIncome - 12e5) * 0.2;
+      newTax = 4e5 * 0.05 + (newTaxableIncome - 8e5) * 0.1;
+    } else if (newTaxableIncome <= 16e5) {
+      newTax = 4e5 * 0.05 + 4e5 * 0.1 + (newTaxableIncome - 12e5) * 0.15;
+    } else if (newTaxableIncome <= 2e6) {
+      newTax = 4e5 * 0.05 + 4e5 * 0.1 + 4e5 * 0.15 + (newTaxableIncome - 16e5) * 0.2;
+    } else if (newTaxableIncome <= 24e5) {
+      newTax = 4e5 * 0.05 + 4e5 * 0.1 + 4e5 * 0.15 + 4e5 * 0.2 + (newTaxableIncome - 2e6) * 0.25;
     } else {
-      newTax = 4e5 * 0.05 + 3e5 * 0.1 + 2e5 * 0.15 + 3e5 * 0.2 + (newTaxableIncome - 15e5) * 0.3;
+      newTax = 4e5 * 0.05 + 4e5 * 0.1 + 4e5 * 0.15 + 4e5 * 0.2 + 4e5 * 0.25 + (newTaxableIncome - 24e5) * 0.3;
     }
-    if (newTaxableIncome <= 7e5) {
+    if (newTaxableIncome <= 12e5) {
       newTax = 0;
-    }
-    if (newTaxableIncome > 7e5 && newTaxableIncome <= 727770) {
-      const excess = newTaxableIncome - 7e5;
-      if (newTax > excess) newTax = excess;
+    } else if (newTaxableIncome <= 1270588) {
+      const excess = newTaxableIncome - 12e5;
+      if (newTax > excess) {
+        newTax = excess;
+      }
     }
     const newCess = newTax * 0.04;
     const newTotalTax = Math.round(newTax + newCess);
@@ -546,9 +549,9 @@
       category: "Income Tax",
       icon: "receipt-tax",
       urgency: "success",
-      title: "Zero Tax on Salaried Income up to \u20B97.75 Lakhs",
-      shortSnippet: "Under the New Tax Regime, salaried individuals pay \u20B90 income tax on annual gross salary up to \u20B97.75 Lakhs (Standard Deduction of \u20B975,000 + Section 87A rebate).",
-      fullDetails: "The revised tax slabs with a \u20B975,000 standard deduction make the New Tax Regime substantially more beneficial for people without huge home loan interest or HRA deductions exceeding \u20B93.5 Lakhs.",
+      title: "Zero Tax on Salaried Income up to \u20B912.75 Lakhs",
+      shortSnippet: "Under the New Tax Regime, salaried individuals pay \u20B90 income tax on annual gross salary up to \u20B912.75 Lakhs (Standard Deduction of \u20B975,000 + Section 87A rebate up to \u20B912 Lakhs taxable income).",
+      fullDetails: "Under the latest Union Budget slabs, taxable income up to \u20B912 Lakhs is completely tax-free via the enhanced \u20B960,000 Section 87A rebate. With the \u20B975,000 standard deduction, salaried employees earning up to \u20B912.75 Lakhs pay zero income tax. Even for higher earners, revised \u20B94L bracket slabs substantially reduce tax liability.",
       actionableTip: "Run our Tax Comparator below to see whether New or Old Tax Regime saves you more money based on your specific deductions."
     },
     {
@@ -934,8 +937,8 @@
       level: "Beginner",
       eli5: "A special government discount rule that makes your total income tax exactly \u20B90 if your taxable salary stays under the statutory limit.",
       analogy: "A 100% discount coupon applied at checkout: the bill is calculated, but the coupon wipes the total down to zero.",
-      example: "In the New Tax Regime, total tax on \u20B97.75 Lakhs (with \u20B975,000 standard deduction) is \u20B925,000, but 87A gives a \u20B925,000 rebate = \u20B90 tax!",
-      trapWarning: "If your net taxable income exceeds \u20B97 Lakhs by even \u20B9100, the rebate drops away and you pay full slab tax.",
+      example: "In the New Tax Regime, total tax on \u20B912.75 Lakhs gross salary (with \u20B975,000 standard deduction) is \u20B960,000, but Section 87A provides a full \u20B960,000 rebate = \u20B90 tax!",
+      trapWarning: "Under the latest rules, zero tax applies up to \u20B912 Lakhs taxable income (\u20B912.75L gross for salaried). If taxable income slightly exceeds \u20B912L, marginal relief prevents your tax from exceeding the extra income earned.",
       usedInTool: "tax",
       usedInToolLabel: "\u{1F4DC} Tax Regime Optimizer"
     },

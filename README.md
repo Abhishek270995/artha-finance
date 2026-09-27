@@ -9,7 +9,7 @@
 
 - 🔒 **Zero Login & 100% Private**: Runs entirely in the client browser using `localStorage`. No server-side storage, no tracking cookies, and zero personal financial data ever leaves your device.
 - 🇮🇳 **Calibrated for Indian Economic Realities**:
-  - **Indian Tax Slabs (FY 2024-25 / 2025-26)**: Side-by-side comparison of New vs. Old Tax Regimes with ₹75,000 standard deduction and Section 87A rebate (zero tax up to ₹7.75 Lakhs gross income).
+  - **Indian Tax Slabs (FY 2025-26)**: Side-by-side comparison of New vs. Old Tax Regimes with ₹75,000 standard deduction and Section 87A rebate (zero tax up to ₹12 Lakhs taxable / ₹12.75 Lakhs salaried gross income).
   - **Differentiated Inflation Modeling**: Simulates headline CPI (5.5%), Higher Education inflation (10%), and Medical inflation (12%).
   - **Indian Currency Formatting**: Native Lakhs (`L`) and Crores (`Cr`) notation across all calculators.
 - 📢 **Verified Regulatory Awareness Ticker & Hover Cards**:

@@ -58,9 +58,9 @@ export const VERIFIED_FACTS = [
     category: "Income Tax",
     icon: "receipt-tax",
     urgency: "success",
-    title: "Zero Tax on Salaried Income up to ₹7.75 Lakhs",
-    shortSnippet: "Under the New Tax Regime, salaried individuals pay ₹0 income tax on annual gross salary up to ₹7.75 Lakhs (Standard Deduction of ₹75,000 + Section 87A rebate).",
-    fullDetails: "The revised tax slabs with a ₹75,000 standard deduction make the New Tax Regime substantially more beneficial for people without huge home loan interest or HRA deductions exceeding ₹3.5 Lakhs.",
+    title: "Zero Tax on Salaried Income up to ₹12.75 Lakhs",
+    shortSnippet: "Under the New Tax Regime, salaried individuals pay ₹0 income tax on annual gross salary up to ₹12.75 Lakhs (Standard Deduction of ₹75,000 + Section 87A rebate up to ₹12 Lakhs taxable income).",
+    fullDetails: "Under the latest Union Budget slabs, taxable income up to ₹12 Lakhs is completely tax-free via the enhanced ₹60,000 Section 87A rebate. With the ₹75,000 standard deduction, salaried employees earning up to ₹12.75 Lakhs pay zero income tax. Even for higher earners, revised ₹4L bracket slabs substantially reduce tax liability.",
     actionableTip: "Run our Tax Comparator below to see whether New or Old Tax Regime saves you more money based on your specific deductions."
   },
   {
