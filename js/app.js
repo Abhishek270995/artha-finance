@@ -222,10 +222,10 @@ class ArthaApp {
     const storyTitle = document.getElementById('storyGreetingTitle');
     const storyBody = document.getElementById('storyGreetingBody');
     if (storyTitle) {
-      storyTitle.textContent = `You have ${formatINR(vitals.surplus)} of pure freedom cash every month.`;
+      storyTitle.textContent = `नमस्ते! You have ${formatINR(vitals.surplus)} of pure freedom cash (स्वावलंबन धन) every month.`;
     }
     if (storyBody) {
-      storyBody.innerHTML = `From your <strong>${formatINR(vitals.salary)}</strong> take-home salary, <strong>${formatINR(vitals.emi)}</strong> pays past EMIs and <strong>${formatINR(vitals.expenses)}</strong> covers survival needs.`;
+      storyBody.innerHTML = `From your <strong>${formatINR(vitals.salary)}</strong> take-home salary, <strong>${formatINR(vitals.emi)}</strong> pays past EMIs and <strong>${formatINR(vitals.expenses)}</strong> covers household survival expenses.`;
     }
 
     if (hudSalary) hudSalary.textContent = formatINR(vitals.salary);
