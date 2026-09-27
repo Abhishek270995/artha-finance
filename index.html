@@ -16,12 +16,15 @@
     })();
   </script>
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <!-- Stylesheets with Cache Busting -->
+  <link rel="stylesheet" href="css/main.css?v=bharat_gold_v5">
+  <link rel="stylesheet" href="css/components.css?v=bharat_gold_v5">
+  <link rel="stylesheet" href="css/responsive.css?v=bharat_gold_v5">
 </head>
 <body>
+  <!-- 0. Indian National Flag Micro-Ribbon at Top Edge (Fail-Safe) -->
+  <div class="tiranga-top-bar" style="position: fixed; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #ff7722 0%, #ff7722 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%, #138808 100%); z-index: 99999; box-shadow: 0 1px 6px rgba(255, 119, 34, 0.45);" aria-hidden="true"></div>
+
   <!-- Sovereign Currency Guilloche & Ashoka Mandala Background Watermark -->
   <div class="bg-india-pattern" aria-hidden="true"></div>
 
@@ -1709,6 +1712,6 @@
   </footer>
 
   <!-- Application Entrypoint (Standalone IIFE Bundle: 100% compatible with both http:// and local file://) -->
-  <script defer src="js/app.bundle.js"></script>
+  <script defer src="js/app.bundle.js?v=bharat_gold_v5"></script>
 </body>
 </html>

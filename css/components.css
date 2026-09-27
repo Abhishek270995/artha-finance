@@ -266,10 +266,10 @@
 }
 
 .preset-chip.active {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: var(--emerald-500);
-  color: var(--emerald-400);
-  box-shadow: 0 0 12px var(--emerald-glow);
+  background: rgba(249, 115, 22, 0.2);
+  border-color: var(--saffron-500);
+  color: var(--saffron-400);
+  box-shadow: 0 0 14px var(--saffron-glow);
 }
 
 .inputs-grid {
@@ -1055,8 +1055,9 @@
 
 /* Notion-style Friendly Callout Banner */
 .notion-callout {
-  background: var(--bg-surface);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, var(--bg-surface) 100%);
   border: 1px solid var(--border-medium);
+  border-left: 4.5px solid var(--saffron-500);
   border-radius: var(--radius-xl);
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -1069,6 +1070,7 @@
 
 .notion-callout:hover {
   border-color: var(--border-accent);
+  box-shadow: 0 4px 20px var(--saffron-glow);
 }
 
 .notion-callout-icon {
